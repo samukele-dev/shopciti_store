@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Profile</title>
+</head>
+
+<body>
+    <h1>User Profile</h1>
+    <p>Welcome, {{ user.username }}!</p>
+
+    <!-- Display user-specific information -->
+    <p>Email: {{ user.email }}</p>
+    <p>About: {{ user.about }}</p>
+    {% if user.profile_image %}
+    <img src="{{ user.profile_image.url }}" alt="Profile Image" width="100"> {% endif %} {% if user.store %}
+    <!-- User has a store, display link to store profile -->
+    <a href="{% url 'store_profile' %}">Visit My Store</a> {% else %}
+    <!-- User doesn't have a store, display a prompt to register a store -->
+    <p>You don't have a store. <a href="{% url 'register_store' %}">Register a Store</a></p>
+    {% endif %}
+    <!-- Add more information as needed -->
+
+
+
+    <!-- Provide options to edit profile, change password, etc. -->
+    <a href="{% url 'edit_profile' %}">Edit Profile</a>
+    <a href="#">Change Password</a>
+</body>
+
+</html>

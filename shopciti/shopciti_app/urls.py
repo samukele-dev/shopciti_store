@@ -10,6 +10,8 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='shopciti_app/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('user-profile/', views.user_profile, name='user_profile'),
+    path('edit-profile/', views.edit_profile, name='edit_profile'),
     path('register-store/', views.register_store, name='register_store'),
     path('registration-success/', views.registration_success, name='registration_success'),
     path('registration-failure/', views.registration_failure, name='registration_failure'),

@@ -24,6 +24,9 @@ class Store(models.Model):
 
 class CustomUser(AbstractUser):
     store = models.ForeignKey(Store, on_delete=models.CASCADE, null=True, blank=True)
+    about = models.TextField(blank=True, null=True)
+    profile_image = models.ImageField(upload_to='profile_image/', blank=True, null=True)
+
 
     # Add a related_name to avoid clashes
     groups = models.ManyToManyField(
@@ -38,7 +41,7 @@ class CustomUser(AbstractUser):
         related_name="customuser_set",
         related_query_name="customuser",
     )
-    
+
 class StoreProfile(models.Model):
     store = models.OneToOneField(Store, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
