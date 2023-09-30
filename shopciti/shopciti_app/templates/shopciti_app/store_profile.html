@@ -1,0 +1,14 @@
+{% if store %}
+<!-- Display store-related information here -->
+<h1>{{ store.name }}</h1>
+<p>{{ store.description }}</p>
+<!-- Other store fields -->
+
+{% if store_profile %}
+<!-- Display store profile-related information here -->
+<img src="{{ store_profile.logo.url }}" alt="{{ store.name }} Logo">
+<p>{{ store_profile.description }}</p>
+<!-- Other store profile fields -->
+{% endif %} {% else %}
+<p>No store associated with this user.</p>
+{% endif %}
