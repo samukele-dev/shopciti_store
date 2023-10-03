@@ -14,7 +14,7 @@ class Store(models.Model):
     postal_code = models.CharField(max_length=10, blank=True, null=True)
     
     # Add profile-related fields here
-    logo = models.ImageField(upload_to='store_logos/', blank=True, null=True)
+    logo = models.ImageField(upload_to='store_logos/', default='static/img/1.png')
     about = models.TextField(blank=True, null=True)
 
     # Add more fields as needed to store store-related information.
@@ -45,6 +45,8 @@ class CustomUser(AbstractUser):
 class StoreProfile(models.Model):
     store = models.OneToOneField(Store, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
+    logo = models.ImageField(upload_to='store_logos/', blank=True, null=True)
+
 
     def __str__(self):
         return self.store.name
@@ -61,3 +63,8 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class Review(models.Model):
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    rating = models.IntegerField()  # You can use a rating field or create a separate model for ratings
+    comment = models.TextField()

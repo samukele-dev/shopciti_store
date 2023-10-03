@@ -10,8 +10,8 @@ from .models import Store, StoreProfile
 from .forms import CustomUserCreationForm
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import UserProfileForm, StoreForm, CartAddProductForm, ProductForm
-
-
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 
@@ -103,8 +103,30 @@ def registration_failure(request):
 
 
 def shop_list(request):
-    shops = Store.objects.all()  # Retrieve all registered shops
-    return render(request, 'shopciti_app/shop_list.html', {'shops': shops})
+    search_query = request.GET.get('search_query', '')
+    category = request.GET.get('category', '')
+    sort_by = request.GET.get('sort_by', 'name')
+    
+
+    # Use Q objects to create complex queries for searching
+    filter_criteria = Q(name__icontains=search_query)
+
+    # Add more fields as needed to search in other attributes of the Store model
+    if category:
+        filter_criteria |= Q(category__icontains=category)
+
+    if not sort_by:
+        sort_by = 'name'  # Set a default sorting option if 'sort_by' is empty
+    shops = Store.objects.filter(filter_criteria).order_by(sort_by)
+
+    paginator = Paginator(shops, 10)
+    page = request.GET.get('page')
+    shops = paginator.get_page(page)
+
+    context = {
+        'shops': shops,
+    }
+    return render(request, 'shopciti_app/shop_list.html', context)
 
 
 @login_required
@@ -218,3 +240,5 @@ def delete_product(request, product_id):
     store_id = product.store.id
     product.delete()
     return redirect('manage_products', store_id=store_id)
+
+
