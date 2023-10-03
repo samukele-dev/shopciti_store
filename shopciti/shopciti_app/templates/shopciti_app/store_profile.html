@@ -1,14 +1,51 @@
 {% if store %}
 <!-- Display store-related information here -->
-<h1>{{ store.name }}</h1>
-<p>{{ store.description }}</p>
+<h1>Name:{{ store.name }}</h1>
+<p>Bio:{{ store.description }}</p>
+<p>Contact Email: {{ store.contact_email }}</p>
+<p>Phone Number: {{ store.phone_number }}</p>
+<p>Address: {{ store.address }}</p>
+<p>City: {{ store.city }}</p>
+<p>State: {{ store.state }}</p>
+<p>Postal Code: {{ store.postal_code }}</p>
 <!-- Other store fields -->
 
 {% if store_profile %}
 <!-- Display store profile-related information here -->
-<img src="{{ store_profile.logo.url }}" alt="{{ store.name }} Logo">
+<img src="{{ store_profile.logo.url }}" alt="{{ store.name }} Logo" width="100">
 <p>{{ store_profile.description }}</p>
 <!-- Other store profile fields -->
 {% endif %} {% else %}
-<p>No store associated with this user.</p>
-{% endif %}
+<p>No store associated with this user.</p><a href="{% url 'register_store' %}">Register a Store</a> {% endif %}
+<a href="{% url 'shop_list' %}">Visit My Store</a>
+
+<ul>
+    {% for product in store.product_set.all %}
+    <li>
+        <h3>{{ product.name }}</h3>
+        <p>Description: {{ product.description }}</p>
+        <p>Price: ${{ product.price }}</p>
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200">
+    </li>
+    {% endfor %}
+</ul>
+
+<!-- Add Product Button -->
+
+<!-- Product Addition Form (Hidden by Default) -->
+<!-- Add your product addition form fields here -->
+
+</div>
+
+
+
+
+
+
+
+
+{% if user.is_authenticated %}
+<!-- If the logged-in user is the owner of the store, display the "Add Product" button/link -->
+<a href="{% url 'add_product_to_store' store.id %}" class="btn btn-primary">Add Product</a> {% endif %}
+<p>User ID: {{ request.user.id }}</p>
+<p>User is logged in: {{ request.user.is_authenticated }}</p>

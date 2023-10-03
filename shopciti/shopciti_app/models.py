@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth.models import User  # If using Django's built-in User model
+from django.contrib.auth import get_user_model
 
 
 class Store(models.Model):
@@ -14,7 +14,7 @@ class Store(models.Model):
     postal_code = models.CharField(max_length=10, blank=True, null=True)
     
     # Add profile-related fields here
-    profile_image = models.ImageField(upload_to='store_profiles/', blank=True, null=True)
+    logo = models.ImageField(upload_to='store_logos/', blank=True, null=True)
     about = models.TextField(blank=True, null=True)
 
     # Add more fields as needed to store store-related information.
@@ -45,7 +45,6 @@ class CustomUser(AbstractUser):
 class StoreProfile(models.Model):
     store = models.OneToOneField(Store, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
-    logo = models.ImageField(upload_to='store_logos/', blank=True, null=True)
 
     def __str__(self):
         return self.store.name
@@ -55,6 +54,9 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='products/')
+
+    # Add a foreign key to the Store model to represent the relationship
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, null=True)  # Add this ForeignKey
 
     def __str__(self):
         return self.name

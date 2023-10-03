@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ shop.name }} Details</title>
+    <!-- Add your CSS styles if needed -->
+</head>
+
+<body>
+    <h1>{{ shop.name }} Details</h1>
+
+    <p>Description: {{ shop.description }}</p>
+    <p>Contact Email: {{ shop.contact_email }}</p>
+    <p>Phone Number: {{ shop.phone_number }}</p>
+    <p>Address: {{ shop.address }}</p>
+    <p>City: {{ shop.city }}</p>
+    <p>State: {{ shop.state }}</p>
+    <p>Postal Code: {{ shop.postal_code }}</p>
+
+    <!-- You can display additional shop information here if needed -->
+
+    <h2>Products</h2>
+    <ul>
+        {% for product in store.product_set.all %}
+        <li>
+            <h3>{{ product.name }}</h3>
+            <p>Description: {{ product.description }}</p>
+            <p>Price: ${{ product.price }}</p>
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200">
+        </li>
+        {% endfor %}
+
+        <!-- Display the products added in the session -->
+        {% for product in products %}
+        <li>
+            <h3>{{ product.name }}</h3>
+            <p>Description: {{ product.description }}</p>
+            <p>Price: ${{ product.price }}</p>
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200">
+        </li>
+        {% endfor %}
+    </ul>
+
+</body>
+
+</html>

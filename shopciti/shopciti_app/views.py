@@ -1,15 +1,15 @@
 from .models import Product
-
+from django.urls import reverse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Store  # Import the Store model if you have it
 from django.contrib.auth.decorators import login_required
 from .models import Store, StoreProfile
 from .forms import CustomUserCreationForm
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import UserProfileForm
+from .forms import UserProfileForm, StoreForm, CartAddProductForm, ProductForm
 
 
 
@@ -34,6 +34,9 @@ def product_list(request):
 
 def home(request):
     return render(request, 'shopciti_app/home.html')
+
+def home2(request):
+    return render(request, 'shopciti_app/home2.html')
 
 @login_required
 def user_profile(request):
@@ -76,29 +79,18 @@ def edit_profile(request):
 @login_required
 def register_store(request):
     if request.method == 'POST':
-        store_name = request.POST['store_name']
-        # Process the form data and store it in the database
-        # Replace this section with your actual database logic
-        try:
-            # Create a new Store object and save it to the database
-            new_store = Store(name=store_name)
-            new_store.save()
-
-            # Link the newly created store to the user
+        form = StoreForm(request.POST, request.FILES)  # Include request.FILES to handle file uploads
+        if form.is_valid():
+            new_store = form.save()
             user = request.user
             user.store = new_store
             user.save()
-
-            # Redirect to a thank you or confirmation page
             return redirect('store_profile')
+    else:
+        form = StoreForm()
 
-        except Exception as e:
-            # Handle exceptions, such as database errors, here
-            messages.error(request, f'An error occurred while registering your store: {str(e)}')
-            return redirect('registration_failure')
+    return render(request, 'shopciti_app/register_store.html', {'form': form})
 
-    # Render the store registration form page if it's a GET request
-    return render(request, 'shopciti_app/register_store.html')
 
 def registration_success(request):
     # Render the registration success or thank you page
@@ -111,9 +103,16 @@ def registration_failure(request):
 
 
 def shop_list(request):
-    stores = Store.objects.all()
-    return render(request, 'shops.html', {'stores': stores})
+    shops = Store.objects.all()  # Retrieve all registered shops
+    return render(request, 'shopciti_app/shop_list.html', {'shops': shops})
 
+
+@login_required
+def shop_detail(request, shop_id):
+    shop = get_object_or_404(Store, pk=shop_id)
+    products = Product.objects.filter(store=shop)
+    return render(request, 'shopciti_app/shop_detail.html', {'shop': shop, 'products': products})
+    
 
 
 @login_required
@@ -132,3 +131,90 @@ def store_profile(request):
         store_profile = None
 
     return render(request, 'shopciti_app/store_profile.html', {'store': store, 'store_profile': store_profile})
+
+
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, 'shopciti_app/product_list.html', {'products': products})
+
+def add_to_cart(request, product_id):
+    product = Product.objects.get(id=product_id)
+    form = CartAddProductForm(request.POST)
+    if form.is_valid():
+        cart.add(product=product, quantity=form.cleaned_data['quantity'])
+    return redirect('cart')
+
+def cart(request):
+    cart = Cart(request)
+    return render(request, 'shopciti_app/cart.html', {'cart': cart})
+
+def remove_from_cart(request, product_id):
+    product = Product.objects.get(id=product_id)
+    cart.remove(product)
+    return redirect('cart')
+
+def update_cart(request, product_id):
+    product = Product.objects.get(id=product_id)
+    form = CartAddProductForm(request.POST)
+    if form.is_valid():
+        cart.update(product=product, quantity=form.cleaned_data['quantity'])
+    return redirect('cart')
+
+def checkout(request):
+    cart = Cart(request)
+    # Implement the checkout process here
+    return render(request, 'shopciti_app/checkout.html', {'cart': cart})
+
+def order_confirmation(request):
+    # Handle order confirmation logic here
+    return render(request, 'shopciti_app/order_confirmation.html')
+
+
+@login_required
+def manage_products(request, store_id):
+    # Get the store object by its ID or return a 404 if not found
+    store = get_object_or_404(Store, pk=store_id)
+
+    # Retrieve all products associated with the store
+    products = Product.objects.filter(store=store)
+
+    return render(request, 'shopciti_app/product_template/manage_products.html', {'store': store, 'products': products})
+
+
+@login_required
+# Add a new product to the store
+
+def add_product_to_store(request, store_id):
+    store = get_object_or_404(Store, pk=store_id)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_product = form.save(commit=False)
+            new_product.store = store
+            new_product.save()
+            return redirect(reverse('manage_products', kwargs={'store_id': store_id}))
+    else:
+        form = ProductForm()
+
+    return render(request, 'shopciti_app/product_template/add_product.html', {'form': form, 'store_id': store_id})
+
+# Edit an existing product
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('manage_products', kwargs={'store_id': product.store.id}))
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, 'shopciti_app/product_template/edit_product.html', {'form': form, 'store_id': product.store.id})
+# Delete an existing product
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    store_id = product.store.id
+    product.delete()
+    return redirect('manage_products', store_id=store_id)
