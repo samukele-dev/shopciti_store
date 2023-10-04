@@ -36,3 +36,5 @@ class CartAddProductForm(forms.Form):
         widget=forms.TextInput(attrs={'type': 'number', 'min': '1', 'value': '1'}),
         min_value=1
     )
+
+
