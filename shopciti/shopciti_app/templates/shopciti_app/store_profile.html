@@ -1,51 +1,65 @@
 {% if store %}
-<!-- Display store-related information here -->
-<h1>Name:{{ store.name }}</h1>
-<p>Bio:{{ store.description }}</p>
-<p>Contact Email: {{ store.contact_email }}</p>
-<p>Phone Number: {{ store.phone_number }}</p>
-<p>Address: {{ store.address }}</p>
-<p>City: {{ store.city }}</p>
-<p>State: {{ store.state }}</p>
-<p>Postal Code: {{ store.postal_code }}</p>
-<!-- Other store fields -->
+<div class="container-fluid">
+    <div class="row">
+        <!-- Side Navbar -->
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Orders
+                        </a>
+                    </li>
+                    <!-- Add more sidebar items as needed -->
+                </ul>
+            </div>
+        </nav>
 
-{% if store_profile %}
-<!-- Display store profile-related information here -->
-<img src="{{ store_profile.logo.url }}" alt="{{ store.name }} Logo" width="100">
-<p>{{ store_profile.description }}</p>
-<!-- Other store profile fields -->
-{% endif %} {% else %}
-<p>No store associated with this user.</p><a href="{% url 'register_store' %}">Register a Store</a> {% endif %}
-<a href="{% url 'shop_list' %}">Visit My Store</a>
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="container">
+                <h1 class="mt-5">Dashboard</h1>
+                <!-- Display store-related information here -->
+                <h2>Name: {{ store.name }}</h2>
+                <p>Bio: {{ store.description }}</p>
+                <!-- Add other store-related fields here -->
 
-<ul>
-    {% for product in store.product_set.all %}
-    <li>
-        <h3>{{ product.name }}</h3>
-        <p>Description: {{ product.description }}</p>
-        <p>Price: ${{ product.price }}</p>
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200">
-    </li>
-    {% endfor %}
-</ul>
+                {% if store_profile %}
+                <!-- Display store profile-related information here -->
+                <img src="{{ store_profile.logo.url }}" alt="{{ store.name }} Logo" width="100">
+                <p>{{ store_profile.description }}</p>
+                <!-- Add other store profile-related fields here -->
+                {% endif %}
 
-<!-- Add Product Button -->
+                <!-- Add product list here -->
+                <h2>Products</h2>
+                <ul class="list-group">
+                    {% for product in store.product_set.all %}
+                    <li class="list-group-item">
+                        <h3>{{ product.name }}</h3>
+                        <p>Description: {{ product.description }}</p>
+                        <p>Price: ${{ product.price }}</p>
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200">
+                    </li>
+                    {% endfor %}
+                </ul>
 
-<!-- Product Addition Form (Hidden by Default) -->
-<!-- Add your product addition form fields here -->
-
+                <!-- Add Product Button -->
+                <a href="{% url 'add_product_to_store' store.id %}" class="btn btn-primary mt-3">Add Product</a>
+            </div>
+        </main>
+    </div>
 </div>
-
-
-
-
-
-
-
-
-{% if user.is_authenticated %}
-<!-- If the logged-in user is the owner of the store, display the "Add Product" button/link -->
-<a href="{% url 'add_product_to_store' store.id %}" class="btn btn-primary">Add Product</a> {% endif %}
-<p>User ID: {{ request.user.id }}</p>
-<p>User is logged in: {{ request.user.is_authenticated }}</p>
+{% else %}
+<p>No store associated with this user. <a href="{% url 'register_store' %}">Register a Store</a></p>
+{% endif %}
