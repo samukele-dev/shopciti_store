@@ -4,45 +4,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
     <title>{{ shop.name }} Details</title>
-    <!-- Add your CSS styles if needed -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        h2 {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        
+        p {
+            color: #555;
+        }
+        
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        li {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px auto;
+        }
+        /* Make the cards smaller */
+        
+        .card {
+            max-width: 250px;
+            margin: 0 auto;
+        }
+        /* Custom styles for shop items */
+        
+        .shop-item {
+            background-color: #f8f9fa;
+            border: 1px solid #e4e4e4;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s ease-in-out;
+            margin-bottom: 20px;
+        }
+        
+        .shop-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .shop-item h4 {
+            font-size: 20px;
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .shop-item p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .shop-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .shop-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
     <h1>{{ shop.name }} Details</h1>
 
-    <p>Description: {{ shop.description }}</p>
-    <p>Contact Email: {{ shop.contact_email }}</p>
-    <p>Phone Number: {{ shop.phone_number }}</p>
-    <p>Address: {{ shop.address }}</p>
-    <p>City: {{ shop.city }}</p>
-    <p>State: {{ shop.state }}</p>
-    <p>Postal Code: {{ shop.postal_code }}</p>
+    <div class="container">
+        <div class="shop-details">
+            <h2>Shop Information</h2>
+            <div class="row">
+                <div class="col-md-3">
+                    <img src="{{ shop.logo.url }}" alt="{{ shop.name }} Logo" class="store-logo">
+                </div>
+                <div class="col-md-9">
+                    <p><strong>Description:</strong> {{ shop.description }}</p>
+                    <p><strong>Contact Email:</strong> {{ shop.contact_email }}</p>
+                    <p><strong>Phone Number:</strong> {{ shop.phone_number }}</p>
+                    <p><strong>Address:</strong> {{ shop.address }}</p>
+                    <p><strong>City:</strong> {{ shop.city }}</p>
+                    <p><strong>State:</strong> {{ shop.state }}</p>
+                    <p><strong>Postal Code:</strong> {{ shop.postal_code }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- You can display additional shop information here if needed -->
 
     <h2>Products</h2>
-    <ul>
+
+    <div class="row products-list">
         {% for product in store.product_set.all %}
-        <li>
-            <h3>{{ product.name }}</h3>
-            <p>Description: {{ product.description }}</p>
-            <p>Price: ${{ product.price }}</p>
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200">
-        </li>
+        <div class="col-md-4 mb-4">
+            <div class="shop-item">
+                <div class="card">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" width="200">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text"><strong>Description:</strong> {{ product.description }}</p>
+                        <p class="card-text"><strong>Price:</strong> ${{ product.price }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endfor %}
 
         <!-- Display the products added in the session -->
         {% for product in products %}
-        <li>
-            <h3>{{ product.name }}</h3>
-            <p>Description: {{ product.description }}</p>
-            <p>Price: ${{ product.price }}</p>
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200">
-        </li>
+        <div class="col-md-4 mb-4">
+            <div class="shop-item">
+                <div class="card">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" width="200">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text"><strong>Description:</strong> {{ product.description }}</p>
+                        <p class="card-text"><strong>Price:</strong> ${{ product.price }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
 
+    </div>
 </body>
 
 </html>
