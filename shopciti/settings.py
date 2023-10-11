@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-pqsh%1t*kd6g94hi45tt+lpr2zzkz9#x&ob(z^n$ddkapa_5&x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['shopciti.onrender.com']
 
 AUTH_USER_MODEL = 'shopciti_app.CustomUser'
 
