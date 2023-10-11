@@ -6,7 +6,7 @@ services:
         value: "django-insecure-vi8u#u^v3e2t3ar2)s8b%tj2kt()a%wqtkalt7bpk#dhw4c_ix"
     buildCommand: python manage.py collectstatic --noinput
     staticPublishPath: static
-    start_command: "gunicorn shopciti_store.wsgi:application --bind 0.0.0.0:$PORT"
+    start_command: "gunicorn shopciti.wsgi:application --bind 0.0.0.0:$PORT"
     health_check_path: "/"
 
 databases:
