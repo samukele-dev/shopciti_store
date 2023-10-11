@@ -14,8 +14,8 @@ databases:
     type: postgresql
     plan: free
     config:
-      database: db_shopciti
-      user: db_shopciti_user
-      password: fvgJVJsPpiJZLi3K6iJjL4SlegMeuSfs
-      host: dpg-ckj4lkolk5ic73c5iso0-a  # Replace with your PostgreSQL host
+      database: db_shopciti_0rc7
+      user: db_shopciti_0rc7_user
+      password: qUshIywz95TVJQkrPuPC6jBiWZYKitoi
+      host: dpg-ckj68eomccbs73e00f30-a  # Replace with your PostgreSQL host
       port: 5432

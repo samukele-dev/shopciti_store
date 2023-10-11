@@ -97,10 +97,10 @@ WSGI_APPLICATION = 'shopciti.wsgi.application'
 DATABASES = {
         'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_shopciti',
-        'USER': 'db_shopciti_user',
-        'PASSWORD': 'fvgJVJsPpiJZLi3K6iJjL4SlegMeuSfs',
-        'HOST': 'dpg-ckj4lkolk5ic73c5iso0-a.oregon-postgres.render.com',
+        'NAME': 'db_shopciti_0rc7',
+        'USER': 'db_shopciti_0rc7_user',
+        'PASSWORD': 'qUshIywz95TVJQkrPuPC6jBiWZYKitoi',
+        'HOST': 'dpg-ckj68eomccbs73e00f30-a.oregon-postgres.render.com',
     }
 }
 
