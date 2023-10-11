@@ -1,11 +1,34 @@
 <!-- edit_product.html -->
 {% extends 'base.html' %} {% block content %}
-<h1>Edit Product</h1>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %} {{ form.as_p }}
+<section>
+    <div class="container">
+        <div class="card-body">
+            <div class="card p-3" style="margin-top: 110px;">
+                <h1 class="mb-4">Edit Product</h1>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a href="{% url 'manage_products' store_id=store_id %}" class="btn btn-secondary">Cancel</a>
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">Product Name:</label> {{ form.name }}
+                    </div>
 
-</form>
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description:</label> {{ form.description }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.price.id_for_label }}" class="form-label">Price:</label> {{ form.price }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.image.id_for_label }}" class="form-label">Image:</label> {{ form.image }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="{% url 'manage_products' store_id=store_id %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

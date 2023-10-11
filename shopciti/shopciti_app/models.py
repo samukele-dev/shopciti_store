@@ -63,6 +63,15 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class CartItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+
+
+
+
 class Review(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

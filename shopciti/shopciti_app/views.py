@@ -9,9 +9,13 @@ from django.contrib.auth.decorators import login_required
 from .models import Store, StoreProfile
 from .forms import CustomUserCreationForm
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import UserProfileForm, StoreForm, CartAddProductForm, ProductForm
+from .forms import UserProfileForm, StoreForm, CartAddProductForm, ProductForm, CheckoutForm
 from django.core.paginator import Paginator
 from django.db.models import Q
+from .cart import Cart
+from payfast.forms import PayFastForm
+from django.http import HttpResponseBadRequest
+
 
 
 
@@ -32,11 +36,11 @@ def product_list(request):
     products = Product.objects.all()
     return render(request, 'shopciti_app/product_list.html', {'products': products})
 
-def home(request):
-    return render(request, 'shopciti_app/home.html')
-
 def home2(request):
     return render(request, 'shopciti_app/home2.html')
+
+def home1(request):
+    return render(request, 'shopciti_app/home1.html')
 
 @login_required
 def user_profile(request):
@@ -134,8 +138,11 @@ def shop_detail(request, shop_id):
     shop = get_object_or_404(Store, pk=shop_id)
     products = Product.objects.filter(store=shop)
     return render(request, 'shopciti_app/shop_detail.html', {'shop': shop, 'products': products})
-    
 
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    return render(request, 'shopciti_app/product_detail.html', {'product': product})
 
 @login_required
 def store_profile(request):
@@ -159,34 +166,59 @@ def product_list(request):
     products = Product.objects.all()
     return render(request, 'shopciti_app/product_list.html', {'products': products})
 
+
+# Add a product to the cart
 def add_to_cart(request, product_id):
-    product = Product.objects.get(id=product_id)
-    form = CartAddProductForm(request.POST)
-    if form.is_valid():
-        cart.add(product=product, quantity=form.cleaned_data['quantity'])
+    product = get_object_or_404(Product, id=product_id)
+    cart = request.session.get('cart', {})
+    cart_item = cart.get(str(product_id))
+
+    if cart_item:
+        cart_item['quantity'] += 1
+    else:
+        cart_item = {
+            'product_id': product_id,
+            'name': product.name,
+            'price': float(product.price),
+            'quantity': 1,
+        }
+
+    cart[str(product_id)] = cart_item
+    request.session['cart'] = cart
     return redirect('cart')
 
 def cart(request):
-    cart = Cart(request)
-    return render(request, 'shopciti_app/cart.html', {'cart': cart})
+    cart = request.session.get('cart', {})
+    cart_items = cart.values()
+    total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
+    return render(request, 'shopciti_app/cart.html', {'cart_items': cart_items, 'total_price': total_price})
 
+
+# Remove a product from the cart
 def remove_from_cart(request, product_id):
-    product = Product.objects.get(id=product_id)
+    product = get_object_or_404(Product, id=product_id)
+    cart = Cart(request)
     cart.remove(product)
     return redirect('cart')
 
+# Update the quantity of a product in the cart
 def update_cart(request, product_id):
-    product = Product.objects.get(id=product_id)
+    product = get_object_or_404(Product, id=product_id)
+    cart = Cart(request)
     form = CartAddProductForm(request.POST)
     if form.is_valid():
-        cart.update(product=product, quantity=form.cleaned_data['quantity'])
+        cd = form.cleaned_data
+        cart.update(product=product, quantity=cd['quantity'])
     return redirect('cart')
 
+
+# Checkout view
 def checkout(request):
     cart = Cart(request)
     # Implement the checkout process here
     return render(request, 'shopciti_app/checkout.html', {'cart': cart})
 
+# Order confirmation view (after successful checkout)
 def order_confirmation(request):
     # Handle order confirmation logic here
     return render(request, 'shopciti_app/order_confirmation.html')
@@ -240,5 +272,35 @@ def delete_product(request, product_id):
     store_id = product.store.id
     product.delete()
     return redirect('manage_products', store_id=store_id)
+
+
+def checkout(request):
+    cart_items = request.session.get('cart', [])
+    total_amount = sum(item['price'] * item['quantity'] for item in cart_items)
+
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            # Create a PayFast payment form
+            payfast_form = PayFastForm(request.POST, initial={
+                'amount': total_amount,
+                'item_name': 'Your Order',  # You can customize this based on your cart
+                'return_url': settings.PAYFAST_RETURN_URL,
+            })
+
+            if payfast_form.is_valid():
+                # Redirect the user to PayFast for payment
+                return payfast_form.redirect()
+
+    else:
+        form = CheckoutForm()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'shopciti_app/checkout.html', context)
+
+def thank_you(request):
+    return render(request, 'shopciti_app/thank_you.html')
 
 

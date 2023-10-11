@@ -16,6 +16,8 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
 
     <!-- Vendor CSS Files -->
     <link href="static/vendor/aos/aos.css" rel="stylesheet">
@@ -25,7 +27,7 @@
     <link href="static/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
     <!-- Template Main CSS File -->
-    <link href="static/css/style.css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
 </head>
 
@@ -109,6 +111,26 @@
         bottom: -4px;
         left: 20px;
     }
+    
+    #cart-sidebar {
+        width: 300px;
+        /* Adjust the width as needed */
+        height: 100%;
+        position: fixed;
+        top: 0;
+        right: -300px;
+        /* Initially hidden to the right */
+        background-color: #fff;
+        transition: right 0.3s ease;
+        overflow-y: scroll;
+        z-index: 999;
+        /* Set a high z-index to make it appear above the navbar */
+    }
+    
+    #cart-sidebar.open {
+        right: 0;
+        /* Slide in from the right */
+    }
 </style>
 
 <body>
@@ -118,12 +140,17 @@
         </div>
         <div>
             <ul id="navbar">
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="shop.html">Shop</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="cart.html" id="lg-bag"><i class="fal fa-shopping-bag"></i></a>
+                <li><a href="{% url 'home_shops' %}" class="active">Home</a></li>
+                <li><a href="{% url 'shop_list' %}">Shops</a></li>
+                <li><a href="#">Men</a></li>
+                <li><a href="#">Women</a></li>
+                <li><a href="#">Offers</a></li>
+                <li><a href="#">Brands</a></li>
+                <li><a href="#">Contact</a></li>
+                <li>
+                    <a href="#" id="lg-bag">
+                        <i class="fal fa-shopping-bag"></i>
+                    </a>
                     <span class="quantity">0</span>
                 </li>
                 <li>
@@ -142,6 +169,7 @@
 
     <main>
         {% block content %}{% endblock %}
+
     </main>
     <footer>
         <!-- Your footer content goes here -->
@@ -150,6 +178,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="script.js"></script>
+
+
+    <script>
+        // Pure JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartIcon = document.getElementById('lg-bag');
+            const cartSidebar = document.getElementById('cart-sidebar');
+            const closeCart = document.getElementById('close-cart');
+
+            cartIcon.addEventListener('click', function() {
+                cartSidebar.classList.add('open');
+            });
+
+            closeCart.addEventListener('click', function() {
+                cartSidebar.classList.remove('open');
+            });
+        });
+    </script>
 
 </body>
 

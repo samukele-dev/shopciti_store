@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'shopciti_app',
+    'payfast',
+
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -58,6 +60,15 @@ MIDDLEWARE = [
 
 LOGIN_URL = 'login'  # Specify the name of the login URL pattern
 LOGIN_REDIRECT_URL = 'store_profile'  # Redirect to store profile after successful login
+
+CART_SESSION_ID = 'cart'
+
+PAYFAST_URL_BASE = 'http://127.0.0.1:8000'
+
+
+PAYFAST_MERCHANT_ID = 'YOUR_MERCHANT_ID'
+PAYFAST_MERCHANT_KEY = 'YOUR_MERCHANT_KEY'
+PAYFAST_RETURN_URL = 'YOUR_RETURN_URL'
 
 ROOT_URLCONF = 'shopciti.urls'
 
@@ -84,9 +95,12 @@ WSGI_APPLICATION = 'shopciti.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'db_shopciti',
+        'USER': 'db_shopciti_user',
+        'PASSWORD': 'fvgJVJsPpiJZLi3K6iJjL4SlegMeuSfs',
+        'HOST': 'dpg-ckj4lkolk5ic73c5iso0-a.oregon-postgres.render.com',
     }
 }
 

@@ -1,6 +1,37 @@
+{% extends "base.html" %} {% block title %}Welcome to ShopCiti{% endblock %} {% block header %}Welcome to ShopCiti{% endblock %} {% block content %}
+
+
 <!-- registration/register.html -->
 
-<form method="post">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit">Register</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Registration</title>
+</head>
+
+<body>
+    <div style="max-width: 400px; margin: 0 auto; padding: 20px; background-color: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);">
+        <h1 style="text-align: center; color: #333;">Registration</h1>
+        <form method="post" style="margin-top: 20px;">
+            {% csrf_token %}
+
+            <label for="{{ form.username.id_for_label }}" style="display: block; margin-bottom: 5px; color: #555;">Username:</label> {{ form.username }}
+
+            <label for="{{ form.email.id_for_label }}" style="display: block; margin-bottom: 5px; color: #555;">Email:</label> {{ form.email }}
+
+            <label for="{{ form.password1.id_for_label }}" style="display: block; margin-bottom: 5px; color: #555;">Password:</label> {{ form.password1 }}
+
+            <label for="{{ form.password2.id_for_label }}" style="display: block; margin-bottom: 5px; color: #555;">Confirm Password:</label> {{ form.password2 }}
+
+            <button type="submit" style="display: block; width: 100%; padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer;">Register</button>
+        </form>
+    </div>
+</body>
+
+</html>
+
+{% endblock %}

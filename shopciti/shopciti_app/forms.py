@@ -38,3 +38,14 @@ class CartAddProductForm(forms.Form):
     )
 
 
+class CheckoutForm(forms.Form):
+    full_name = forms.CharField(max_length=100, required=True)
+    address = forms.CharField(max_length=200, required=True)
+    city = forms.CharField(max_length=100, required=True)
+    # Add more fields as needed for the checkout process, such as email, phone, etc.
+    
+    # Payment Information
+    card_number = forms.CharField(label='Credit Card Number', max_length=16, required=True)
+    cardholder_name = forms.CharField(label='Cardholder Name', max_length=100, required=True)
+    expiration_date = forms.CharField(label='Expiration Date (MM/YY)', max_length=5, required=True)
+    cvv = forms.CharField(label='CVV', max_length=4, required=True)

@@ -1,0 +1,21 @@
+services:
+  - name: web
+    env:
+      - key: SECRET_KEY
+        # Add your Django SECRET_KEY value here
+        value: "django-insecure-vi8u#u^v3e2t3ar2)s8b%tj2kt()a%wqtkalt7bpk#dhw4c_ix"
+    buildCommand: python manage.py collectstatic --noinput
+    staticPublishPath: static
+    start_command: "gunicorn sales_funnel_projecthopciti.wsgi:application --bind 0.0.0.0:$PORT"
+    health_check_path: "/"
+
+databases:
+  - name: my-database
+    type: postgresql
+    plan: free
+    config:
+      database: db_shopciti
+      user: db_shopciti_user
+      password: fvgJVJsPpiJZLi3K6iJjL4SlegMeuSfs
+      host: dpg-ckj4lkolk5ic73c5iso0-a  # Replace with your PostgreSQL host
+      port: 5432

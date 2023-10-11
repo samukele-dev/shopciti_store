@@ -1,0 +1,9 @@
+# PostgreSQL
+*.pgdump
+*.pgbackups
+*.pgpass
+*.psqlrc
+*.psql_history
+*.pgservice
+*.psql_history
+*.pg_stat_tmp/
