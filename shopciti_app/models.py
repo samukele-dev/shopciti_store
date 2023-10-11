@@ -27,6 +27,9 @@ class CustomUser(AbstractUser):
     about = models.TextField(blank=True, null=True)
     profile_image = models.ImageField(upload_to='profile_image/', blank=True, null=True)
 
+    class Meta:
+        app_label = 'shopciti_app'
+
 
     # Add a related_name to avoid clashes
     groups = models.ManyToManyField(

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-pqsh%1t*kd6g94hi45tt+lpr2zzkz9#x&ob(z^n$ddkapa_5&x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['shopciti.onrender.com']
+ALLOWED_HOSTS = ['shopciti.onrender.com', '127.0.0.1']
 
 AUTH_USER_MODEL = 'shopciti_app.CustomUser'
 
@@ -94,6 +94,7 @@ WSGI_APPLICATION = 'shopciti.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+
 DATABASES = {
         'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -101,7 +102,7 @@ DATABASES = {
         'USER': 'db_shopciti_0rc7_user',
         'PASSWORD': 'qUshIywz95TVJQkrPuPC6jBiWZYKitoi',
         'HOST': 'dpg-ckj68eomccbs73e00f30-a.oregon-postgres.render.com',
-    }
+    },
 }
 
 
