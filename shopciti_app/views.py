@@ -14,9 +14,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from .cart import Cart
 from payfast.forms import PayFastForm
-from django.http import HttpResponseBadRequest
-
-
+from django.http import HttpResponse
 
 
 
@@ -204,25 +202,41 @@ def remove_from_cart(request, product_id):
 # Update the quantity of a product in the cart
 def update_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    cart = Cart(request)
-    form = CartAddProductForm(request.POST)
-    if form.is_valid():
-        cd = form.cleaned_data
-        cart.update(product=product, quantity=cd['quantity'])
+    
+    if request.method == 'POST':
+        quantity = request.POST.get('quantity')  # Get the quantity from the form
+
+        # Ensure quantity is a valid integer
+        try:
+            quantity = int(quantity)
+        except ValueError:
+            quantity = 1  # Default to 1 if quantity is not a valid integer
+
+        # Retrieve the cart from the session or create an empty one
+        cart = request.session.get('cart', {})
+
+        # Update the quantity for the product in the cart
+        if product_id in cart and quantity > 0:
+            cart[product_id]['quantity'] = quantity
+        elif product_id in cart and quantity <= 0:
+            del cart[product_id]
+
+        # Save the updated cart back to the session
+        request.session['cart'] = cart
+
     return redirect('cart')
 
 
 # Checkout view
-def checkout(request):
-    cart = Cart(request)
-    # Implement the checkout process here
-    return render(request, 'shopciti_app/checkout.html', {'cart': cart})
 
 # Order confirmation view (after successful checkout)
 def order_confirmation(request):
     # Handle order confirmation logic here
     return render(request, 'shopciti_app/order_confirmation.html')
 
+def payfast_notify(request):
+    # Your view logic here
+    return HttpResponse("PayFast notification received.")
 
 @login_required
 def manage_products(request, store_id):
@@ -274,31 +288,33 @@ def delete_product(request, product_id):
     return redirect('manage_products', store_id=store_id)
 
 
+
 def checkout(request):
-    cart_items = request.session.get('cart', [])
-    total_amount = sum(item['price'] * item['quantity'] for item in cart_items)
+    cart = request.session.get('cart', {})
 
-    if request.method == 'POST':
-        form = CheckoutForm(request.POST)
-        if form.is_valid():
-            # Create a PayFast payment form
-            payfast_form = PayFastForm(request.POST, initial={
-                'amount': total_amount,
-                'item_name': 'Your Order',  # You can customize this based on your cart
-                'return_url': settings.PAYFAST_RETURN_URL,
-            })
-
-            if payfast_form.is_valid():
-                # Redirect the user to PayFast for payment
-                return payfast_form.redirect()
-
-    else:
-        form = CheckoutForm()
+    total_amount = sum(item['price'] * item['quantity'] for item in cart.values())
+    item_names = [f"{item['name']} - ${item['price']} x {item['quantity']}" for item in cart.values()]
+    item_name = ', '.join(item_names)
 
     context = {
-        'form': form,
+        'cart_items': cart.values(),
+        'total_amount': total_amount,
+        'item_name': item_name,  # Include the item_name in the context
     }
+
     return render(request, 'shopciti_app/checkout.html', context)
+
+
+def payfast_return(request):
+    # Handle order confirmation and processing here
+    # You can access PayFast parameters in the request.GET dictionary
+
+    # Example:
+    payfast_data = request.GET
+    # Extract and process PayFast response data
+
+    return render(request, 'shopciti_app/order_confirmation.html')
+
 
 def thank_you(request):
     return render(request, 'shopciti_app/thank_you.html')

@@ -49,3 +49,17 @@ class CheckoutForm(forms.Form):
     cardholder_name = forms.CharField(label='Cardholder Name', max_length=100, required=True)
     expiration_date = forms.CharField(label='Expiration Date (MM/YY)', max_length=5, required=True)
     cvv = forms.CharField(label='CVV', max_length=4, required=True)
+
+
+class PayFastForm(forms.Form):
+    # Define the form fields for PayFast
+    merchant_id = forms.CharField(initial='23353254')
+    merchant_key = forms.CharField(initial='r7cx2yvt9i7gf')
+    return_url = forms.URLField()
+    cancel_url = forms.URLField()
+    notify_url = forms.URLField()
+    email_address = forms.EmailField()
+    cell_number = forms.CharField()
+    m_payment_id = forms.CharField()
+    amount = forms.DecimalField()
+    item_name = forms.CharField()

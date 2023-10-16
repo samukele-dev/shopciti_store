@@ -66,9 +66,9 @@ CART_SESSION_ID = 'cart'
 PAYFAST_URL_BASE = 'http://127.0.0.1:8000'
 
 
-PAYFAST_MERCHANT_ID = 'YOUR_MERCHANT_ID'
-PAYFAST_MERCHANT_KEY = 'YOUR_MERCHANT_KEY'
-PAYFAST_RETURN_URL = 'YOUR_RETURN_URL'
+PAYFAST_MERCHANT_ID = '23353254'
+PAYFAST_MERCHANT_KEY = 'r7cx2yvt9i7gf'
+PAYFAST_RETURN_URL = '/payfast-return/'
 
 ROOT_URLCONF = 'shopciti.urls'
 
@@ -96,14 +96,12 @@ WSGI_APPLICATION = 'shopciti.wsgi.application'
 
 
 DATABASES = {
-        'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_shopciti_0rc7',
-        'USER': 'db_shopciti_0rc7_user',
-        'PASSWORD': 'qUshIywz95TVJQkrPuPC6jBiWZYKitoi',
-        'HOST': 'dpg-ckj68eomccbs73e00f30-a.oregon-postgres.render.com',
-    },
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
+
 
 
 # Password validation

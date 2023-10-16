@@ -1,7 +1,62 @@
 {% extends 'base.html' %} {% block content %}
 <h1>Checkout</h1>
-<form method="post">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Place Order</button>
+
+<h2>Cart Items:</h2>
+<ul>
+    {% for item in cart_items %}
+    <li>{{ item.name }} - Price: ${{ item.price }} x {{ item.quantity }}</li>
+    {% endfor %}
+</ul>
+
+<h3>Total Amount: ${{ total_amount }}</h3>
+
+<h2>Payment Options:</h2>
+<form id="payment-form">
+    <ul>
+        <li>
+            <label for="credit_card">Credit Card</label>
+            <input type="radio" id="credit_card" name="payment_option" value="credit_card">
+        </li>
+        <li>
+            <label for="paypal">PayPal</label>
+            <input type="radio" id="paypal" name="payment_option" value="paypal">
+        </li>
+        <li>
+            <label for="payfast">PayFast</label>
+            <input type="radio" id="payfast" name="payment_option" value="payfast">
+        </li>
+    </ul>
+    <button type="button" class="btn btn-primary" id="process-payment">Process Payment</button>
 </form>
+</div>
+
+<script>
+    const merchantId = '23353254';
+    const merchantKey = 'r7cx2yvt9i7gf';
+    const totalAmount = '{{ total_amount |escapejs }}';
+    const itemName = '{{ item_name|escapejs }}';
+
+    document.getElementById('process-payment').addEventListener('click', function() {
+        const selectedPaymentOption = document.querySelector('input[name="payment_option"]:checked');
+
+        if (selectedPaymentOption) {
+            const paymentOption = selectedPaymentOption.value;
+
+            // Handle payment processing based on the selected payment option
+            if (paymentOption === 'credit_card') {
+                // credit card payment logic
+            } else if (paymentOption === 'paypal') {
+                // PayPal payment logic
+            } else if (paymentOption === 'payfast') {
+                // Redirect the user to PayFast's payment page
+                window.location.href = `https://www.payfast.co.za/eng/process?merchant_id=${merchantId}&merchant_key=${merchantKey}&amount=${totalAmount}&item_name=${itemName}`;
+            }
+        } else {
+            alert('Please select a payment option.');
+        }
+    });
+</script>
+
+
+
 {% endblock %}
