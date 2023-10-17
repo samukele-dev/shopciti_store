@@ -1,168 +1,327 @@
-{% extends "base.html" %} {% block title %}Welcome to ShopCiti{% endblock %} {% block header %}Welcome to ShopCiti{% endblock %} {% block content %}
+{% extends "base2.html" %} {% block title %} {{ shop.name }} Details {% endblock %} {% block header %} {{ shop.name }} Details {% endblock %} {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f8f8;
+        margin: 0;
+        padding: 0;
+    }
+    
+    h1 {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+    }
+    
+    h2 {
+        margin-top: 20px;
+        font-size: 24px;
+        color: #333;
+    }
+    
+    p {
+        color: #555;
+    }
+    
+    .container {
+        margin-top: 20px;
+    }
+    
+    .store-logo {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    .filter-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #fff;
+        padding: 15px;
+        border: 1px solid #e4e4e4;
+        border-radius: 8px;
+    }
+    
+    .filter-container input[type="text"],
+    .filter-container select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    
+    .filter-container button {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    .filter-container button:hover {
+        background-color: #0056b3;
+    }
+    /* Widget Styles */
+    
+    .widget {
+        background-color: #fff;
+        border: 1px solid #e4e4e4;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .widget h2 {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 15px;
+    }
+    
+    .widget h3 {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .widget ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .widget ul li {
+        font-size: 16px;
+        margin-bottom: 5px;
+        color: #666;
+    }
+    
+    .widget p {
+        font-size: 16px;
+        color: #666;
+        margin-top: 5px;
+    }
+    
+    .widget select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    
+    .widget button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    .widget button:hover {
+        background-color: #0056b3;
+    }
+    /* Shop item style */
+    
+    .shop-item {
+        max-width: 160px;
+        max-height: 80px;
+        border: 1px solid #e4e4e4;
+        border-radius: 8px;
+        transition: transform 0.2s ease-in-out;
+        margin-bottom: 20px;
+    }
+    
+    .shop-item h5 {
+        font-size: 20px;
+        margin-top: 0;
+        color: #333;
+    }
+    
+    .shop-item p {
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .shop-link {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    /* Custom styles for product cards */
+    
+    .products-list .shop-item {
+        max-width: 160px;
+        max-height: 80px;
+        margin: 0 auto;
+    }
+    
+    .products-list .shop-item .card {
+        max-width: 100%;
+    }
+    
+    .products-list .shop-item .card-img-top {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+</style>
+
+<h1>{{ shop.name }} Details</h1>
+
+<div class="container shop-details">
+    <h2 class="text-center mt-4">Shop Information</h2>
+    <div class="row">
+        <div class="col-md-3">
+            <img src="{{ shop.logo.url }}" alt="{{ shop.name }} Logo" class="store-logo img-fluid rounded-circle">
+        </div>
+        <div class="col-md-9">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <h4>{{ shop.name }}</h4>
+                </li>
+                <li class="list-group-item">
+                    <strong>Description:</strong> {{ shop.description }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Contact Email:</strong> {{ shop.contact_email }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Phone Number:</strong> {{ shop.phone_number }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Address:</strong> {{ shop.address }}
+                </li>
+                <li class="list-group-item">
+                    <strong>City:</strong> {{ shop.city }}
+                </li>
+                <li class="list-group-item">
+                    <strong>State:</strong> {{ shop.state }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Postal Code:</strong> {{ shop.postal_code }}
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 
-<!DOCTYPE html>
-<html lang="en">
+<h2>Products</h2>
+<div class="container">
+    <div class="row">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <div class="col-md-3">
+            <div class="widget">
+                <h2>Filter and Sort</h2>
+                <form method="get" action="{% url 'shop_list' %}">
+                    <div class="d-flex">
+                        <input type="text" name="search_query" placeholder="Search shops" class="form-control mr-2">
+                        <div class="btn"><button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        </div>
+                    </div>
 
-    <title>{{ shop.name }} Details</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f8f8;
-            margin: 0;
-            padding: 0;
-        }
-        
-        h1 {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-        }
-        
-        h2 {
-            margin-top: 20px;
-            font-size: 24px;
-            color: #333;
-        }
-        
-        p {
-            color: #555;
-        }
-        
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        li {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 10px auto;
-        }
-        /* Make the cards smaller */
-        
-        .card {
-            max-width: 250px;
-            margin: 0 auto;
-        }
-        /* Custom styles for shop items */
-        
-        .shop-item {
-            background-color: #f8f9fa;
-            border: 1px solid #e4e4e4;
-            border-radius: 8px;
-            padding: 20px;
-            transition: transform 0.2s ease-in-out;
-            margin-bottom: 20px;
-        }
-        
-        .shop-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .shop-item h4 {
-            font-size: 20px;
-            margin-top: 0;
-            color: #333;
-        }
-        
-        .shop-item p {
-            font-size: 14px;
-            color: #666;
-        }
-        
-        .shop-link {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        
-        .shop-link:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
+                    <div class="filter-widget pt-3">
+                        <select name="category">
+                        <option value="">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="food">Food</option>
+                    </select>
+                    </div>
+                    <div class="filter-widget pt-3">
+                        <select name="sort_by">
+                        <option value="">Sort by</option>
+                        <option value="name">Name</option>
+                        <option value="popularity">Popularity</option>
+                        <option value="ratings">Ratings</option>
+                    </select>
+                    </div>
 
-<body>
-    <h1>{{ shop.name }} Details</h1>
+                </form>
 
-    <div class="container">
-        <div class="shop-details">
-            <h2>Shop Information</h2>
+                <!-- <div class="filter-widget">
+                    <h3>BRANDS</h3>
+                    <ul>
+                        <li><label><input type="checkbox" name="brand" value="ACNE"> ACNE (50)</label></li>
+                        <li><label><input type="checkbox" name="brand" value="GRÜNE ERDE"> GRÜNE ERDE (56)</label></li>
+                        <li><label><input type="checkbox" name="brand" value="ALBIRO"> ALBIRO (27)</label></li>
+                        <li><label><input type="checkbox" name="brand" value="RONHILL"> RONHILL (32)</label></li>
+                        <li><label><input type="checkbox" name="brand" value="ODDMOLLY"> ODDMOLLY (5)</label></li>
+                        <li><label><input type="checkbox" name="brand" value="BOUDESTIJN"> BOUDESTIJN (9)</label></li>
+                        <li><label><input type="checkbox" name="brand" value="RÖSCH CREATIVE CULTURE"> RÖSCH CREATIVE CULTURE (4)</label></li>
+                    </ul>
+                </div> -->
+
+                <div class="filter-widget pt-3">
+                    <h3>PRICE RANGE</h3>
+                    <input type="text" id="price-range" readonly style="border:0; color:#333; font-weight:bold;">
+                    <input type="range" id="price-range-slider" min="0" max="100" value="0" step="1">
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="col-md-9">
             <div class="row">
-                <div class="col-md-3">
-                    <img src="{{ shop.logo.url }}" alt="{{ shop.name }} Logo" class="store-logo">
-                </div>
-                <div class="col-md-9">
-                    <p><strong>Description:</strong> {{ shop.description }}</p>
-                    <p><strong>Contact Email:</strong> {{ shop.contact_email }}</p>
-                    <p><strong>Phone Number:</strong> {{ shop.phone_number }}</p>
-                    <p><strong>Address:</strong> {{ shop.address }}</p>
-                    <p><strong>City:</strong> {{ shop.city }}</p>
-                    <p><strong>State:</strong> {{ shop.state }}</p>
-                    <p><strong>Postal Code:</strong> {{ shop.postal_code }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <h2>Products</h2>
-
-    <div class="row products-list">
-        {% for product in store.product_set.all %}
-        <div class="col-md-4 mb-4">
-            <div class="shop-item">
-                <div class="card">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" width="200">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text"><strong>Description:</strong> {{ product.description }}</p>
-                        <p class="card-text"><strong>Price:</strong> ${{ product.price }}</p>
+                <div class="row products-list">
+                    {% for product in store.product_set.all %}
+                    <div class="col-md-4 mb-4">
+                        <a href="{% url 'product_detail' product_id=product.id %}" class="shop-item-link">
+                            <div class="shop-item">
+                                <div class="card">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" width="200">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ product.name }}</h5>
+                                        <p class="card-text"><strong></strong> ${{ product.price }}</p>
+                                        <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
+                    {% endfor %}
 
-        <!-- Display the products added in the session -->
-        {% for product in products %}
-        <div class="col-md-4 mb-4">
-            <div class="shop-item">
-                <div class="card">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" width="200">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text"><strong>Description:</strong> {{ product.description }}</p>
-                        <p class="card-text"><strong>Price:</strong> ${{ product.price }}</p>
-                        <a href="{% url 'product_detail' product_id=product.id %}">View Product</a>
-
+                    <!-- Display the products added in the session -->
+                    {% for product in products %}
+                    <div class="col-md-4 mb-4">
+                        <a href="{% url 'product_detail' product_id=product.id %}" class="shop-item-link">
+                            <div class="shop-item">
+                                <div class="card">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" width="200">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ product.name }}</h5>
+                                        <p class="card-text"><strong></strong> ${{ product.price }}</p>
+                                        <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
                     </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
+</div>
 
-    </div>
+
 </body>
 
 </html>
-
 {% endblock %}
