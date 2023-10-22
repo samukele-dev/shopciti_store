@@ -27,6 +27,7 @@ urlpatterns = [
     path('payfast-notify/', views.payfast_notify, name='payfast_notify'),
     path('order_confirmation/', views.order_confirmation, name='order_confirmation'),
     path('store-profile/', views.store_profile, name='store_profile'),
+    path('store-profile-free/', views.store_profile_free, name='store_profile_free'),
     path('manage-products/<int:store_id>/', views.manage_products, name='manage_products'),
     path('store/<int:store_id>/add-product/', views.add_product_to_store, name='add_product_to_store'),
     path('product/<int:product_id>/edit/', views.edit_product, name='edit_product'),

@@ -813,7 +813,7 @@
                     <a href="#" id="lg-bag">
                         <i class="fal fa-shopping-bag"></i>
                     </a>
-                    <span class="quantity">0</span>
+                    <span class="quantity">{{ quantity }}</span>
                 </li>
                 <li>
                     <a href="#" id="close" class="far fa-times"><i></i>
@@ -823,7 +823,7 @@
         </div>
         <div id="mobile">
             <a href="#"><i class="fal fa-shopping-bag"></i>
-        <span class="quantity">0</span>
+            <span class="quantity">0</span>
             </a>
             <i id="bar" class="fas fa-outdent"></i>
         </div>
@@ -838,19 +838,21 @@
                 <a href="#" id="close-cart"><i class="fas fa-times"></i></a>
             </div>
             <div class="cart-items">
-                <!-- Cart items will be added here dynamically using Django template tags -->
-                <!-- Example cart item -->
+                <!-- Loop through cart items and display them here -->
+                {% for item in cart_items %}
                 <div class="cart-item">
-                    <p>Product Name x2</p>
-                    <p>Price: $10.00</p>
+                    <p>{{ item.name }} x{{ item.quantity }}</p>
+                    <p>Price: R{{ item.price|floatformat:2 }}</p>
                     <a href="#">Remove</a>
                 </div>
+                {% endfor %}
             </div>
             <div class="cart-footer">
-                <p>Total: $20.00</p>
-                <a href="#" class="btn btn-primary">Checkout</a>
+                <p>Total: R{{ total_price }}</p>
+                <a href="{% url 'checkout' %}" class="btn btn-primary">Checkout</a>
             </div>
         </div>
+
     </body>
 
     <footer class="section-p1 p-0">

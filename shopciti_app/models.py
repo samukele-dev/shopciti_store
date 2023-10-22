@@ -4,6 +4,12 @@ from django.contrib.auth import get_user_model
 
 
 class Store(models.Model):
+    SUBSCRIPTION_CHOICES = [
+        ("free", "Free"),
+        ("basic", "Basic"),
+        ("premium", "Premium"),
+    ]
+
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     contact_email = models.EmailField(blank=True, null=True)
@@ -12,12 +18,10 @@ class Store(models.Model):
     city = models.CharField(max_length=100, blank=True, null=True)
     state = models.CharField(max_length=100, blank=True, null=True)
     postal_code = models.CharField(max_length=10, blank=True, null=True)
-    
-    # Add profile-related fields here
     logo = models.ImageField(upload_to='store_logos/', default='static/img/1.png')
     about = models.TextField(blank=True, null=True)
-
-    # Add more fields as needed to store store-related information.
+    
+    subscription_level = models.CharField(max_length=10, choices=SUBSCRIPTION_CHOICES, default="free")
 
     def __str__(self):
         return self.name

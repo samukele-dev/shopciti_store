@@ -1,4 +1,5 @@
-{% extends "base2.html" %} {% block title %} {{ shop.name }} Details {% endblock %} {% block header %} {{ shop.name }} Details {% endblock %} {% block content %}
+{% extends "base2.html" %} {% block title %} {{ shop.name }} Details {% endblock %} {% block header %} {{ shop.name }} Details {% endblock %} {% block content %} {% load static %}
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
 <style>
@@ -173,6 +174,12 @@
         height: auto;
         display: block;
     }
+    
+    .products-list .shop-item .card-img-top {
+        max-width: 100% !important;
+        height: 140px !important;
+        display: block;
+    }
 </style>
 
 <h1>{{ shop.name }} Details</h1>
@@ -203,22 +210,17 @@
                 <li class="list-group-item">
                     <strong>City:</strong> {{ shop.city }}
                 </li>
-                <li class="list-group-item">
-                    <strong>State:</strong> {{ shop.state }}
-                </li>
-                <li class="list-group-item">
-                    <strong>Postal Code:</strong> {{ shop.postal_code }}
-                </li>
             </ul>
         </div>
     </div>
 </div>
 
+<div>
+    <hr></hr>
+</div>
 
-<h2>Products</h2>
 <div class="container">
     <div class="row">
-
         <div class="col-md-3">
             <div class="widget">
                 <h2>Filter and Sort</h2>
@@ -230,7 +232,6 @@
                         </button>
                         </div>
                     </div>
-
                     <div class="filter-widget pt-3">
                         <select name="category">
                         <option value="">All Categories</option>
@@ -247,78 +248,74 @@
                         <option value="ratings">Ratings</option>
                     </select>
                     </div>
-
+                    <div class="filter-widget pt-3">
+                        <h3>PRICE RANGE</h3>
+                        <input type="text" id="price-range" readonly style="border:0; color:#333; font-weight:bold;">
+                        <input type="range" id="price-range-slider" min="0" max="100" value="0" step="1">
+                    </div>
                 </form>
-
-                <!-- <div class="filter-widget">
-                    <h3>BRANDS</h3>
-                    <ul>
-                        <li><label><input type="checkbox" name="brand" value="ACNE"> ACNE (50)</label></li>
-                        <li><label><input type="checkbox" name="brand" value="GRÜNE ERDE"> GRÜNE ERDE (56)</label></li>
-                        <li><label><input type="checkbox" name="brand" value="ALBIRO"> ALBIRO (27)</label></li>
-                        <li><label><input type="checkbox" name="brand" value="RONHILL"> RONHILL (32)</label></li>
-                        <li><label><input type="checkbox" name="brand" value="ODDMOLLY"> ODDMOLLY (5)</label></li>
-                        <li><label><input type="checkbox" name="brand" value="BOUDESTIJN"> BOUDESTIJN (9)</label></li>
-                        <li><label><input type="checkbox" name="brand" value="RÖSCH CREATIVE CULTURE"> RÖSCH CREATIVE CULTURE (4)</label></li>
-                    </ul>
-                </div> -->
-
-                <div class="filter-widget pt-3">
-                    <h3>PRICE RANGE</h3>
-                    <input type="text" id="price-range" readonly style="border:0; color:#333; font-weight:bold;">
-                    <input type="range" id="price-range-slider" min="0" max="100" value="0" step="1">
-                </div>
-
-
             </div>
         </div>
 
         <div class="col-md-9">
-            <div class="row">
-                <div class="row products-list">
+            <section id="product1" class="section-p1 pt-0">
+                <div class="row">
+                    <h2>Products</h2>
                     {% for product in store.product_set.all %}
-                    <div class="col-md-4 mb-4">
-                        <a href="{% url 'product_detail' product_id=product.id %}" class="shop-item-link">
-                            <div class="shop-item">
-                                <div class="card">
-                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" width="200">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ product.name }}</h5>
-                                        <p class="card-text"><strong></strong> ${{ product.price }}</p>
-                                        <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
+                    <a href="{% url 'product_detail' product_id=product.id %}">
+                        <div class="pro-container pt-0">
+                            <div class="pro pt-0">
+                                <img src="{{ product.image.url }}" alt="">
+                                <div class="des">
+                                    <span>adidas</span>
+                                    <h5>{{ product.name }}</h5>
+                                    <div class="star">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
                                     </div>
+                                    <h4>R{{ product.price }}</h4>
+                                </div>
+                                <button type="submit" class="btn btn-primary p-0">
+                                    <i class="fal fa-shopping-cart cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                    <div class="col-md-4 mb-4">
+                        <p></p>
+                        {% for product in products %}
+                        <a href="{% url 'product_detail' product_id=product.id %}">
+                            <div class="pro-container pt-0">
+                                <div class="pro pt-0">
+                                    <img src="{{ product.image.url }}" alt="">
+                                    <div class="des">
+                                        <span>adidas</span>
+                                        <h5>{{ product.name }}</h5>
+                                        <div class="star">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <h4>R{{ product.price }}</h4>
+                                    </div>
+                                    <a href=""><i class="fal fa-shopping-cart cart"></i></a>
                                 </div>
                             </div>
                         </a>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-
-                    <!-- Display the products added in the session -->
-                    {% for product in products %}
-                    <div class="col-md-4 mb-4">
-                        <a href="{% url 'product_detail' product_id=product.id %}" class="shop-item-link">
-                            <div class="shop-item">
-                                <div class="card">
-                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" width="200">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ product.name }}</h5>
-                                        <p class="card-text"><strong></strong> ${{ product.price }}</p>
-                                        <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    {% endfor %}
                 </div>
-            </div>
+            </section>
         </div>
     </div>
 </div>
+
 
 
 </body>

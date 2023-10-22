@@ -1,40 +1,52 @@
 {% extends 'base.html' %} {% block content %}
-<h1>Checkout</h1>
+<div class="container">
+    <h1 class="text-center m-6" style="padding-top: 100px;">Checkout</h1>
+    <div class="card" style="margin-top: 35px;">
 
-<h2>Cart Items:</h2>
-<ul>
-    {% for item in cart_items %}
-    <li>{{ item.name }} - Price: ${{ item.price }} x {{ item.quantity }}</li>
-    {% endfor %}
-</ul>
+        <div class="row">
+            <div class="col-md-6 p-5">
+                <h2>Items to purchase</h2>
+                <ul class="list-group">
+                    {% for item in cart_items %}
+                    <li class="list-group-item">{{ item.name }} - Price: R{{ item.price }} x {{ item.quantity }}</li>
+                    {% endfor %}
+                </ul>
 
-<h3>Total Amount: ${{ total_amount }}</h3>
+                <h3>Total : R{{ total_amount }}</h3>
+            </div>
 
-<h2>Payment Options:</h2>
-<form id="payment-form">
-    <ul>
-        <li>
-            <label for="credit_card">Credit Card</label>
-            <input type="radio" id="credit_card" name="payment_option" value="credit_card">
-        </li>
-        <li>
-            <label for="paypal">PayPal</label>
-            <input type="radio" id="paypal" name="payment_option" value="paypal">
-        </li>
-        <li>
-            <label for="payfast">PayFast</label>
-            <input type="radio" id="payfast" name="payment_option" value="payfast">
-        </li>
-    </ul>
-    <button type="button" class="btn btn-primary" id="process-payment">Process Payment</button>
-</form>
+            <div class="col-md-6 p-5">
+                <h2>Select Payment Option:</h2>
+                <form id="payment-form">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <label class="form-check-label">
+                            <input type="radio" id="credit_card" name="payment_option" value="credit_card" class="form-check-input"> Credit Card
+                        </label>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="form-check-label">
+                            <input type="radio" id="paypal" name="payment_option" value="paypal" class="form-check-input"> PayPal
+                        </label>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="form-check-label">
+                            <input type="radio" id="payfast" name="payment_option" value="payfast" class="form-check-input"> PayFast
+                        </label>
+                        </li>
+                    </ul>
+                    <button type="button" class="btn btn-primary btn-block mt-3" id="process-payment">Process Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     const merchantId = '23353254';
     const merchantKey = 'r7cx2yvt9i7gf';
-    const totalAmount = '{{ total_amount |escapejs }}';
-    const itemName = '{{ item_name|escapejs }}';
+    const totalAmount = '{{ total_amount | escapejs }}';
+    const itemName = '{{ item_name | escapejs }}';
 
     document.getElementById('process-payment').addEventListener('click', function() {
         const selectedPaymentOption = document.querySelector('input[name="payment_option"]:checked');
@@ -44,9 +56,9 @@
 
             // Handle payment processing based on the selected payment option
             if (paymentOption === 'credit_card') {
-                // credit card payment logic
+                // Implement credit card payment logic
             } else if (paymentOption === 'paypal') {
-                // PayPal payment logic
+                // Implement PayPal payment logic
             } else if (paymentOption === 'payfast') {
                 // Redirect the user to PayFast's payment page
                 window.location.href = `https://www.payfast.co.za/eng/process?merchant_id=${merchantId}&merchant_key=${merchantKey}&amount=${totalAmount}&item_name=${itemName}`;
@@ -56,7 +68,4 @@
         }
     });
 </script>
-
-
-
 {% endblock %}

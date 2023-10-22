@@ -21,15 +21,24 @@ class StoreProfileForm(forms.ModelForm):
     class Meta:
         model = StoreProfile  # Use the StoreProfile model
         fields = ['description', 'logo']
+
+        
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'password1', 'password2')
 
 class UserProfileForm(forms.ModelForm):
+    subscription_level = forms.ChoiceField(
+        label='Subscription Level',
+        choices=Store.SUBSCRIPTION_CHOICES,  # Provide the choices from your Store model
+        required=True
+    )
+
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'profile_image', 'about']
+        fields = ['username', 'email', 'profile_image', 'about', 'subscription_level']
+        
 
 class CartAddProductForm(forms.Form):
     quantity = forms.IntegerField(

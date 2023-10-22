@@ -15,6 +15,8 @@ from django.db.models import Q
 from .cart import Cart
 from payfast.forms import PayFastForm
 from django.http import HttpResponse
+from django.http import JsonResponse
+
 
 
 
@@ -42,28 +44,6 @@ def home1(request):
 
 @login_required
 def user_profile(request):
-    user = request.user  # This is your custom user model
-    try:
-        store = user.store  # Access the store associated with the custom user
-    except ObjectDoesNotExist:
-        # Handle the case where the custom user or store does not exist
-        return redirect('registration_failure')
-
-    try:
-        store_profile = StoreProfile.objects.get(store=store)
-    except ObjectDoesNotExist:
-        # Handle the case where the store profile does not exist
-        store_profile = None
-
-    # Check if the user has uploaded a profile image
-    profile_image_url = None
-    if user.profile_image and user.profile_image.url:
-        profile_image_url = user.profile_image.url
-
-    return render(request, 'shopciti_app/user_profile.html', {'user': user, 'store': store, 'store_profile': store_profile, 'profile_image_url': profile_image_url})
-
-@login_required
-def edit_profile(request):
     user = request.user
 
     if request.method == 'POST':
@@ -72,26 +52,84 @@ def edit_profile(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Your profile has been updated successfully.')
-            return redirect('user_profile')
+
     else:
         form = UserProfileForm(instance=user)
 
-    return render(request, 'shopciti_app/edit_profile.html', {'form': form})
+    try:
+        store = user.store
+    except ObjectDoesNotExist:
+        store = None
+
+    try:
+        store_profile = StoreProfile.objects.get(store=store)
+    except ObjectDoesNotExist:
+        store_profile = None
+
+    profile_image_url = None
+    if user.profile_image and user.profile_image.url:
+        profile_image_url = user.profile_image.url
+
+    return render(request, 'shopciti_app/store_profile.html', {
+        'user': user,
+        'store': store,
+        'store_profile': store_profile,
+        'profile_image_url': profile_image_url,
+        'form': form,
+    })
+
+
+
+
+@login_required
+def edit_profile(request):
+    user = request.user
+
+    if hasattr(user, 'store'):
+        store = user.store
+        subscription_level = store.subscription_level
+    else:
+        # Handle the case where the user does not have an associated store
+        subscription_level = "free"  # Provide a default value
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated successfully.')
+        return redirect('user_profile')
+
+    else:
+        form = UserProfileForm(instance=user)
+
+    return render(request, 'shopciti_app/edit_profile.html', {'form': form, 'subscription_level': subscription_level})
+
 
 @login_required
 def register_store(request):
+    user = request.user
+    subscription_level = "free"
+    
+    if hasattr(user, 'profile'):
+        subscription_level = user.profile.subscription_level
+
     if request.method == 'POST':
-        form = StoreForm(request.POST, request.FILES)  # Include request.FILES to handle file uploads
+        form = StoreForm(request.POST, request.FILES)
         if form.is_valid():
             new_store = form.save()
-            user = request.user
             user.store = new_store
             user.save()
-            return redirect('store_profile')
+
+            if subscription_level == "free":
+                return render('shopciti_app/store_profile_free.html')
+            else:
+                return render('shopciti_app/store_profile.html')
+
     else:
         form = StoreForm()
 
-    return render(request, 'shopciti_app/register_store.html', {'form': form})
+    return render(request, 'shopciti_app/register_store.html', {'form': form, 'subscription_level': subscription_level})
 
 
 def registration_success(request):
@@ -144,9 +182,9 @@ def product_detail(request, product_id):
 
 @login_required
 def store_profile(request):
-    user = request.user  # This is your custom user model
+    user = request.user
     try:
-        store = user.store  # Access the store associated with the custom user
+        store = user.store
     except ObjectDoesNotExist:
         # Handle the case where the custom user or store does not exist
         return redirect('registration_failure')
@@ -157,7 +195,60 @@ def store_profile(request):
         # Handle the case where the store profile does not exist
         store_profile = None
 
-    return render(request, 'shopciti_app/store_profile.html', {'store': store, 'store_profile': store_profile})
+    subscription_level = store.subscription_level
+
+    if request.method == 'POST':
+        # Handle form submission and save changes here
+        # For example, you can update the user's profile
+        user.username = request.POST.get('username')
+        user.email = request.POST.get('email')
+        user.save()
+
+        # Update the subscription level if it's available in the request
+        new_subscription_level = request.POST.get('subscription')
+        if new_subscription_level and new_subscription_level in [choice[0] for choice in Store.SUBSCRIPTION_CHOICES]:
+            store.subscription_level = new_subscription_level
+            store.save()
+
+        # After processing the form, redirect to the store_profile page
+        return redirect('store_profile')
+
+    
+    context = {
+        'store': store,
+        'store_profile': store_profile,
+        'subscription_level': subscription_level,
+    }
+
+    return render(request, 'shopciti_app/store_profile.html', context)
+
+
+
+@login_required
+def store_profile_free(request):
+    user = request.user
+    try:
+        store = user.store
+    except ObjectDoesNotExist:
+        # Handle the case where the custom user or store does not exist
+        return redirect('registration_failure')
+
+    try:
+        store_profile = StoreProfile.objects.get(store=store)
+    except ObjectDoesNotExist:
+        # Handle the case where the store profile does not exist
+        store_profile = None
+
+    subscription_level = store.subscription_level
+    
+    context = {
+        'store': store,
+        'store_profile': store_profile,
+        'subscription_level': subscription_level,
+    }
+
+    return render(request, 'shopciti_app/store_profile.html', context)
+
 
 
 def product_list(request):
@@ -165,7 +256,7 @@ def product_list(request):
     return render(request, 'shopciti_app/product_list.html', {'products': products})
 
 
-# Add a product to the cart
+
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     cart = request.session.get('cart', {})
@@ -183,13 +274,24 @@ def add_to_cart(request, product_id):
 
     cart[str(product_id)] = cart_item
     request.session['cart'] = cart
-    return redirect('cart')
+
+    # Calculate the total cart quantity
+    total_quantity = sum(item['quantity'] for item in cart.values())
+
+    # Return JSON response with updated cart quantity
+    return JsonResponse({'quantity': total_quantity})
+
+
 
 def cart(request):
     cart = request.session.get('cart', {})
     cart_items = cart.values()
     total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
-    return render(request, 'shopciti_app/cart.html', {'cart_items': cart_items, 'total_price': total_price})
+    
+    # Retrieve the cart quantity
+    cart_quantity = sum(item['quantity'] for item in cart.values())
+
+    return render(request, 'shopciti_app/cart.html', {'cart_items': cart_items, 'total_price': total_price, 'cart_quantity': cart_quantity})
 
 
 # Remove a product from the cart
@@ -226,8 +328,6 @@ def update_cart(request, product_id):
 
     return redirect('cart')
 
-
-# Checkout view
 
 # Order confirmation view (after successful checkout)
 def order_confirmation(request):
@@ -299,7 +399,7 @@ def checkout(request):
     context = {
         'cart_items': cart.values(),
         'total_amount': total_amount,
-        'item_name': item_name,  # Include the item_name in the context
+        'item_name': item_name,
     }
 
     return render(request, 'shopciti_app/checkout.html', context)
