@@ -6,7 +6,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', include('shopciti_app.urls')),  # Include your app's URL patterns
     path('admin/', admin.site.urls),
-    path('payfast/', include('payfast.urls')),
 
 ]
 

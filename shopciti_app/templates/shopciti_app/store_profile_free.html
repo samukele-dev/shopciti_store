@@ -723,11 +723,27 @@
 
 
             <li>
+                {% if store.id %}
                 <a href="{% url 'shop_detail' store.id %}">
                     <i class='bx bx-box'></i>
                     <span class="links_name">Visit My Store</span>
                 </a>
+                {% else %}
+                <!-- Handle the case where store.id is empty (optional) -->
+                <div class="no-store-prompt mt-3">
+                    <p>You don't have a store.</p>
+                    <a href="{% url 'register_store' %}" class="btn btn-success">Register a Store</a>
+                </div>
+                {% endif %}
             </li>
+            <li>
+                {% if user.is_authenticated %}
+                <div class="mt-3 text-center">
+                    <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+                </div>
+                {% endif %}
+            </li>
+
             <!-- Add similar onclick attributes for other navigation items -->
         </ul>
     </div>
@@ -970,7 +986,9 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <a href="{% url 'edit_profile' %}" class="profile-edit-btn">Edit Profile</a>
+                        {% if request.user.store %}
+                        <a href="{% url 'edit_profile' %}" class="profile-edit-btn">Edit Profile</a> {% else %}
+                        <a href="{% url 'register_store' %}" class="profile-edit -btn">Edit Profile</a> {% endif %}
                     </div>
 
                 </div>
@@ -1098,8 +1116,13 @@
 
                             <!-- Button to Add a New Product -->
                             <div class="button_container">
-                                <a href="{% url 'add_product_to_store' store.id %}" class="btn btn-primary mb-3">Add Product</a>
+                                {% if store.id %}
+                                <a href="{% url 'add_product_to_store' store.id %}" class="btn btn-primary mb-3">Add Product</a> {% else %}
+                                <!-- Handle the case where store.id is empty (optional) -->
+                                <p>Add Product: Shop ID is empty</p>
+                                {% endif %}
                             </div>
+
                             <table class="table">
                                 <thead>
                                     <tr>

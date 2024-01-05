@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'shopciti_app',
-    'payfast',
 
 ]
 
@@ -60,6 +59,7 @@ MIDDLEWARE = [
 
 LOGIN_URL = 'login'  # Specify the name of the login URL pattern
 LOGIN_REDIRECT_URL = 'store_profile'  # Redirect to store profile after successful login
+LOGOUT_REDIRECT_URL = 'login'
 
 CART_SESSION_ID = 'cart'
 

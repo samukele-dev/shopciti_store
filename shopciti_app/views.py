@@ -13,7 +13,6 @@ from .forms import UserProfileForm, StoreForm, CartAddProductForm, ProductForm, 
 from django.core.paginator import Paginator
 from django.db.models import Q
 from .cart import Cart
-from payfast.forms import PayFastForm
 from django.http import HttpResponse
 from django.http import JsonResponse
 
@@ -26,7 +25,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('user_profile')  # Redirect to the user's profile page
+            return redirect('register_store')  # Redirect to the user's profile page
     else:
         form = CustomUserCreationForm()
     return render(request, 'shopciti_app/register.html', {'form': form})
@@ -84,26 +83,35 @@ def user_profile(request):
 @login_required
 def edit_profile(request):
     user = request.user
+    store_name = None  # Default value for store_name
 
+    # Check if the user has an associated store
     if hasattr(user, 'store'):
         store = user.store
         subscription_level = store.subscription_level
-    else:
-        # Handle the case where the user does not have an associated store
-        subscription_level = "free"  # Provide a default value
+        store_name = store.name  # Assign store name if available
 
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=user)
 
         if form.is_valid():
             form.save()
+
+            # Update store name if present in the form data
+            if 'store_name' in request.POST:
+                store_name = request.POST['store_name']
+                if hasattr(user, 'store'):
+                    user.store.name = store_name
+                    user.store.save()
+
             messages.success(request, 'Your profile has been updated successfully.')
-        return redirect('user_profile')
+            return redirect('user_profile')
 
     else:
         form = UserProfileForm(instance=user)
 
-    return render(request, 'shopciti_app/edit_profile.html', {'form': form, 'subscription_level': subscription_level})
+    return render(request, 'shopciti_app/edit_profile.html', {'form': form, 'subscription_level': subscription_level, 'store_name': store_name})
+
 
 
 @login_required
@@ -122,9 +130,9 @@ def register_store(request):
             user.save()
 
             if subscription_level == "free":
-                return render('shopciti_app/store_profile_free.html')
+                return render(request, 'shopciti_app/store_profile_free.html')
             else:
-                return render('shopciti_app/store_profile.html')
+                return render(request, 'shopciti_app/store_profile.html')
 
     else:
         form = StoreForm()
@@ -169,7 +177,6 @@ def shop_list(request):
     return render(request, 'shopciti_app/shop_list.html', context)
 
 
-@login_required
 def shop_detail(request, shop_id):
     shop = get_object_or_404(Store, pk=shop_id)
     products = Product.objects.filter(store=shop)
@@ -250,11 +257,9 @@ def store_profile_free(request):
     return render(request, 'shopciti_app/store_profile.html', context)
 
 
-
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'shopciti_app/product_list.html', {'products': products})
-
 
 
 def add_to_cart(request, product_id):
@@ -278,20 +283,13 @@ def add_to_cart(request, product_id):
     # Calculate the total cart quantity
     total_quantity = sum(item['quantity'] for item in cart.values())
 
-    # Return JSON response with updated cart quantity
-    return JsonResponse({'quantity': total_quantity})
+    # Return JSON response with updated cart data
+    response_data = {
+        'quantity': total_quantity,
+        'cart_items': list(cart.values()),  # Convert dict_values to a list
+    }
 
-
-
-def cart(request):
-    cart = request.session.get('cart', {})
-    cart_items = cart.values()
-    total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
-    
-    # Retrieve the cart quantity
-    cart_quantity = sum(item['quantity'] for item in cart.values())
-
-    return render(request, 'shopciti_app/cart.html', {'cart_items': cart_items, 'total_price': total_price, 'cart_quantity': cart_quantity})
+    return JsonResponse(response_data)
 
 
 # Remove a product from the cart
@@ -301,32 +299,7 @@ def remove_from_cart(request, product_id):
     cart.remove(product)
     return redirect('cart')
 
-# Update the quantity of a product in the cart
-def update_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    
-    if request.method == 'POST':
-        quantity = request.POST.get('quantity')  # Get the quantity from the form
 
-        # Ensure quantity is a valid integer
-        try:
-            quantity = int(quantity)
-        except ValueError:
-            quantity = 1  # Default to 1 if quantity is not a valid integer
-
-        # Retrieve the cart from the session or create an empty one
-        cart = request.session.get('cart', {})
-
-        # Update the quantity for the product in the cart
-        if product_id in cart and quantity > 0:
-            cart[product_id]['quantity'] = quantity
-        elif product_id in cart and quantity <= 0:
-            del cart[product_id]
-
-        # Save the updated cart back to the session
-        request.session['cart'] = cart
-
-    return redirect('cart')
 
 
 # Order confirmation view (after successful checkout)
