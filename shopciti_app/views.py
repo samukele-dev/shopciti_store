@@ -261,6 +261,9 @@ def product_list(request):
     products = Product.objects.all()
     return render(request, 'shopciti_app/product_list.html', {'products': products})
 
+def calculate_total_price(cart):
+    total_price = sum(item['price'] * item['quantity'] for item in cart.values())
+    return total_price
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -283,10 +286,14 @@ def add_to_cart(request, product_id):
     # Calculate the total cart quantity
     total_quantity = sum(item['quantity'] for item in cart.values())
 
+    # Calculate the total cart price
+    total_price = calculate_total_price(cart)
+
     # Return JSON response with updated cart data
     response_data = {
         'quantity': total_quantity,
-        'cart_items': list(cart.values()),  # Convert dict_values to a list
+        'cart_items': list(cart.values()),
+        'total_price': total_price,
     }
 
     return JsonResponse(response_data)
