@@ -44,32 +44,16 @@ $(document).ready(function() {
 // cart.js
 
 // Function to get the CSRF token from the cookie
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            // Check if the cookie name matches the desired name
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
 $(document).ready(function() {
-    // Add to Cart button click event
-    $('.add-to-cart').on('click', function(event) {
+    // Add to Cart form submission event
+    $('#add-to-cart-form').on('submit', function(event) {
         event.preventDefault();
 
         // Get the product ID from the button's data attribute or other means
-        var product_id = $(this).data('product-id');
+        var product_id = $('.add-to-cart').data('product-id');
 
-        // Get the CSRF token
-        var csrftoken = getCookie('csrftoken');
+        // Get the CSRF token directly from the form
+        var csrftoken = $('[name="csrfmiddlewaretoken"]').val();
 
         // Make an AJAX request to the add_to_cart view
         $.ajax({
@@ -91,6 +75,40 @@ $(document).ready(function() {
                 console.error('Error:', error);
             }
         });
+    });
+});
+
+
+$(document).ready(function() {
+    // Add to Cart button click event
+    $('.add-to-cart').on('click', function(event) {
+        event.preventDefault();
+
+        // Get the product ID from the button's data attribute or other means
+        var product_id = $(this).data('product-id');
+
+        // Get the CSRF token
+        var csrftoken = getCookie('csrftoken');
+
+        // Make an AJAX request to the add_to_cart view
+        // Make an AJAX request to the add_to_cart view
+        $.ajax({
+            type: 'POST',
+            url: '/add_to_cart/' + product_id + '/',
+            data: {},
+            dataType: 'json',
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            success: function(response) {
+                // Update the cart sidebar with the received data
+                updateCartSidebar(response);
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+
     });
 
     // Function to update the cart sidebar

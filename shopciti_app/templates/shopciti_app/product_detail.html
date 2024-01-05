@@ -266,7 +266,7 @@
                         <!-- Product Image -->
                         <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image" style="max-width: 100%; height: auto;">
                         <div class="action">
-                            <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                            <form id="add-to-cart-form" method="post" action="{% url 'add_to_cart' product.id %}">
                                 {% csrf_token %}
                                 <div class="d-flex p-2" style="justify-content: center;">
                                     <button type="submit" class="btn btn-primary p-1 add-to-cart" data-product-id="{{ product.id }}">
@@ -279,6 +279,7 @@
                                     </button>
                                 </div>
                             </form>
+
                         </div>
 
 
