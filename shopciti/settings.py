@@ -59,7 +59,7 @@ MIDDLEWARE = [
 
 LOGIN_URL = 'login'  # Specify the name of the login URL pattern
 LOGIN_REDIRECT_URL = 'store_profile'  # Redirect to store profile after successful login
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = '/'
 
 CART_SESSION_ID = 'cart'
 

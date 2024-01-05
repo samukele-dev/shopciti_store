@@ -2,6 +2,7 @@ from .models import Product
 from django.urls import reverse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Store  # Import the Store model if you have it
@@ -13,10 +14,41 @@ from .forms import UserProfileForm, StoreForm, CartAddProductForm, ProductForm, 
 from django.core.paginator import Paginator
 from django.db.models import Q
 from .cart import Cart
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
+from django.urls import reverse
 
 
+class SupplierLoginView(LoginView):
+    template_name = 'shopciti_app/login.html'
+
+class UserLoginView(LoginView):
+    template_name = 'shopciti_app/login_user.html'
+
+    def get_success_url(self):
+        # Get the 'next' parameter from the request
+        next_url = self.request.GET.get('next')
+        
+        # Check if the 'next' parameter is a valid URL
+        if next_url and self.request.build_absolute_uri(next_url) == next_url:
+            return next_url
+        else:
+            # Redirect to a default URL if 'next' is not a valid URL
+            return '/'
+
+    def form_valid(self, form):
+        # Call the parent class's form_valid method, which performs the login
+        response = super().form_valid(form)
+
+        # Redirect to the URL obtained from get_success_url
+        return HttpResponseRedirect(self.get_success_url())
+
+# You can also create similar custom views for logout if needed
+class SupplierLogoutView(LogoutView):
+    pass
+
+class UserLogoutView(LogoutView):
+    pass
 
 
 def register(request):
@@ -29,6 +61,17 @@ def register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'shopciti_app/register.html', {'form': form})
+
+def register_user(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('account_user_info')  # Redirect to the user's profile page
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'shopciti_app/register_user.html', {'form': form})
 
 
 def product_list(request):
@@ -77,7 +120,11 @@ def user_profile(request):
         'form': form,
     })
 
+def account_user_info(request):
+    return render(request, 'shopciti_app/account_user_info.html')
 
+def user_orders(request):
+    return render(request, 'shopciti_app/user_orders.html')
 
 
 @login_required
