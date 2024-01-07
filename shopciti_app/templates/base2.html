@@ -152,7 +152,7 @@
     
     #navbar li a:hover,
     #navbar li a.active {
-        color: #088178;
+        color: #09B4E7;
     }
     
     #navbar li a:hover::after,
@@ -161,7 +161,7 @@
         width: 30%;
         height: 2px;
         background: 2px;
-        background-color: #088178;
+        background-color: #09B4E7;
         position: absolute;
         bottom: -4px;
         left: 20px;
@@ -169,7 +169,7 @@
     
     #hero {
         position: relative;
-        background-image: url("/static/img/bg.png");
+        background-image: url("/static/img/bg1.png");
         height: 90vh;
         width: 100%;
         background-size: cover;
@@ -182,17 +182,6 @@
         line-height: 1;
     }
     
-    #hero::before {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        right: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 1;
-    }
-    
     #hero h4,
     #hero h2,
     #hero h1,
@@ -200,10 +189,18 @@
     #hero button {
         color: #fff;
         z-index: 2;
+        margin-left: 58px;
+        padding-left: 35px;
+    }
+    
+    #hero h4,
+    #hero h2 {
+        font-weight: 700 !important;
+        font-size: 45px !important;
     }
     
     #hero h1 {
-        color: #088178;
+        color: #09B4E7;
     }
     
     #hero h4 {
@@ -213,7 +210,7 @@
     #hero button {
         background-image: url(https://i.postimg.cc/528H2mmS/button.png);
         background-color: transparent;
-        color: #088178;
+        color: #09B4E7;
         border: 0;
         padding: 14px 80px 14px 65px;
     }
@@ -223,7 +220,7 @@
         text-align: center;
         padding: 25px 15px;
         box-shadow: 20px 20px 34px rgba(0, 0, 0, 0.03);
-        border: 1px solid #cce7d0;
+        border: 1px solid #09B4E7;
         border-radius: 4px;
         margin: 15px 0;
     }
@@ -237,7 +234,7 @@
         padding: 9px 8px 6px 8px;
         line-height: 1;
         border-radius: 4px;
-        color: #088178;
+        color: #09B4E7;
         background-color: #fddde4;
     }
     
@@ -288,7 +285,7 @@
         width: 23%;
         min-width: 250px;
         padding: 10px 12px;
-        border: 1px solid #cce7d0;
+        border: 1px solid #09B4E7;
         border-radius: 25px;
         cursor: pointer;
         box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.02);
@@ -331,7 +328,7 @@
         font-size: 15px;
         padding-top: 7px;
         font-weight: 700;
-        color: #088178;
+        color: #09B4E7;
     }
     
     #product1 .pro .cart {
@@ -339,10 +336,10 @@
         height: 40px;
         line-height: 40px;
         border-radius: 50px;
-        background-color: #e8f6ea;
+        background-color: #a8d3e0;
         font-weight: 500;
-        color: #088178;
-        border: 1px solid #cce7d0;
+        color: #09B4E7;
+        border: 1px solid #09B4E7;
         position: absolute;
         bottom: 20px;
         right: 10px;
@@ -390,7 +387,7 @@
     }
     
     #banner button:hover {
-        background-color: #088178;
+        background-color: #09B4E7;
         color: #fff;
     }
     
@@ -451,9 +448,9 @@
     }
     
     #sm-banner .banner-box:hover button {
-        background-color: #088178;
+        background-color: #09B4E7;
         color: #fff;
-        border: 1px solid #088178;
+        border: 1px solid #09B4E7;
     }
     
     #banner3 {
@@ -552,11 +549,11 @@
     
     footer .follow i:hover,
     footer a:hover {
-        color: #088178;
+        color: #09B4E7;
     }
     
     footer .install .row img {
-        border: 1px solid #088178;
+        border: 1px solid #09B4E7;
         border-radius: 6px;
     }
     
@@ -756,7 +753,7 @@
     }
     
     .cart-header {
-        background-color: #088178;
+        background-color: #09B4E7;
         color: #fff;
         padding: 15px;
         display: flex;
@@ -804,14 +801,14 @@
     .cart-footer a.btn-primary {
         text-decoration: none;
         padding: 10px 20px;
-        background-color: #088178;
+        background-color: #09B4E7;
         color: #fff;
         border-radius: 5px;
         transition: background-color 0.3s ease;
     }
     
     .cart-footer a.btn-primary:hover {
-        background-color: #06555a;
+        background-color: #09B4E7;
     }
     /* Open and close animation for the sidebar */
     
@@ -829,12 +826,11 @@
         background-color: #fff;
         box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
         transition: right 0.3s ease;
-        /* Transition for smooth opening and closing */
-        /* Add more styles to fit your design */
+        z-index: 999 !important;
     }
     
     .account-header {
-        background-color: #088178;
+        background-color: #09B4E7;
         color: #fff;
         padding: 15px;
         display: flex;
@@ -857,7 +853,7 @@
     }
     
     .dropdown-toggle {
-        background-color: #088178;
+        background-color: #09B4E7;
         color: #fff;
         padding: 10px 20px;
         border-radius: 5px;
@@ -866,7 +862,7 @@
     }
     
     .dropdown-toggle:hover {
-        background-color: #06555a;
+        background-color: #09B4E7;
     }
     
     .dropdown-menu {
@@ -880,7 +876,7 @@
     }
     
     .dropdown-item:hover {
-        color: #088178;
+        color: #09B4E7;
     }
     /* Open and close animation for the sidebar */
     
@@ -892,7 +888,7 @@
 <body>
     <section id="header">
         <div class="logo">
-            <a href="#"><img src="{% static 'img/logo.png' %}"></a>
+            <a href="#"><img src="{% static 'img/bg.png' %}"></a>
         </div>
         <div>
             <ul id="navbar">
