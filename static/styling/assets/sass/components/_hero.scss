@@ -1,17 +1,12 @@
 .hero {
     height: 73.3rem;
-
     @media #{$sm} {
         height: 50rem;
     }
-
-    .swiper-pagination-bullets{
+    .swiper-pagination-bullets {
         bottom: 3rem;
     }
-
 }
-
-
 
 .swiper {
     width: 100%;
@@ -21,32 +16,19 @@
 .swiper-slide {
     @include flexItem();
     padding: 10px;
-
 }
-
 
 // slider----------------------
 .hero-slider-one {
-    background: url("../assets/images/homepage-one/hero-slider-one.webp") no-repeat center / cover;
-
-}
-
-.hero-slider-two {
-    background: url("../assets/images/homepage-one/hero-slider-two.webp") no-repeat center / cover;
-}
-
-.hero-slider-three {
-    background: url("../assets/images/homepage-one/hero-slider-three.webp") no-repeat center / cover;
+    background: url("/static/styling/assets/images/homepage-one/bg1.png") no-repeat center/cover;
 }
 
 .hero-slider-one,
 .hero-slider-two,
-.hero-slider-three{
-    
+.hero-slider-three {
     @media #{$sm} {
-        background-position: left; 
+        background-position: left;
     }
-    
 }
 
 // slider-pagination----------
@@ -54,24 +36,21 @@
     width: 3rem;
     height: 7px;
     border-radius: 30px;
-    
 }
 
 .swiper-pagination-bullet-active {
-    background-color: $theme-color ;
+    background-color: $theme-color;
 }
 
 .wrapper-section {
     .wrapper-subtitle {
         font-size: 2.4rem;
         margin-bottom: 1.4rem;
-
         .wrapper-inner-title {
             font-size: 4rem;
             color: $theme-color;
         }
     }
-
     .shop-btn {
         @include shopBtn($padding: 1.4rem 4.6rem, $text: 1.6rem)
     }
