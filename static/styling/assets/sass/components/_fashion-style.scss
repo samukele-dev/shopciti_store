@@ -1,20 +1,17 @@
 .style-section {
     .product-wrapper {
         @include wrapper($hg: 46rem, $pd: 3.2rem);
-        background-color: transparent ;
+        background-color: transparent;
         border: none;
         box-shadow: none;
-
         .wrapper-info {
             .wrapper-inner-title {
                 display: block;
             }
         }
-       
-        .shop-btn{
+        .shop-btn {
             padding: 1rem 2rem;
         }
-        
         @media #{$sm} {
             height: 35rem;
             padding: 2rem;
@@ -24,9 +21,9 @@
                 }
             }
         }
-
     }
 }
+
 .wrapper-subtitle {
     display: block;
     font-size: 1.4rem;
@@ -34,11 +31,9 @@
 }
 
 .wrapper-one {
-    background: url("../assets/images/homepage-one/syle-bg-one.webp") no-repeat center / cover;
-
+    background: url("/static/styling/assets/images/homepage-one/syle-bg-one.webp") no-repeat center / cover;
     .shop-btn {
         @include shopBtn($btn-bg: $secondary-theme, $bf-color: $heading);
-
         svg {
             fill: $heading;
         }
@@ -46,10 +41,8 @@
 }
 
 .wrapper-two {
-    background: url("../assets/images/homepage-one/style-bg-two.webp") no-repeat center / cover;
-
+    background: url("/static/styling/assets/images/homepage-one/style-bg-two.webp") no-repeat center / cover;
     .shop-btn {
         @include shopBtn();
-
     }
 }

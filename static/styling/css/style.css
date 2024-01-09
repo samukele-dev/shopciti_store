@@ -1251,7 +1251,7 @@ button {
 }
 
 .hero-slider-one {
-    background: url("/static/styling/assets/images/homepage-one/bg1.png") no-repeat center/cover;
+    background: url("/static/styling/assets/images/homepage-one/bg2.png") no-repeat center/cover;
 }
 
 @media (max-width:767px) {
@@ -1383,7 +1383,7 @@ button {
 }
 
 .wrapper-one {
-    background: url("../assets/images/homepage-one/syle-bg-one.webp") no-repeat center/cover;
+    background: url("/static/styling/assets/images/homepage-one/syle-bg-one.webp") no-repeat center/cover;
 }
 
 .wrapper-one .shop-btn {
@@ -1453,7 +1453,7 @@ button {
 }
 
 .wrapper-two {
-    background: url("../assets/images/homepage-one/style-bg-two.webp") no-repeat center/cover;
+    background: url("/static/styling/assets/images/homepage-one/style-bg-two.webp") no-repeat center/cover;
 }
 
 .wrapper-two .shop-btn {
