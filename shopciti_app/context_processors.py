@@ -1,5 +1,4 @@
 from django.urls import reverse
-from .models import Product
 
 
 def remove_from_cart_url(product_id):

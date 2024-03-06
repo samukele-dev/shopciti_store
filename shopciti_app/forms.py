@@ -1,44 +1,49 @@
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser
+from .models import CustomUser, Product
 from django import forms
-from .models import StoreProfile, Store, Product
 
 
-class StoreForm(forms.ModelForm):
-    logo = forms.ImageField(label='Store Logo', required=False)  # Add this line
 
+class SellerApplicationForm(forms.Form):
+    email = forms.EmailField()
+    phone = forms.CharField(max_length=15)
+    shop_name = forms.CharField(max_length=100)  # Add the shop_name field
+    address = forms.CharField(widget=forms.Textarea)
+    agreed_to_terms = forms.BooleanField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password and confirm_password and password != confirm_password:
+            raise forms.ValidationError("Passwords do not match.")
+
+
+# /////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+class CustomUserCreationForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
+    email = forms.EmailField(max_length=254, required=True)
+    phone = forms.CharField(max_length=15, required=True)
+    country = forms.CharField(max_length=100, required=True)
+    address = forms.CharField(max_length=255, required=True)
+    city = forms.CharField(max_length=100, required=True)
+    postcode = forms.CharField(max_length=10, required=True)
+    
     class Meta:
-        model = Store
-        fields = ['name', 'state', 'address', 'city', 'postal_code', 'phone_number', 'contact_email','logo']
+        model = CustomUser
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'country', 'address', 'city', 'postcode', 'password1', 'password2')
 
 
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'image']
-
-class StoreProfileForm(forms.ModelForm):
-    class Meta:
-        model = StoreProfile  # Use the StoreProfile model
-        fields = ['description', 'logo']
-
-        
-class CustomUserCreationForm(UserCreationForm):
-    class Meta:
-        model = CustomUser
-        fields = ('username', 'email', 'password1', 'password2')
-
-class UserProfileForm(forms.ModelForm):
-    subscription_level = forms.ChoiceField(
-        label='Subscription Level',
-        choices=Store.SUBSCRIPTION_CHOICES,  # Provide the choices from your Store model
-        required=True
-    )
-
-    class Meta:
-        model = CustomUser
-        fields = ['username', 'email', 'profile_image', 'about', 'subscription_level']
-        
+        fields = ['name', 'description', 'image', 'price']
 
 class CartAddProductForm(forms.Form):
     quantity = forms.IntegerField(

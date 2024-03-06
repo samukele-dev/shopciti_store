@@ -7,6 +7,10 @@ from . import views
 urlpatterns = [
 #//////////////////////////////////////////////////////////////////
     path('', views.index, name='index'),
+    path('shops/', views.shops, name='shops'),
+    path('shop-info/<int:user_id>/', views.shop_info, name='shop_info'),
+    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('about/', views.about, name='about'),
     path('become-vendor/', views.become_vendor, name='become_vendor'),
     path('blogs-details/', views.blogs_details, name='blogs_details'),
@@ -26,7 +30,7 @@ urlpatterns = [
     path('seller-sidebar/', views.seller_sidebar, name='seller_sidebar'),
     path('sellers/', views.sellers, name='sellers'),
     path('terms/', views.terms, name='terms'),
-    path('user-profile/', views.user_profile, name='user_profile'),
+    path('dashboard/', views.dashboard, name='dashboard'),
     path('wishlist/', views.wishlist, name='wishlist'),
-
+    path('add-product/', views.add_product, name='add_product'),
 ]
