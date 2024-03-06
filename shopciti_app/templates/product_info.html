@@ -11,68 +11,37 @@
                 <span class="devider">/</span>
                 <span><a href="#">Product Details</a></span>
             </div>
+
             <div class="product-info-section">
-                <div class="row ">
+                <div class="row">
                     <div class="col-md-6">
                         <div class="product-info-img" data-aos="fade-right">
                             <div class="swiper product-top">
-                                <div class="product-discount-content">
-                                    <h4>-50%</h4>
-                                </div>
+                                <!-- Product images -->
                                 <div class="swiper-wrapper">
+                                    {% for image in product.images.all %}
                                     <div class="swiper-slide slider-top-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-img-14.webp" alt="img">
+                                        <img src="{{ image.url }}" alt="Product Image">
                                     </div>
-                                    <div class="swiper-slide slider-top-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-slider-img-1.webp" alt="img">
-                                    </div>
-                                    <div class="swiper-slide slider-top-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-slider-img-2.webp" alt="img">
-                                    </div>
-                                    <div class="swiper-slide slider-top-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-slider-img-3.webp" alt="img">
-                                    </div>
-                                    <div class="swiper-slide slider-top-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-slider-img-1.webp" alt="img">
-                                    </div>
-                                    <div class="swiper-slide slider-top-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-slider-img-2.webp" alt="img">
-                                    </div>
-                                    <div class="swiper-slide slider-top-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-slider-img-3.webp" alt="img">
-                                    </div>
-                                    <div class="swiper-slide slider-top-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-slider-img-1.webp" alt="img">
-                                    </div>
-                                    <div class="swiper-slide slider-top-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-slider-img-2.webp" alt="img">
-                                    </div>
-                                    <div class="swiper-slide slider-top-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-slider-img-3.webp" alt="img">
-                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
+                            <!-- Additional product images -->
                             <div class="swiper product-bottom">
                                 <div class="swiper-wrapper">
+                                    {% for image in product.additional_images.all %}
                                     <div class="swiper-slide slider-bottom-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-img-16.png" alt="img">
+                                        <img src="{{ image.url }}" alt="Additional Image">
                                     </div>
-                                    <div class="swiper-slide slider-bottom-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-img-17.png" alt="img">
-                                    </div>
-                                    <div class="swiper-slide slider-bottom-img">
-                                        <img src="./assets/images/homepage-one/product-img/product-slider-img-2.webp" alt="img">
-                                    </div>
-
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="product-info-content" data-aos="fade-left">
-                            <span class="wrapper-subtitle">BOY'S FASHION</span>
-                            <h5>Rainbow Sequin Profresonal Coat
-                            </h5>
+                            <span class="wrapper-subtitle">{{ product.category }}</span>
+                            <h5>{{ product.name }}</h5>
                             <div class="ratings">
                                 <span>
                                     <svg width="75" height="15" viewBox="0 0 75 15" fill="none"
@@ -97,10 +66,9 @@
                                 <span class="text">6 Reviews</span>
                             </div>
                             <div class="price">
-                                <span class="price-cut">$9.99</span>
-                                <span class="new-price">$6.99</span>
+                                <span class="price-cut">${{ product.price }}</span>
                             </div>
-                            <p class="content-paragraph">It is a long established fact that a reader will be distracted by <span class="inner-text">the readable there content of a page.</span></p>
+                            <p class="content-paragraph">{{ product.description }}</p>
                             <hr>
                             <div class="product-availability">
                                 <span>Availabillity : </span>
@@ -280,8 +248,7 @@
                     <div class="nav nav-tabs nav-item" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Description</button>
                         <button class="nav-link" id="nav-review-tab" data-bs-toggle="tab" data-bs-target="#nav-review" type="button" role="tab" aria-controls="nav-review" aria-selected="false">Reviews</button>
-                        <button class="nav-link" id="nav-seller-tab" data-bs-toggle="tab" data-bs-target="#nav-seller" type="button" role="tab" aria-controls="nav-seller" aria-selected="false">Seller
-                            Info</button>
+                        <button class="nav-link" id="nav-seller-tab" data-bs-toggle="tab" data-bs-target="#nav-seller" type="button" role="tab" aria-controls="nav-seller" aria-selected="false">Seller Info</button>
 
                     </div>
                 </nav>

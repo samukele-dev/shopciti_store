@@ -8,16 +8,38 @@ from django.http import HttpResponseServerError
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserCreationForm, SellerApplicationForm, ProductForm
 from .models import CustomUser, Product, VendorApplication
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 # View for the index page
 def index(request):
-    return render(request, 'index.html')
+    products = Product.objects.all()
+    context = {'products': products}
+
+    return render(request, 'index.html', context)
 
 # View for displaying all shops
 def shops(request):
-    users = CustomUser.objects.all()
-    context = {'users': users}
+    # Fetching all users for sidebar
+    sidebar_users = CustomUser.objects.all()
+
+    # Pagination for main content
+    users_list = CustomUser.objects.all()
+    paginator = Paginator(users_list, 10)  # Show 10 users per page
+
+    page = request.GET.get('page')
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        users = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        users = paginator.page(paginator.num_pages)
+
+    context = {'users': users, 'sidebar_users': sidebar_users}
     return render(request, 'shops.html', context)
+
 
 # View for displaying shop information
 def shop_info(request, user_id):
@@ -111,8 +133,11 @@ def privacy(request):
     return render(request, 'privacy.html')
 
 # View for displaying product information
-def product_info(request):
-    return render(request, 'product_info.html')
+def product_info(request, product_id):
+    # Retrieve the product based on the product_id
+    product = get_object_or_404(Product, pk=product_id)
+    context = {'product': product}
+    return render(request, 'product_info.html', context)
 
 # View for displaying product sidebar
 def product_sidebar(request):

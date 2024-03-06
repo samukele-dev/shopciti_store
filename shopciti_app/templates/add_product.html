@@ -12,7 +12,10 @@
     <h1>Add Product</h1>
     <!-- Add fields for product information -->
     <form method="post" enctype="multipart/form-data">
-        {% csrf_token %} {{ form.as_p }}
+        {% csrf_token %} {{ product_form.as_p }}
+
+        <!-- Formset for additional images -->
+        {{ additional_image_formset.management_form }} {% for form in additional_image_formset %} {{ form.as_p }} {% endfor %}
 
         <button type="submit">Submit</button>
     </form>

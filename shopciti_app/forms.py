@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser, Product
+from .models import CustomUser, Product, AdditionalImage
 from django import forms
+from django.forms import inlineformset_factory
 
 
 
@@ -44,6 +45,14 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'description', 'image', 'price']
+
+
+class AdditionalImageForm(forms.ModelForm):
+    class Meta:
+        model = AdditionalImage
+        fields = ['image']
+
+AdditionalImageFormSet = inlineformset_factory(Product, AdditionalImage, form=AdditionalImageForm, extra=3, max_num=5, can_delete=True)
 
 class CartAddProductForm(forms.Form):
     quantity = forms.IntegerField(

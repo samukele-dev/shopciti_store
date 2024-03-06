@@ -25,6 +25,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+class AdditionalImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='additional_images')
+    image = models.ImageField(upload_to='additional_images/')
+    added_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=None, blank=True, null=True)
+
+    def __str__(self):
+        return f"Additional Image for {self.product.name} by {self.added_by.username}"
 
 
 User = get_user_model()
