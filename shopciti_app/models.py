@@ -47,3 +47,12 @@ class VendorApplication(models.Model):
 
     def __str__(self):
         return f"Vendor Application for {self.user.username}"
+
+class CartItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def get_total_price(self):
+        return self.product.price * self.quantity
+

@@ -7,8 +7,11 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponseServerError
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserCreationForm, SellerApplicationForm, ProductForm
-from .models import CustomUser, Product, VendorApplication
+from .models import CustomUser, Product, CartItem
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+import json
 
 
 # View for the index page
@@ -134,6 +137,7 @@ def privacy(request):
 
 # View for displaying product information
 def product_info(request, product_id):
+
     # Retrieve the product based on the product_id
     product = get_object_or_404(Product, pk=product_id)
     context = {'product': product}
@@ -141,7 +145,58 @@ def product_info(request, product_id):
 
 # View for displaying product sidebar
 def product_sidebar(request):
-    return render(request, 'product_sidebar.html')
+    sidebar_users = CustomUser.objects.all()
+
+    products = Product.objects.all()
+
+    # Pagination for main content
+    users_list = CustomUser.objects.all()
+    paginator = Paginator(users_list, 10)  # Show 10 users per page
+
+    page = request.GET.get('page')
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        users = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        users = paginator.page(paginator.num_pages)
+
+
+    # Pagination for main content
+    context = {'products': products, 'sidebar_users': sidebar_users, 'users': users}
+
+    return render(request, 'product_sidebar.html', context)
+
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    cart = request.session.get('cart', {})
+    cart_item = cart.get(str(product_id))
+
+    if cart_item:
+        cart_item['quantity'] += 1
+    else:
+        cart_item = {
+            'product_id': product_id,
+            'name': product.name,
+            'price': float(product.price),  # Convert Decimal to float
+            'quantity': 1,
+        }
+
+    cart[str(product_id)] = cart_item
+    request.session['cart'] = cart
+    return redirect('cart')
+
+
+
+def cart(request):
+    cart = request.session.get('cart', {})  # Default to empty dictionary if cart is not found
+    cart_items = cart.values()
+    total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
+    return render(request, 'shopciti_app/cart.html', {'cart_items': cart_items, 'total_price': total_price})
+
+
 
 # View for displaying seller sidebar
 def seller_sidebar(request):
