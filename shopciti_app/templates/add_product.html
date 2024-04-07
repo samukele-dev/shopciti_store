@@ -6,6 +6,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
     <!-- Add any necessary CSS or stylesheets here -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            height: 100px;
+        }
+        
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 
 <body>
@@ -13,6 +68,28 @@
     <!-- Add fields for product information -->
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %} {{ form.as_p }}
+
+        <label for="id_categories">Categories:</label>
+        <select name="categories" id="id_categories">
+            {% for category in categories|slice:":6" %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="id_size">Size:</label>
+        <select name="size" id="id_size">
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+        </select>
+
+        <label for="id_color">Color:</label>
+        <select name="color" id="id_color">
+            <option value="red">Red</option>
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+        </select>
+
 
         <button type="submit">Submit</button>
     </form>

@@ -28,7 +28,6 @@ urlpatterns = [
     path('privacy/', views.privacy, name='privacy'),
     path('product-info/<int:product_id>/', views.product_info, name='product_info'),
     path('product-sidebar/', views.product_sidebar, name='product_sidebar'),
-    path('add-to-cart/', views.add_to_cart, name='add_to_cart'),
     path('seller-sidebar/', views.seller_sidebar, name='seller_sidebar'),
     path('sellers/', views.sellers, name='sellers'),
     path('terms/', views.terms, name='terms'),

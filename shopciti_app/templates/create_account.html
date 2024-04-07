@@ -19,7 +19,7 @@
             <div class="login-section account-section">
                 <div class="review-form">
                     <h5 class="comment-title">Create Account</h5>
-                    <form method="post" action="{% url 'create_account' %}">
+                    <form method="post" action="{% url 'create_account' %}" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="account-inner-form">
                             <div class="review-form-name">
@@ -54,6 +54,11 @@
                                 <label for="confirm_password" class="form-label">Confirm Password*</label>
                                 <input type="password" id="password2" name="password2" class="form-control" placeholder="Confirm your password" required>
                             </div>
+                        </div>
+                        <div class="review-form-name">
+                            <label for="logo" class="form-label">Shop Logo*</label>
+                            <input type="file" id="logo" name="logo" class="form-control" accept="image/*" required>
+                            <small class="form-text text-muted">Upload your shop logo (JPEG, PNG, or GIF format).</small>
                         </div>
                         <div class="review-form-name">
                             <label for="country" class="form-label">Country*</label>

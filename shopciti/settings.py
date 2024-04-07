@@ -58,7 +58,7 @@ MIDDLEWARE = [
 ]
 
 LOGIN_URL = 'login'  # Specify the name of the login URL pattern
-LOGIN_REDIRECT_URL = 'store_profile'  # Redirect to store profile after successful login
+LOGIN_REDIRECT_URL = 'dashboard'  # Redirect to store profile after successful login
 LOGOUT_REDIRECT_URL = '/'
 
 CART_SESSION_ID = 'cart'
@@ -83,7 +83,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'shopciti_app.context_processors.cart_context',
                 'shopciti_app.context_processors.cart',
             ],
         },
