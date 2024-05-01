@@ -17,6 +17,8 @@ class CustomUser(AbstractUser):
     address = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100, default='South Africa')
     postal_code = models.CharField(max_length=20, default='000000000')
+    phone = models.CharField(max_length=15, default='')  # Provide a default empty string
+
     class Meta:
         app_label = 'shopciti_app'
 
@@ -37,12 +39,16 @@ Category.objects.create(name='Hat, cap')
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
+    short_description = models.TextField(default='')  # Provide a default empty string
     description = models.TextField()
     image = models.ImageField(upload_to='product_images/')
     price = models.DecimalField(max_digits=10, decimal_places=2)
     added_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=None, blank=True, null=True)
     on_sale = models.BooleanField(default=False)
     categories = models.ManyToManyField(Category)
+
+    available = models.PositiveIntegerField(default=True)  # assuming it can't be negative
+
 
     def __str__(self):
         return self.name

@@ -998,6 +998,8 @@
                                     <div class="form-section">
                                         <form method="post" action="{% url 'dashboard' %}">
                                             {% csrf_token %}
+                                            <input type="hidden" name="action" value="password_update">
+                                            <!-- Add hidden input for indicating password update action -->
                                             <div class="currentpass form-item">
                                                 <label for="currentpass" class="form-label">Current Password*</label>
                                                 <input type="password" class="form-control" id="currentpass" name="old_password" placeholder="Enter your current password">
@@ -1015,8 +1017,8 @@
                                                 <button type="submit" class="shop-btn">Update Password</button>
                                                 <a href="#" class="shop-btn cancel-btn">Cancel</a>
                                             </div>
-
                                         </form>
+
 
                                     </div>
                                 </div>

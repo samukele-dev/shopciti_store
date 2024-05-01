@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .models import CustomUser, Product, AdditionalImage, BillingAddress
 from django import forms
 from django.forms import inlineformset_factory
@@ -37,37 +37,31 @@ class CustomUserCreationForm(UserCreationForm):
     postcode = forms.CharField(max_length=10, required=True)
     logo = forms.ImageField(required=True)
 
-    # Password change fields
-    old_password = forms.CharField(widget=forms.PasswordInput(), label="Current Password")
-    new_password1 = forms.CharField(widget=forms.PasswordInput(), label="New Password")
-    new_password2 = forms.CharField(widget=forms.PasswordInput(), label="Confirm New Password")
+    old_password = forms.CharField(widget=forms.HiddenInput(), required=False)  # Make the old password field hidden
+    new_password1 = forms.CharField(widget=forms.HiddenInput(), required=False)  # Make the new password field hidden
+    new_password2 = forms.CharField(widget=forms.HiddenInput(), required=False)  # Make the confirm new password field hidden
 
     class Meta:
         model = CustomUser
         fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'country', 'address', 'city', 'postcode', 'logo')
 
-    def clean(self):
-        cleaned_data = super().clean()
-        password1 = cleaned_data.get("new_password1")
-        password2 = cleaned_data.get("new_password2")
-
-        if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("New passwords do not match.")
-
-        return cleaned_data
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Remove password fields from the form as they are already included
-        self.fields.pop('password1')
-        self.fields.pop('password2')
-
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.set_password(self.cleaned_data["new_password1"])
+        user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
         return user
+
+class BuyerRegistrationForm(UserCreationForm):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'password1', 'password2', 'email', 'first_name', 'last_name', 'phone')
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].required = True  # Ensure old_password field is required
 
 
 

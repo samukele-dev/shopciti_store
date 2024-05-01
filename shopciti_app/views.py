@@ -2,9 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.views import LoginView, LogoutView
-from django.http import HttpResponseServerError
+from django.http import HttpResponseServerError, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CustomUserCreationForm, SellerApplicationForm, ProductForm
+from .forms import CustomUserCreationForm, SellerApplicationForm, ProductForm, BuyerRegistrationForm
 from .models import CustomUser, Product, CartItem, Product, RelatedProduct, ProductVariant, Category
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
@@ -101,24 +101,33 @@ def blogs(request):
 # View for displaying checkout
 @login_required
 def checkout(request):
-    cart = request.session.get('cart', {})  # Default to empty dictionary if cart is not found
-    cart_items = cart.values()
-    total_quantity = sum(item['quantity'] for item in cart_items)
-    total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
-    
     if request.method == 'POST':
+        # If the request is a POST request, process the billing address form
         billing_form = BillingAddressForm(request.POST)
         if billing_form.is_valid():
             billing_address = billing_form.save(commit=False)
             billing_address.user = request.user
             billing_address.save()
-            # Process the rest of the checkout logic
+            # Process the rest of the checkout logic if needed
             # Redirect to a success page or another step in the checkout process
             return redirect('checkout_success')
     else:
+        # If the request is not a POST request, render the checkout page with the form
         billing_form = BillingAddressForm()
 
-    return render(request, 'checkout.html', {'cart_items': cart_items, 'total_quantity': total_quantity, 'total_price': total_price, 'billing_form': billing_form})
+    cart = request.session.get('cart', {})
+    total_amount = sum(item['price'] * item['quantity'] for item in cart.values())
+    item_names = [f"{item['name']}" for item in cart.values()]
+
+    context = {
+        'cart_items': cart.values(),
+        'total_price': total_amount,
+        'item_name': item_names,
+        'billing_form': billing_form,  # Pass the billing form to the template
+    }
+
+    return render(request, 'checkout.html', context)
+
 
 
 
@@ -133,7 +142,10 @@ def contact_us(request):
 # View for user registration
 def create_account(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST, request.FILES)
+        if 'buyer_registration' in request.POST:
+            form = BuyerRegistrationForm(request.POST)
+        else:
+            form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
             # Clear session data related to previous user
             auth_logout(request)
@@ -150,7 +162,10 @@ def create_account(request):
             # Debugging: Print form errors to console
             print(form.errors)
     else:
-        form = CustomUserCreationForm()
+        if 'buyer_registration' in request.GET:
+            form = BuyerRegistrationForm()
+        else:    
+            form = CustomUserCreationForm()
 
     # Debugging: Print request.FILES to console
     print(request.FILES)
@@ -183,7 +198,8 @@ def privacy(request):
 # View for displaying product information
 def product_info(request, product_id):
     product = Product.objects.get(pk=product_id)
-    context = {'product': product}
+    available_products_count = product.available_quantity
+    context = {'product': product, 'available_products_count': available_products_count}
     return render(request, 'product_info.html', context)
 
 # View for displaying product sidebar
@@ -243,7 +259,13 @@ def cart(request):
     cart_items = cart.values()
     total_quantity = sum(item['quantity'] for item in cart_items)
     total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
-    return render(request, 'cart.html', {'cart_items': cart_items, 'total_quantity': total_quantity, 'total_price': total_price})
+
+    # Convert cart_items to a list of dictionaries for easier processing in JavaScript
+    cart_items_list = list(cart_items)
+
+    return render(request, 'cart.html', {'cart_items': cart_items_list, 'total_quantity': total_quantity, 'total_price': total_price})
+
+
 
 # View for displaying seller sidebar
 def seller_sidebar(request):
@@ -319,6 +341,11 @@ def add_product(request):
         if form.is_valid():
             product = form.save(commit=False)
             product.added_by = request.user
+            available_quantity = request.POST.get('available_quantity')  # Get the available quantity from the form
+            if available_quantity is not None and int(available_quantity) >= 1:
+                product.available = int(available_quantity)
+            else:
+                product.available = True  # Set availability to True if available quantity is provided and greater than 0
             product.save()
             form.save_m2m()  # Save many-to-many relationships (categories)
             return redirect('dashboard')  # Redirect to dashboard after adding a product
@@ -361,9 +388,28 @@ def product_info(request, product_id):
     product = Product.objects.get(pk=product_id)
     related_products = get_related_products(product_id)
     variants = get_product_variants(product_id)
+    available_products_count = product.available if product.available is not None else 0
+    categories = Category.objects.all()  # Retrieve all categories from the database    
     context = {
         'product': product,
+        'available_products_count': available_products_count,
         'related_products': related_products,
         'variants': variants,
+        'categories': categories
     }
     return render(request, 'product_info.html', context)
+
+def payfast_return(request):
+    # Handle order confirmation and processing here
+    # You can access PayFast parameters in the request.GET dictionary
+
+    # Example:
+    payfast_data = request.GET
+    # Extract and process PayFast response data
+
+    return render(request, 'shopciti_app/order_confirmation.html')
+
+def payfast_notify(request):
+    # Your view logic here
+    return HttpResponse("PayFast notification received.")
+
