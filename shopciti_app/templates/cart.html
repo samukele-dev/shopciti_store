@@ -2,6 +2,11 @@
 <h1>Your Cart</h1>
 
 {% if cart_items %}
+<form method="post" action="{% url 'clear_cart' %}">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.path }}">
+    <button type="submit" class="btn btn-danger">Clear Cart</button>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -16,17 +21,22 @@
         {% for item in cart_items %}
         <tr>
             <td>{{ item.name }}</td>
-            <td>${{ item.price }}</td>
+            <td>R{{ item.price }}</td>
             <td>{{ item.quantity }}</td>
-            <td>${{ item.price|floatformat:2 }} x {{ item.quantity }}</td>
+            <td>R{{ item.price|floatformat:2 }} x {{ item.quantity }}</td>
             <td>
-
+                <form method="post" action="{% url 'remove_from_cart' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button type="submit" class="btn btn-danger">Remove</button>
+                </form>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<p>Total: ${{ total_price }}</p>
-<a href="{% url 'checkout' %}" class="btn btn-primary">Checkout</a> {% else %}
+<p>Total: R{{ total_price }}</p>
+<a href="{% url 'checkout' %}?next={{ request.path }}" class="btn btn-primary">Checkout</a> {% else %}
 <p>Your cart is empty.</p>
 {% endif %} {% endblock %}

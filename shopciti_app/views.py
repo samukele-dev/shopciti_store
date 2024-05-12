@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponseServerError, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CustomUserCreationForm, SellerApplicationForm, ProductForm, BuyerRegistrationForm
-from .models import CustomUser, Product, CartItem, Product, RelatedProduct, ProductVariant, Category
+from .forms import SellerApplicationForm, ProductForm, BuyerRegistrationForm
+from .models import CustomUser, Product, Product, RelatedProduct, ProductVariant, Category, CartItem
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -13,7 +13,9 @@ from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.core.files.storage import default_storage
-from .forms import BillingAddressForm
+from .forms import BillingAddressForm, VendorRegistrationForm
+from django.utils.text import slugify
+
 
 
 
@@ -22,7 +24,7 @@ from .forms import BillingAddressForm
 # View for the index page
 def index(request):
     products = Product.objects.all()
-    users = CustomUser.objects.all()
+    users = CustomUser.objects.exclude(is_buyer=True)
 
     on_sale_products = Product.objects.filter(on_sale=True)
 
@@ -32,11 +34,42 @@ def index(request):
 
 # View for displaying all shops
 def shops(request):
-    # Fetching all users for sidebar
-    sidebar_users = CustomUser.objects.all()
+    User = get_user_model()
 
-    # Pagination for main content
-    users_list = CustomUser.objects.all()
+    if request.method == 'POST':
+        form = VendorRegistrationForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            # Clear session data related to previous user
+            auth_logout(request)
+            request.session.flush()
+
+            # Clear initial data to ensure a new, empty form for new registrations
+            form.initial = {}
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data["password1"])
+            user.save()
+
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
+            if user is not None:
+                login(request, user)
+
+                # Redirect to dashboard after successful registration
+                return redirect('dashboard')
+        else:
+            # Debugging: Print form errors to console
+            print(form.errors)
+    else:
+        form = VendorRegistrationForm()
+
+    # Debugging: Print request.FILES to console
+    print(request.FILES)
+
+    # Fetching all users for sidebar excluding those marked as buyers and users who are not sellers
+    sidebar_users = User.objects.exclude(is_buyer=True)
+
+    # Pagination for main content including users who haven't been marked as buyers and users who are not sellers
+    users_list = User.objects.exclude(is_buyer=True)
     paginator = Paginator(users_list, 10)  # Show 10 users per page
 
     page = request.GET.get('page')
@@ -49,8 +82,11 @@ def shops(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         users = paginator.page(paginator.num_pages)
 
-    context = {'users': users, 'sidebar_users': sidebar_users}
+    context = {'users': users, 'sidebar_users': sidebar_users, 'form': form}
     return render(request, 'shops.html', context)
+
+
+
 
 # View for displaying shop information
 def shop_info(request, user_id):
@@ -59,16 +95,7 @@ def shop_info(request, user_id):
     context = {'user': user, 'products': products}
     return render(request, 'shop_info.html', context)
 
-# View for user login
-def custom_login(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-    else:
-        # Clear session data related to previous user
-        auth_logout(request)
-        request.session.flush()
-        
-        return LoginView.as_view(template_name='login.html')(request)
+
 
 # View for user logout
 def custom_logout(request):
@@ -139,13 +166,78 @@ def compaire(request):
 def contact_us(request):
     return render(request, 'contact_us.html')
 
-# View for user registration
+
+
+
+def random_create_account(request):
+    if request.method == 'POST':
+        form = BuyerRegistrationForm(request.POST)
+
+        if form.is_valid():
+            # Clear session data related to previous user
+            auth_logout(request)
+            request.session.flush()
+
+            # Generate a unique username by appending first name and last name
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            username = slugify(first_name + last_name)
+            
+            # Check if the generated username already exists
+            suffix = 1
+            while CustomUser.objects.filter(username=username).exists():
+                username = slugify(first_name + last_name) + str(suffix)
+                suffix += 1
+
+            # Clear initial data to ensure a new, empty form for new registrations
+            form.initial = {}
+            random_user = form.save(commit=False)
+            random_user.username = username  # Assign the generated username
+            random_user.set_password(form.cleaned_data["password1"])
+            
+            # Mark the user as a buyer
+            random_user.is_buyer = True
+            
+            random_user.save()
+
+            random_user = authenticate(username=username, password=form.cleaned_data['password1'])
+            if random_user is not None:
+                login(request, random_user)
+
+                # Redirect to dashboard after successful registration
+                return redirect('dashboard')
+        else:
+            # Debugging: Print form errors to console
+            print(form.errors)
+    else:
+        form = BuyerRegistrationForm()
+
+    # Initialize an empty PasswordChangeForm to avoid validation errors during registration
+    password_change_form = None
+
+    return render(request, 'random_create_account.html', {'form': form, 'password_change_form': password_change_form})
+
+
+
+
+def generate_unique_username(first_name, last_name):
+    # Combine first name and last name and slugify to create a username
+    username = slugify(first_name + last_name)
+    
+    # Check if the username already exists, if so, append a number to make it unique
+    User = get_user_model()
+    num = 1
+    while User.objects.filter(username=username).exists():
+        username = f"{slugify(first_name + last_name)}_{num}"
+        num += 1
+
+    return username
+
+
 def create_account(request):
     if request.method == 'POST':
-        if 'buyer_registration' in request.POST:
-            form = BuyerRegistrationForm(request.POST)
-        else:
-            form = CustomUserCreationForm(request.POST, request.FILES)
+        form = VendorRegistrationForm(request.POST, request.FILES)
+
         if form.is_valid():
             # Clear session data related to previous user
             auth_logout(request)
@@ -153,35 +245,65 @@ def create_account(request):
 
             # Clear initial data to ensure a new, empty form for new registrations
             form.initial = {}
-            user = form.save()
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data["password1"])
+            user.save()
+
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             if user is not None:
                 login(request, user)
-                return redirect('dashboard')  # Redirect to dashboard after successful registration
+
+                # Redirect to dashboard after successful registration
+                return redirect('dashboard')
         else:
             # Debugging: Print form errors to console
             print(form.errors)
     else:
-        if 'buyer_registration' in request.GET:
-            form = BuyerRegistrationForm()
-        else:    
-            form = CustomUserCreationForm()
+        form = VendorRegistrationForm()
 
     # Debugging: Print request.FILES to console
     print(request.FILES)
 
-    return render(request, 'create_account.html', {'form': form})
+    # Initialize an empty PasswordChangeForm to avoid validation errors during registration
+    password_change_form = None
+
+    return render(request, 'create_account.html', {'form': form, 'password_change_form': password_change_form})
 
 
 
 
-# View for displaying empty cart page
-def empty_cart(request):
-    return render(request, 'empty_cart.html')
+@require_POST
+def clear_cart(request):
+    # Check if the user is authenticated
+    if request.user.is_authenticated:
+        # Clear the cart items associated with the current user
+        CartItem.objects.filter(user=request.user).delete()
+    else:
+        # Clear the cart items stored in the session for anonymous users
+        request.session.pop('cart', None)
+    
+    # Redirect back to the page the user was on
+    return redirect(request.POST.get('next', '/'))
 
-# View for displaying empty wishlist page
-def empty_wishlist(request):
-    return render(request, 'empty_wishlist.html')
+
+@require_POST
+def remove_from_cart(request):
+    product_id = request.POST.get('product_id')
+    if product_id:
+        # Check if the user is authenticated
+        if request.user.is_authenticated:
+            # Remove the specified product from the cart for the current user
+            CartItem.objects.filter(user=request.user, product_id=product_id).delete()
+        else:
+            # Remove the specified product from the cart stored in the session for anonymous users
+            cart = request.session.get('cart', {})
+            if product_id in cart:
+                del cart[product_id]
+                request.session['cart'] = cart
+    
+    # Redirect back to the page the user was on
+    return redirect(request.POST.get('next', '/'))
+
 
 # View for frequently asked questions page
 def faq(request):
@@ -228,6 +350,7 @@ def product_sidebar(request):
 
     return render(request, 'product_sidebar.html', context)
 
+
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     cart = request.session.get('cart', {})
@@ -253,7 +376,7 @@ def add_to_cart(request, product_id):
     return JsonResponse({'total_quantity': total_quantity, 'total_price': total_price})
 
 
-
+@login_required
 def cart(request):
     cart = request.session.get('cart', {})  # Default to empty dictionary if cart is not found
     cart_items = cart.values()
@@ -264,7 +387,6 @@ def cart(request):
     cart_items_list = list(cart_items)
 
     return render(request, 'cart.html', {'cart_items': cart_items_list, 'total_quantity': total_quantity, 'total_price': total_price})
-
 
 
 # View for displaying seller sidebar

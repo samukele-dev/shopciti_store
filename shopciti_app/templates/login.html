@@ -7,7 +7,7 @@
             <div class="login-section">
                 <div class="review-form">
                     <h5 class="comment-title">Log In</h5>
-                    <form method="post" action="{% url 'login' %}">
+                    <form method="post" action="{% url 'login' %}?next={{ next }}">
                         {% csrf_token %}
                         <div class="review-inner-form">
                             {{ form.non_field_errors }}

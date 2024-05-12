@@ -16,8 +16,11 @@ class CustomUser(AbstractUser):
     country = models.CharField(max_length=50, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100, default='South Africa')
-    postal_code = models.CharField(max_length=20, default='000000000')
+    postal_code = models.CharField(max_length=20, default='0000')
     phone = models.CharField(max_length=15, default='')  # Provide a default empty string
+    
+    is_buyer = models.BooleanField(default=False)
+
 
     class Meta:
         app_label = 'shopciti_app'

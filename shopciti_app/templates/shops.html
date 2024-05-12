@@ -80,8 +80,11 @@
                                         <div class="product-wrapper" data-aos="fade-up">
                                             <div class="product-img">
                                                 <a href="{% url 'shop_info' user.id %}" class="favourite cart-item">
+                                                {% if user.logo %}
                                                     <img src="{{ user.logo.url }}" alt="{{ user.username }}'s Logo">
-                                                    <div class="product-cart-items">
+                                                {% else %}
+                                                    <p>No logo available</p>
+                                                {% endif %}                                                    <div class="product-cart-items">
                                                         <span>
                                                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
                                                                 xmlns="http://www.w3.org/2000/svg">

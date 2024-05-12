@@ -26,36 +26,27 @@ class SellerApplicationForm(forms.Form):
 
 
 
-class CustomUserCreationForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=True)
-    last_name = forms.CharField(max_length=30, required=True)
-    email = forms.EmailField(max_length=254, required=True)
-    phone = forms.CharField(max_length=15, required=True)
-    country = forms.CharField(max_length=100, required=True)
-    address = forms.CharField(max_length=255, required=True)
-    city = forms.CharField(max_length=100, required=True)
-    postcode = forms.CharField(max_length=10, required=True)
-    logo = forms.ImageField(required=True)
-
-    old_password = forms.CharField(widget=forms.HiddenInput(), required=False)  # Make the old password field hidden
-    new_password1 = forms.CharField(widget=forms.HiddenInput(), required=False)  # Make the new password field hidden
-    new_password2 = forms.CharField(widget=forms.HiddenInput(), required=False)  # Make the confirm new password field hidden
+class VendorRegistrationForm(forms.ModelForm):
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'country', 'address', 'city', 'postcode', 'logo')
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'country', 'address', 'city', 'postal_code', 'logo', 'password1', 'password2')
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
-        if commit:
-            user.save()
-        return user
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords don't match")
+        return password2
 
 class BuyerRegistrationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'password1', 'password2', 'email', 'first_name', 'last_name', 'phone')
+        fields = ('first_name', 'last_name', 'phone' , 'email', 'password1', 'password2')
+
+
 
 
 class CustomPasswordChangeForm(PasswordChangeForm):
