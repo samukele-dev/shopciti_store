@@ -1,5 +1,4 @@
 {% load static %}
-
 <!doctype html>
 <html lang="en">
 
@@ -34,6 +33,53 @@
 
 
 </head>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert {{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<style>
+    .messages {
+        margin: 20px 0;
+    }
+    
+    .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    
+    .alert.success {
+        color: #3c763d;
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+    }
+    
+    .alert.error {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+    }
+    
+    .alert.info {
+        color: #31708f;
+        background-color: #d9edf7;
+        border-color: #bce8f1;
+    }
+    
+    .alert.warning {
+        color: #8a6d3b;
+        background-color: #fcf8e3;
+        border-color: #faebcc;
+    }
+</style>
 
 <body>
     <!--------------- header-section --------------->
@@ -734,12 +780,42 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Function to update total quantity in header cart and session storage
+            function updateTotalQuantity(totalQuantity) {
+                const quantityElement = document.getElementById('quantity');
+                if (quantityElement) {
+                    quantityElement.textContent = totalQuantity;
+                }
+                // Store total quantity in session storage
+                sessionStorage.setItem('totalQuantity', totalQuantity);
+            }
+
+            // Fetch the current total quantity from the server on page load
+            fetch('/cart-total-quantity/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(data => {
+                    console.log('Current total quantity:', data.total_quantity); // Log current total quantity
+                    updateTotalQuantity(data.total_quantity);
+                })
+                .catch(error => {
+                    console.error('Error fetching total quantity:', error);
+                });
+
             // Add event listener to Add To Cart buttons
             const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
             addToCartButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const productId = button.dataset.productId;
-                    console.log('Product ID:', productId); // Log productId
                     addToCart(productId);
                 });
             });
@@ -760,15 +836,81 @@
                         throw new Error('Network response was not ok.');
                     })
                     .then(data => {
-                        // Handle success response, e.g., show a success message
-                        console.log('Product added to cart successfully:', data);
-                        // Update total quantity in header cart
-                        document.getElementById('quantity').textContent = data.total_quantity;
+                        // Handle success response
+                        updateTotalQuantity(data.total_quantity);
                     })
                     .catch(error => {
-                        // Handle error, e.g., show an error message
+                        // Handle error
                         console.error('Error adding product to cart:', error);
                     });
+            }
+
+            // Add event listener to Remove From Cart buttons
+            const removeFromCartButtons = document.querySelectorAll('.remove-from-cart-btn');
+            removeFromCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = button.dataset.productId;
+                    removeFromCart(productId);
+                });
+            });
+
+            function removeFromCart(productId) {
+                fetch('/remove-from-cart/', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            product_id: productId
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Network response was not ok.');
+                    })
+                    .then(data => {
+                        // Handle success response and update the UI accordingly
+                        updateTotalQuantity(data.total_quantity);
+                    })
+                    .catch(error => {
+                        // Handle error
+                        console.error('Error removing product from cart:', error);
+                    });
+            }
+
+            function clearCart() {
+                fetch('/clear-cart/', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Network response was not ok.');
+                    })
+                    .then(data => {
+                        // Handle success response and update the UI accordingly
+                        updateTotalQuantity(data.total_quantity);
+                    })
+                    .catch(error => {
+                        // Handle error
+                        console.error('Error clearing the cart:', error);
+                    });
+            }
+
+            // Add event listener to Clear Cart button
+            const clearCartButton = document.getElementById('clear-cart-btn');
+            if (clearCartButton) {
+                clearCartButton.addEventListener('click', function() {
+                    clearCart();
+                });
             }
         });
     </script>

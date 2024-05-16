@@ -4,6 +4,7 @@
 {% if cart_items %}
 <form method="post" action="{% url 'clear_cart' %}">
     {% csrf_token %}
+    <input type="hidden" name="clear_cart" value="clear">
     <input type="hidden" name="next" value="{{ request.path }}">
     <button type="submit" class="btn btn-danger">Clear Cart</button>
 </form>
@@ -20,13 +21,17 @@
     <tbody>
         {% for item in cart_items %}
         <tr>
-            <td>{{ item.name }}</td>
-            <td>R{{ item.price }}</td>
+            <td>{{ item.product.name }}</td>
+            <!-- Accessing product name through the associated product -->
+            <td>R{{ item.product.price }}</td>
+            <!-- Accessing product price through the associated product -->
             <td>{{ item.quantity }}</td>
-            <td>R{{ item.price|floatformat:2 }} x {{ item.quantity }}</td>
+            <td>R{{ item.get_total_price }}</td>
+            <!-- Assuming get_total_price is a method -->
             <td>
                 <form method="post" action="{% url 'remove_from_cart' %}">
                     {% csrf_token %}
+                    <input type="hidden" name="remove_item" value="remove">
                     <input type="hidden" name="product_id" value="{{ item.product.id }}">
                     <input type="hidden" name="next" value="{{ request.path }}">
                     <button type="submit" class="btn btn-danger">Remove</button>
@@ -34,6 +39,7 @@
             </td>
         </tr>
         {% endfor %}
+
     </tbody>
 </table>
 <p>Total: R{{ total_price }}</p>

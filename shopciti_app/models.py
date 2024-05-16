@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class CustomUser(AbstractUser):
@@ -87,6 +89,20 @@ class AdditionalImage(models.Model):
         return f"Additional Image for {self.product.name} by {self.added_by.username}"
 
 
+
+class SupportTicket(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=15)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f'Ticket #{self.id} by {self.user.username}'
+    
+    
+
 User = get_user_model()
 
 
@@ -102,13 +118,32 @@ class VendorApplication(models.Model):
         return f"Vendor Application for {self.user.username}"
 
 
+@receiver(post_save, sender=User)
+def create_cart_for_new_user(sender, instance, created, **kwargs):
+    if created:
+        Cart.objects.create(user=instance)
+
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    @property
+    def total_quantity(self):
+        return sum(item.quantity for item in self.cartitem_set.all())
+
+    @property
+    def total_price(self):
+        return sum(item.get_total_price() for item in self.cartitem_set.all())
+        
+
 class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, default=None)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
     def get_total_price(self):
         return self.product.price * self.quantity
+
 
 class BillingAddress(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)

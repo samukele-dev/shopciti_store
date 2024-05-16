@@ -1,8 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from .models import CustomUser, Product, AdditionalImage, BillingAddress
+from .models import CustomUser, Product, AdditionalImage, SupportTicket, BillingAddress
 from django import forms
 from django.forms import inlineformset_factory
-
 
 
 class SellerApplicationForm(forms.Form):
@@ -72,6 +71,13 @@ class AdditionalImageForm(forms.ModelForm):
         fields = ['image']
 
 AdditionalImageFormSet = inlineformset_factory(Product, AdditionalImage, form=AdditionalImageForm, extra=3, max_num=5, can_delete=True)
+
+
+
+class SupportTicketForm(forms.ModelForm):
+    class Meta:
+        model = SupportTicket
+        fields = ['first_name', 'email', 'phone_number', 'description']
 
 class CartAddProductForm(forms.Form):
     quantity = forms.IntegerField(

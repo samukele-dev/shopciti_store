@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LogoutView
 from django.http import HttpResponseServerError, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import SellerApplicationForm, ProductForm, BuyerRegistrationForm
-from .models import CustomUser, Product, Product, RelatedProduct, ProductVariant, Category, CartItem
+from .forms import SellerApplicationForm, ProductForm, BuyerRegistrationForm, SupportTicketForm
+from .models import CustomUser, Product, Product, RelatedProduct, ProductVariant, Category, CartItem, Cart
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -15,6 +15,8 @@ from django.contrib.auth import update_session_auth_hash
 from django.core.files.storage import default_storage
 from .forms import BillingAddressForm, VendorRegistrationForm
 from django.utils.text import slugify
+from django.db.models import Sum, F
+
 
 
 
@@ -270,20 +272,10 @@ def create_account(request):
     return render(request, 'create_account.html', {'form': form, 'password_change_form': password_change_form})
 
 
-
-
-@require_POST
-def clear_cart(request):
-    # Check if the user is authenticated
-    if request.user.is_authenticated:
-        # Clear the cart items associated with the current user
-        CartItem.objects.filter(user=request.user).delete()
-    else:
-        # Clear the cart items stored in the session for anonymous users
-        request.session.pop('cart', None)
-    
-    # Redirect back to the page the user was on
-    return redirect(request.POST.get('next', '/'))
+@login_required
+def cart_total_quantity(request):
+    total_quantity = CartItem.objects.filter(user=request.user).aggregate(total=Sum('quantity'))['total'] or 0
+    return JsonResponse({'total_quantity': total_quantity})
 
 
 @require_POST
@@ -300,9 +292,26 @@ def remove_from_cart(request):
             if product_id in cart:
                 del cart[product_id]
                 request.session['cart'] = cart
-    
-    # Redirect back to the page the user was on
-    return redirect(request.POST.get('next', '/'))
+
+    # Calculate the updated total quantity and price for the current user
+    total_quantity = CartItem.objects.filter(user=request.user).aggregate(total=Sum('quantity'))['total'] or 0
+    total_price = CartItem.objects.filter(user=request.user).aggregate(total=Sum(F('quantity') * F('product__price')))['total'] or 0
+
+    # Redirect to the cart page (or any other page you want)
+    return redirect('cart')  # Replace 'cart_page' with your cart page URL name
+
+@require_POST
+def clear_cart(request):
+    # Check if the user is authenticated
+    if request.user.is_authenticated:
+        # Clear the cart items associated with the current user
+        CartItem.objects.filter(user=request.user).delete()
+    else:
+        # Clear the cart items stored in the session for anonymous users
+        request.session.pop('cart', None)
+
+    # Redirect to the cart page (or any other page you want)
+    return redirect('cart')  # Replace 'cart_page' with your cart page URL name
 
 
 # View for frequently asked questions page
@@ -351,42 +360,52 @@ def product_sidebar(request):
     return render(request, 'product_sidebar.html', context)
 
 
-def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    cart = request.session.get('cart', {})
-    cart_item = cart.get(str(product_id))
+@login_required
+def cart(request):
+    user = request.user
+    cart = get_object_or_404(Cart, user=user)
+    cart_items = CartItem.objects.filter(cart=cart)
 
-    if cart_item:
-        cart_item['quantity'] += 1
-    else:
-        cart_item = {
-            'product_id': product_id,
-            'name': product.name,
-            'price': float(product.price),  # Convert Decimal to float
-            'quantity': 1,
-        }
+    if request.method == 'POST':
+        if 'remove_item' in request.POST:
+            # Handle removing a single item from the cart
+            product_id = request.POST.get('product_id')
+            item = get_object_or_404(CartItem, cart=cart, product_id=product_id)
+            item.delete()
+        elif 'clear_cart' in request.POST:
+            # Handle clearing the entire cart
+            cart_items.delete()
+        return redirect('cart')
 
-    cart[str(product_id)] = cart_item
-    request.session['cart'] = cart
+    cart_items = CartItem.objects.filter(cart=cart)  # Re-fetch cart items after potential changes
+    total_quantity = sum(item.quantity for item in cart_items)
+    total_price = sum(item.get_total_price() for item in cart_items)
 
-    total_quantity = sum(item['quantity'] for item in cart.values())
-    total_price = sum(float(item['price']) * item['quantity'] for item in cart.values())
+    return render(request, 'cart.html', {'cart_items': cart_items, 'total_quantity': total_quantity, 'total_price': total_price})
 
-    # Return JSON response with updated total quantity and price
-    return JsonResponse({'total_quantity': total_quantity, 'total_price': total_price})
 
 
 @login_required
-def cart(request):
-    cart = request.session.get('cart', {})  # Default to empty dictionary if cart is not found
-    cart_items = cart.values()
-    total_quantity = sum(item['quantity'] for item in cart_items)
-    total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    user = request.user
 
-    # Convert cart_items to a list of dictionaries for easier processing in JavaScript
-    cart_items_list = list(cart_items)
+    # Check if the user has a cart, if not create one
+    cart, _ = Cart.objects.get_or_create(user=user)
 
-    return render(request, 'cart.html', {'cart_items': cart_items_list, 'total_quantity': total_quantity, 'total_price': total_price})
+    # Add the product to the user's cart
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product, user=user)
+    if not created:
+        # If the item already exists in the cart, increase its quantity
+        cart_item.quantity += 1
+    cart_item.save()
+
+    # Calculate total quantity and total price
+    total_quantity = sum(item.quantity for item in CartItem.objects.filter(cart=cart))
+    total_price = sum(item.product.price * item.quantity for item in CartItem.objects.filter(cart=cart))
+
+    return JsonResponse({'total_quantity': total_quantity, 'total_price': total_price})
+
 
 
 # View for displaying seller sidebar
@@ -409,26 +428,32 @@ def dashboard(request):
         user = get_object_or_404(CustomUser, username=request.user.username)
         products = Product.objects.filter(added_by=request.user)
 
+        password_change_form = PasswordChangeForm(request.user)
+        ticket_form = SupportTicketForm()
+
         if request.method == 'POST':
-            user.first_name = request.POST.get('first_name', '')
-            user.last_name = request.POST.get('last_name', '')
-            user.email = request.POST.get('email', '')
-            user.phone_number = request.POST.get('phone_number', '')
-            user.country = request.POST.get('country', '')
-            user.address = request.POST.get('address', '')
-            user.city = request.POST.get('city', '')
-            user.postal_code = request.POST.get('postal_code', '')
+            if 'first_name' in request.POST and 'last_name' in request.POST:  # Handle profile update form
+                user.first_name = request.POST.get('first_name', '')
+                user.last_name = request.POST.get('last_name', '')
+                user.email = request.POST.get('email', '')
+                user.phone_number = request.POST.get('phone_number', '')
+                user.country = request.POST.get('country', '')
+                user.address = request.POST.get('address', '')
+                user.city = request.POST.get('city', '')
+                user.postal_code = request.POST.get('postal_code', '')
 
+                # Handle logo upload
+                logo_file = request.FILES.get('logo')
+                if logo_file:
+                    # Save the uploaded logo
+                    file_path = default_storage.save(logo_file.name, logo_file)
+                    user.logo = file_path
 
-            # Handle logo upload
-            logo_file = request.FILES.get('logo')
-            if logo_file:
-                # Save the uploaded logo
-                file_path = default_storage.save(logo_file.name, logo_file)
-                user.logo = file_path
+                user.save()
+                messages.success(request, 'Profile updated successfully!')
+                return redirect('dashboard')  # Redirect to prevent form resubmission
 
-            # Check if the password change form data is present
-            if 'old_password' in request.POST and 'new_password1' in request.POST and 'new_password2' in request.POST:
+            elif 'old_password' in request.POST and 'new_password1' in request.POST and 'new_password2' in request.POST:  # Handle password change form
                 password_change_form = PasswordChangeForm(user, request.POST)
                 if password_change_form.is_valid():
                     password_change_form.save()
@@ -436,18 +461,31 @@ def dashboard(request):
                     messages.success(request, 'Password updated successfully!')
                 else:
                     messages.error(request, 'Please correct the error below.')
+                return redirect('dashboard')
 
-            user.save()
+            elif 'description' in request.POST:  # Handle support ticket form
+                ticket_form = SupportTicketForm(request.POST)
+                if ticket_form.is_valid():
+                    support_ticket = ticket_form.save(commit=False)
+                    support_ticket.user = request.user
+                    support_ticket.save()
+                    messages.success(request, 'Support ticket submitted successfully!')
+                else:
+                    messages.error(request, 'Please correct the errors in the support ticket form.')
+                return redirect('dashboard')
 
-            messages.success(request, 'Profile updated successfully!')
-            return redirect('dashboard')  # Redirect to prevent form resubmission
-        else:
-            password_change_form = PasswordChangeForm(request.user)
-
-        return render(request, 'dashboard.html', {'products': products, 'password_change_form': password_change_form})
+        return render(request, 'dashboard.html', {
+            'products': products,
+            'password_change_form': password_change_form,
+            'ticket_form': ticket_form
+        })
     except Exception as e:
         print("An error occurred:", e)
         return HttpResponseServerError("An error occurred. Please try again later.")
+    
+    
+
+
 
 
 
