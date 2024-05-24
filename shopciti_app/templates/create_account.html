@@ -37,8 +37,8 @@
                                 <input type="email" id="email" name="email" class="form-control" placeholder="user@gmail.com" required>
                             </div>
                             <div class="review-form-name">
-                                <label for="phone" class="form-label">Phone*</label>
-                                <input type="tel" id="phone" name="phone" class="form-control" placeholder="+880388**0899" required>
+                                <label for="phone_number" class="form-label">Phone*</label>
+                                <input type="tel" id="phone_number" name="phone_number" class="form-control" placeholder="+880388**0899" required>
                             </div>
                         </div>
                         <div class="account-inner-form">
@@ -64,9 +64,8 @@
                             <label for="country" class="form-label">Country*</label>
                             <select id="country" name="country" class="form-select">
                                 <option>Choose...</option>
-                                <option>Bangladesh</option>
-                                <option>United States</option>
-                                <option selected>United Kingdom</option>
+                                <option>South Africa</option>
+                                <option selected>South Africa</option>
                             </select>
                         </div>
                         <div class="review-form-name address-form">
@@ -78,9 +77,10 @@
                                 <label for="city" class="form-label">Town / City*</label>
                                 <select id="city" name="city" class="form-select">
                                     <option>Choose...</option>
-                                    <option>Newyork</option>
-                                    <option>Dhaka</option>
-                                    <option selected>London</option>
+                                    <option>Johannesburg</option>
+                                    <option>Pretoria</option>
+                                    <option>Midrand</option>
+                                    <option selected>Johannesburg</option>
                                 </select>
                             </div>
                             <div class="review-form-name">
@@ -96,9 +96,13 @@
                             </div>
                         </div>
                         <div class="login-btn text-center">
-                            <button type="submit" class="shop-btn">Create an Account</button>
-                            <span class="shop-account">Already have an account ?<a href="{% url 'login' %}">Log In</a></span>
+                            <form action="{% url 'create_account' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="shop-btn">Create an Account</button>
+                            </form>
+                            <span class="shop-account">Already have an account? <a href="{% url 'login' %}">Log In</a></span>
                         </div>
+
                     </form>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from .models import CustomUser, Product, AdditionalImage, SupportTicket, BillingAddress
+from .models import CustomUser, Product, AdditionalImage, SupportTicket, PaymentMethod, BillingAddress
 from django import forms
 from django.forms import inlineformset_factory
 
@@ -78,6 +78,21 @@ class SupportTicketForm(forms.ModelForm):
     class Meta:
         model = SupportTicket
         fields = ['first_name', 'email', 'phone_number', 'description']
+
+class PaymentMethodForm(forms.ModelForm):
+    class Meta:
+        model = PaymentMethod
+        fields = ['card_number', 'card_holder_name', 'expiry_date', 'cvv']
+        widgets = {
+            'expiry_date': forms.DateInput(attrs={'type': 'date'}),
+            'cvv': forms.PasswordInput(),
+        }
+
+    def clean_card_number(self):
+        card_number = self.cleaned_data['card_number']
+        # Implement any validation logic for card number if needed
+        return card_number
+
 
 class CartAddProductForm(forms.Form):
     quantity = forms.IntegerField(

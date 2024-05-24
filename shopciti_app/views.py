@@ -4,8 +4,8 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.views import LogoutView
 from django.http import HttpResponseServerError, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import SellerApplicationForm, ProductForm, BuyerRegistrationForm, SupportTicketForm
-from .models import CustomUser, Product, Product, RelatedProduct, ProductVariant, Category, CartItem, Cart
+from .forms import SellerApplicationForm, ProductForm, BuyerRegistrationForm, SupportTicketForm, PaymentMethodForm
+from .models import CustomUser, Product, Product, RelatedProduct, ProductVariant, Category, CartItem, Cart, SupportTicket, PaymentMethod, Order, OrderItem
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -16,6 +16,13 @@ from django.core.files.storage import default_storage
 from .forms import BillingAddressForm, VendorRegistrationForm
 from django.utils.text import slugify
 from django.db.models import Sum, F
+from django.contrib.auth.decorators import user_passes_test
+from django.urls import reverse
+import uuid
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
+
+
 
 
 
@@ -99,6 +106,24 @@ def shop_info(request, user_id):
 
 
 
+class CustomLoginView(auth_views.LoginView):
+    template_name = 'login.html'
+
+    def form_valid(self, form):
+        # Call the parent class form_valid method
+        super().form_valid(form)
+
+        # Check if the logged-in user is authenticated and is a buyer
+        if self.request.user.is_authenticated:
+            if self.request.user.is_buyer:  # Assuming is_buyer is a field on your user model
+                return redirect('random_user_dashboard')  # Redirect to buyer's dashboard
+            else:
+                return redirect('dashboard')  # Redirect to vendor's or another type's dashboard
+
+        # Default to login page if conditions are not met
+        return redirect(reverse_lazy('login'))
+
+
 # View for user logout
 def custom_logout(request):
     return LogoutView.as_view()(request)
@@ -127,39 +152,6 @@ def blogs(request):
     return render(request, 'blogs.html')
 
 
-# View for displaying checkout
-@login_required
-def checkout(request):
-    if request.method == 'POST':
-        # If the request is a POST request, process the billing address form
-        billing_form = BillingAddressForm(request.POST)
-        if billing_form.is_valid():
-            billing_address = billing_form.save(commit=False)
-            billing_address.user = request.user
-            billing_address.save()
-            # Process the rest of the checkout logic if needed
-            # Redirect to a success page or another step in the checkout process
-            return redirect('checkout_success')
-    else:
-        # If the request is not a POST request, render the checkout page with the form
-        billing_form = BillingAddressForm()
-
-    cart = request.session.get('cart', {})
-    total_amount = sum(item['price'] * item['quantity'] for item in cart.values())
-    item_names = [f"{item['name']}" for item in cart.values()]
-
-    context = {
-        'cart_items': cart.values(),
-        'total_price': total_amount,
-        'item_name': item_names,
-        'billing_form': billing_form,  # Pass the billing form to the template
-    }
-
-    return render(request, 'checkout.html', context)
-
-
-
-
 # View for displaying comparison
 def compaire(request):
     return render(request, 'compaire.html')
@@ -168,72 +160,6 @@ def compaire(request):
 def contact_us(request):
     return render(request, 'contact_us.html')
 
-
-
-
-def random_create_account(request):
-    if request.method == 'POST':
-        form = BuyerRegistrationForm(request.POST)
-
-        if form.is_valid():
-            # Clear session data related to previous user
-            auth_logout(request)
-            request.session.flush()
-
-            # Generate a unique username by appending first name and last name
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            username = slugify(first_name + last_name)
-            
-            # Check if the generated username already exists
-            suffix = 1
-            while CustomUser.objects.filter(username=username).exists():
-                username = slugify(first_name + last_name) + str(suffix)
-                suffix += 1
-
-            # Clear initial data to ensure a new, empty form for new registrations
-            form.initial = {}
-            random_user = form.save(commit=False)
-            random_user.username = username  # Assign the generated username
-            random_user.set_password(form.cleaned_data["password1"])
-            
-            # Mark the user as a buyer
-            random_user.is_buyer = True
-            
-            random_user.save()
-
-            random_user = authenticate(username=username, password=form.cleaned_data['password1'])
-            if random_user is not None:
-                login(request, random_user)
-
-                # Redirect to dashboard after successful registration
-                return redirect('dashboard')
-        else:
-            # Debugging: Print form errors to console
-            print(form.errors)
-    else:
-        form = BuyerRegistrationForm()
-
-    # Initialize an empty PasswordChangeForm to avoid validation errors during registration
-    password_change_form = None
-
-    return render(request, 'random_create_account.html', {'form': form, 'password_change_form': password_change_form})
-
-
-
-
-def generate_unique_username(first_name, last_name):
-    # Combine first name and last name and slugify to create a username
-    username = slugify(first_name + last_name)
-    
-    # Check if the username already exists, if so, append a number to make it unique
-    User = get_user_model()
-    num = 1
-    while User.objects.filter(username=username).exists():
-        username = f"{slugify(first_name + last_name)}_{num}"
-        num += 1
-
-    return username
 
 
 def create_account(request):
@@ -272,10 +198,81 @@ def create_account(request):
     return render(request, 'create_account.html', {'form': form, 'password_change_form': password_change_form})
 
 
+
+def random_create_account(request):
+    # Check if there's a stored next URL in the session
+    next_url = request.session.get('next_url', None)
+    
+    if request.method == 'POST':
+        form = BuyerRegistrationForm(request.POST)
+
+        if form.is_valid():
+            # Clear session data related to previous user
+            request.session.flush()
+
+            # Generate a unique username by appending first name and last name
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            username = slugify(first_name + last_name)
+            
+            # Check if the generated username already exists
+            suffix = 1
+            while CustomUser.objects.filter(username=username).exists():
+                username = slugify(first_name + last_name) + str(suffix)
+                suffix += 1
+
+            # Save the user with the generated username and hashed password
+            random_user = form.save(commit=False)
+            random_user.username = username
+            random_user.set_password(form.cleaned_data["password1"])
+            random_user.is_buyer = True  # Mark the user as a buyer
+            random_user.save()
+
+            # Authenticate and login the user
+            random_user = authenticate(username=username, password=form.cleaned_data['password1'])
+            if random_user is not None:
+                login(request, random_user)
+                if next_url:
+                    return redirect(next_url)
+                else:
+                    return redirect('random_user_dashboard')
+        else:
+            # Debugging: Print form errors to console
+            print(form.errors)
+    else:
+        form = BuyerRegistrationForm()
+
+        # Store the current URL in session to redirect back after registration
+        request.session['next_url'] = request.GET.get('next', None)
+
+    # Initialize an empty PasswordChangeForm to avoid validation errors during registration
+    password_change_form = PasswordChangeForm(user=request.user) if request.user.is_authenticated else None
+
+    return render(request, 'random_create_account.html', {'form': form, 'password_change_form': password_change_form})
+
+
+
+def generate_unique_username(first_name, last_name):
+    # Combine first name and last name and slugify to create a username
+    username = slugify(first_name + last_name)
+    
+    # Check if the username already exists, if so, append a number to make it unique
+    User = get_user_model()
+    num = 1
+    while User.objects.filter(username=username).exists():
+        username = f"{slugify(first_name + last_name)}_{num}"
+        num += 1
+
+    return username
+
+
+
 @login_required
 def cart_total_quantity(request):
     total_quantity = CartItem.objects.filter(user=request.user).aggregate(total=Sum('quantity'))['total'] or 0
     return JsonResponse({'total_quantity': total_quantity})
+
+
 
 
 @require_POST
@@ -360,32 +357,106 @@ def product_sidebar(request):
     return render(request, 'product_sidebar.html', context)
 
 
+# Function to generate order ID
+def generate_order_id():
+    prefix = 'ORD'
+    unique_id = uuid.uuid4().hex[:8].upper()  # Generate a random UUID and take first 8 characters
+    order_id = f"{prefix}-{unique_id}"
+    return order_id
+
 @login_required
 def cart(request):
     user = request.user
     cart = get_object_or_404(Cart, user=user)
     cart_items = CartItem.objects.filter(cart=cart)
 
-    if request.method == 'POST':
-        if 'remove_item' in request.POST:
-            # Handle removing a single item from the cart
-            product_id = request.POST.get('product_id')
-            item = get_object_or_404(CartItem, cart=cart, product_id=product_id)
-            item.delete()
-        elif 'clear_cart' in request.POST:
-            # Handle clearing the entire cart
-            cart_items.delete()
-        return redirect('cart')
-
-    cart_items = CartItem.objects.filter(cart=cart)  # Re-fetch cart items after potential changes
     total_quantity = sum(item.quantity for item in cart_items)
     total_price = sum(item.get_total_price() for item in cart_items)
 
-    return render(request, 'cart.html', {'cart_items': cart_items, 'total_quantity': total_quantity, 'total_price': total_price})
+    if request.method == 'POST' and 'checkout' in request.POST:
+        if not cart.order_id:
+            cart.order_id = generate_order_id()  # Generate order ID if it doesn't exist
+            cart.save()
+            print(f"Order ID set in cart view: {cart.order_id}")  # Debug statement
+
+        return redirect('checkout', order_id=cart.order_id)  # Redirect with order_id
+
+    context = {
+        'cart_items': cart_items,
+        'total_quantity': total_quantity,
+        'total_price': total_price,
+        'order_id': cart.order_id,  # Pass order_id to the template context
+    }
+
+    print(f"Order ID before rendering in cart view: {cart.order_id}")  # Debug statement
+    return render(request, 'cart.html', context)
 
 
 
+# View for displaying checkout
 @login_required
+def checkout(request, order_id=None):
+    user = request.user
+    cart = Cart.objects.filter(user=user).first()
+    cart_items = CartItem.objects.filter(cart=cart) if cart else []
+
+    if not order_id and cart:
+        order_id = generate_order_id()  # Generate order ID if not provided
+
+    if request.method == 'POST':
+        billing_form = BillingAddressForm(request.POST)
+        if billing_form.is_valid():
+            billing_address = billing_form.save(commit=False)
+            billing_address.user = request.user
+            billing_address.save()
+
+            total_price = sum(item.product.price * item.quantity for item in cart_items)
+
+            # Create order instance with retrieved order_id
+            order = Order.objects.create(order_id=order_id, user=user, total_price=total_price)
+
+            # Create order items
+            for item in cart_items:
+                OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity)
+
+            # Clear cart items
+            cart_items.delete()
+
+            # Redirect to checkout success page or other appropriate action
+            return redirect('checkout_success')  # Replace with your success URL
+    else:
+        billing_form = BillingAddressForm()
+
+    # Calculate total_price and item_names
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    item_names = [item.product.name for item in cart_items]
+
+    context = {
+        'cart_items': cart_items,
+        'billing_form': billing_form,
+        'total_price': total_price,
+        'item_names': item_names,
+        'order_id': order_id,
+    }
+
+    return render(request, 'checkout.html', context)
+
+
+
+
+
+def login_required_to_random_create_account(view_func):
+    @user_passes_test(lambda u: u.is_authenticated, login_url='/random_create_account/')
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            # Store the current path in session
+            request.session['redirect_to'] = request.path
+            return redirect(reverse('random_create_account'))
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+@login_required_to_random_create_account
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     user = request.user
@@ -427,9 +498,12 @@ def dashboard(request):
         user = request.user
         user = get_object_or_404(CustomUser, username=request.user.username)
         products = Product.objects.filter(added_by=request.user)
+        support_tickets = SupportTicket.objects.filter(user=request.user).order_by('-created_at')
+        payment_methods = PaymentMethod.objects.filter(user=request.user).order_by('-created_at')
 
         password_change_form = PasswordChangeForm(request.user)
         ticket_form = SupportTicketForm()
+        payment_method_form = PaymentMethodForm()
 
         if request.method == 'POST':
             if 'first_name' in request.POST and 'last_name' in request.POST:  # Handle profile update form
@@ -473,17 +547,100 @@ def dashboard(request):
                 else:
                     messages.error(request, 'Please correct the errors in the support ticket form.')
                 return redirect('dashboard')
+            
+            elif 'card_number' in request.POST and 'card_holder_name' in request.POST and 'expiry_date' in request.POST and 'cvv' in request.POST:
+                payment_method_form = PaymentMethodForm(request.POST)
+                if payment_method_form.is_valid():
+                    payment_method = payment_method_form.save(commit=False)
+                    payment_method.user = request.user
+                    payment_method.save()
+                    messages.success(request, 'Payment method added successfully!')
+                else:
+                    messages.error(request, 'Please correct the errors in the payment method form.')
+        payment_method_form = PaymentMethodForm()
+
 
         return render(request, 'dashboard.html', {
             'products': products,
             'password_change_form': password_change_form,
-            'ticket_form': ticket_form
+            'ticket_form': ticket_form,
+            'support_tickets': support_tickets,
+            'payment_methods': payment_methods,  # Pass payment methods to the template
+            'payment_method_form': payment_method_form  # Pass payment method form to the template
         })
     except Exception as e:
         print("An error occurred:", e)
         return HttpResponseServerError("An error occurred. Please try again later.")
-    
-    
+
+
+
+
+
+# View for dashboard (requires login)
+@login_required
+def random_user_dashboard(request):
+    try:
+        user = request.user
+        user = get_object_or_404(CustomUser, username=request.user.username)
+        support_tickets = SupportTicket.objects.filter(user=request.user).order_by('-created_at')
+
+        password_change_form = PasswordChangeForm(request.user)
+        ticket_form = SupportTicketForm()
+
+        if request.method == 'POST':
+            if 'first_name' in request.POST and 'last_name' in request.POST:  # Handle profile update form
+                user.first_name = request.POST.get('first_name', '')
+                user.last_name = request.POST.get('last_name', '')
+                user.email = request.POST.get('email', '')
+                user.phone_number = request.POST.get('phone_number', '')
+                user.country = request.POST.get('country', '')
+                user.address = request.POST.get('address', '')
+                user.city = request.POST.get('city', '')
+                user.postal_code = request.POST.get('postal_code', '')
+
+                # Handle logo upload
+                logo_file = request.FILES.get('logo')
+                if logo_file:
+                    # Save the uploaded logo
+                    file_path = default_storage.save(logo_file.name, logo_file)
+                    user.logo = file_path
+
+                user.save()
+                messages.success(request, 'Profile updated successfully!')
+                return redirect('random_user_dashboard')  # Redirect to prevent form resubmission
+
+            elif 'old_password' in request.POST and 'new_password1' in request.POST and 'new_password2' in request.POST:  # Handle password change form
+                password_change_form = PasswordChangeForm(user, request.POST)
+                if password_change_form.is_valid():
+                    password_change_form.save()
+                    update_session_auth_hash(request, user)  # Update the user's session to prevent them from being logged out
+                    messages.success(request, 'Password updated successfully!')
+                else:
+                    messages.error(request, 'Please correct the error below.')
+                return redirect('random_user_dashboard')
+
+            elif 'description' in request.POST:  # Handle support ticket form
+                ticket_form = SupportTicketForm(request.POST)
+                if ticket_form.is_valid():
+                    support_ticket = ticket_form.save(commit=False)
+                    support_ticket.user = request.user
+                    support_ticket.save()
+                    messages.success(request, 'Support ticket submitted successfully!')
+                else:
+                    messages.error(request, 'Please correct the errors in the support ticket form.')
+                return redirect('random_user_dashboard')
+            
+
+        return render(request, 'random_user_dashboard.html', {
+            'password_change_form': password_change_form,
+            'ticket_form': ticket_form,
+            'support_tickets': support_tickets,
+            
+        })
+    except Exception as e:
+        print("An error occurred:", e)
+        return HttpResponseServerError("An error occurred. Please try again later.")
+
 
 
 
@@ -558,6 +715,32 @@ def product_info(request, product_id):
         'categories': categories
     }
     return render(request, 'product_info.html', context)
+
+def payfast_success(request):
+    # Clear the user's cart
+    if request.user.is_authenticated:
+        Cart.objects.filter(user=request.user).delete()
+    else:
+        # Handle for anonymous users if necessary
+        pass
+
+    # Save the purchased items or create an order record if needed
+    # Example: Saving items to order history
+    if request.user.is_authenticated:
+        cart_items = CartItem.objects.filter(cart__user=request.user)
+        for item in cart_items:
+            Order.objects.create(
+                user=request.user,
+                product=item.product,
+                quantity=item.quantity,
+                price=item.product.price
+            )
+
+    # Provide feedback to the user
+    messages.success(request, 'Payment successful! Your order has been placed.')
+
+    # Redirect to the home page or any designated page
+    return redirect(reverse('index'))
 
 def payfast_return(request):
     # Handle order confirmation and processing here

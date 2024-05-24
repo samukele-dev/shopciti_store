@@ -692,11 +692,17 @@
                                 </a>
                             </li>
 
+                            {% if user.is_authenticated %}
                             <li>
-                                <a href="{% url 'dashboard' %}">
+                                <a href="{% if user.is_buyer %}{% url 'random_user_dashboard' %}
+                                    {% else %}{% url 'dashboard' %}
+                                    {% endif %}">
                                     <span class="list-text">User Dashboard</span>
                                 </a>
                             </li>
+                            {% endif %}
+
+
                             <li>
                                 <a href="{% url 'contact_us' %}">
                                     <span class="list-text">Contact</span>
@@ -821,7 +827,7 @@
             });
 
             function addToCart(productId) {
-                fetch('/add-to-cart/' + productId + '/', {
+                fetch(`/add-to-cart/${productId}/`, {
                         method: 'POST',
                         headers: {
                             'X-CSRFToken': '{{ csrf_token }}',
@@ -830,18 +836,25 @@
                         body: JSON.stringify({})
                     })
                     .then(response => {
-                        if (response.ok) {
+                        if (response.redirected) {
+                            // If redirected, it usually means the user is not logged in
+                            window.location.href = `{% url 'random_create_account' %}?next=${window.location.pathname}`;
+                            throw new Error('Redirecting to login');
+                        } else if (response.ok) {
                             return response.json();
+                        } else {
+                            throw new Error('Network response was not ok.');
                         }
-                        throw new Error('Network response was not ok.');
                     })
                     .then(data => {
                         // Handle success response
                         updateTotalQuantity(data.total_quantity);
+                        alert('Product added to cart!');
                     })
                     .catch(error => {
-                        // Handle error
-                        console.error('Error adding product to cart:', error);
+                        if (error.message !== 'Redirecting to login') {
+                            console.error('Error adding product to cart:', error);
+                        }
                     });
             }
 
@@ -914,6 +927,8 @@
             }
         });
     </script>
+
+
 
 
 

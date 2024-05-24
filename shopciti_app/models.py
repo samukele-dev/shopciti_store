@@ -101,7 +101,19 @@ class SupportTicket(models.Model):
     def __str__(self):
         return f'Ticket #{self.id} by {self.user.username}'
     
+
+class PaymentMethod(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    card_number = models.CharField(max_length=20)
+    card_holder_name = models.CharField(max_length=22)
+    expiry_date = models.DateField()
+    cvv = models.CharField(max_length=3)
+    verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
     
+    def __str__(self):
+        return f"{self.card_holder_name} - {self.card_number[-4:]}"
 
 User = get_user_model()
 
@@ -125,6 +137,8 @@ def create_cart_for_new_user(sender, instance, created, **kwargs):
 
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    order_id = models.CharField(max_length=8, blank=True, null=True)
+
 
     @property
     def total_quantity(self):
@@ -134,7 +148,6 @@ class Cart(models.Model):
     def total_price(self):
         return sum(item.get_total_price() for item in self.cartitem_set.all())
         
-
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, default=None)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -144,6 +157,27 @@ class CartItem(models.Model):
     def get_total_price(self):
         return self.product.price * self.quantity
 
+
+class Order(models.Model):
+    order_id = models.CharField(max_length=20, unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order ID: {self.order_id}, User: {self.user.username}, Total Price: {self.total_price}"
+    
+
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name} in Order ID: {self.order.order_id}"
+    
 
 class BillingAddress(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)

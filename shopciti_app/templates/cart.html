@@ -43,6 +43,7 @@
     </tbody>
 </table>
 <p>Total: R{{ total_price }}</p>
-<a href="{% url 'checkout' %}?next={{ request.path }}" class="btn btn-primary">Checkout</a> {% else %}
+<!-- Ensure order_id is displayed -->
+<a href="{% url 'checkout' %}?order_id={{ order_id }}" class="btn btn-primary">Checkout</a> {% else %}
 <p>Your cart is empty.</p>
 {% endif %} {% endblock %}

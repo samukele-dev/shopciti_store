@@ -17,21 +17,43 @@
     </section>
     <!--------------- blog-tittle-section-end---------------->
 
+    <!-- Bootstrap Modal Example -->
+    <div class="modal fade" id="bankTransferModal" tabindex="-1" role="dialog" aria-labelledby="bankTransferModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bankTransferModalLabel">Bank Transfer Details</h5>
+                    <span aria-hidden="true">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p>Make your payment directly into our bank account with the following details:</p>
+                    <p><strong>Bank Name:</strong> Nedbank</p>
+                    <p><strong>Account Number:</strong> 1243577479</p>
+                    <p><strong>Reference:</strong> {{ order_id }}</p>
+                </div>
+                <div class="modal-footer">
+                    <!-- Add any additional buttons or links here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!--------------- checkout-section---------------->
     <section class="checkout product footer-padding">
         <div class="container">
             <div class="checkout-section">
-                <div class="row gy-5">
-                    <div class="col-lg-6">
-                        <div class="checkout-wrapper">
-                            {% if user.is_authenticated %}
-                            <!-- User is logged in -->
-                            <p>Welcome, {{ user.username }}!</p>
-                            {% else %}
-                            <!-- User is not logged in -->
-                            <a href="{% url 'login' %}" class="shop-btn">Log into Your Account</a> {% endif %}
-                            <form method="post" action="{% url 'checkout' %}">
-                                {% csrf_token %}
+                <form method="post" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+                    <div class="row gy-5">
+                        <div class="col-lg-6">
+                            <div class="checkout-wrapper">
+                                {% if user.is_authenticated %}
+                                <!-- User is logged in -->
+                                <p>Welcome, {{ user.username }}!</p>
+                                {% else %}
+                                <!-- User is not logged in -->
+                                <a href="{% url 'login' %}" class="shop-btn">Log into Your Account</a> {% endif %}
                                 <div class="account-section billing-section">
                                     <h5 class="wrapper-heading">Billing Details</h5>
                                     <div class="review-form">
@@ -83,96 +105,93 @@
                                                 <input type="number" id="id_postal_code" name="postal_code" class="form-control" placeholder="0000">
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-primary btn-block mt-3" id="process-payment">Process Payment</button>
-                            </form>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="checkout-wrapper">
-                            <a href="#" class="shop-btn">Enter Coupon Code</a>
-                            <div class="account-section billing-section">
-                                <h5 class="wrapper-heading">Order Summary</h5>
-                                <div class="order-summery">
-                                    <div class="subtotal product-total">
-                                        <h5 class="wrapper-heading">PRODUCT</h5>
-                                        <h5 class="wrapper-heading">TOTAL</h5>
-                                    </div>
-                                    <hr>
-                                    <div class="subtotal product-total">
-                                        <ul class="product-list">
-                                            {% for item in cart_items %}
-                                            <li>
-                                                <div class="product-info">
-                                                    <h5 class="wrapper-heading">{{ item.name }}</h5>
-                                                    <p class="paragraph">{{ item.description }}</p>
-                                                </div>
-                                                <div class="price">
-                                                    <h5 class="wrapper-heading">R{{ item.price }}</h5>
-                                                </div>
-                                            </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                    <hr>
-                                    <div class="subtotal product-total">
-                                        <h5 class="wrapper-heading">SUBTOTAL</h5>
-                                        <h5 class="wrapper-heading">R{{ total_price }}</h5>
-                                    </div>
-                                    <div class="subtotal product-total">
-                                        <ul class="product-list">
-                                            <li>
-                                                <div class="product-info">
-                                                    <p class="paragraph">SHIPPING</p>
-                                                    <h5 class="wrapper-heading">Free Shipping</h5>
-                                                </div>
-                                                <div class="price">
-                                                    <h5 class="wrapper-heading">+R0</h5>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <hr>
-                                    <div class="subtotal total">
-                                        <h5 class="wrapper-heading">TOTAL</h5>
-                                        <h5 class="wrapper-heading price">R{{ total_price }}</h5>
-                                    </div>
-                                    <div class="subtotal payment-type">
-                                        <div class="checkbox-item">
-                                            <input type="radio" id="bank" name="bank">
-                                            <div class="bank">
-                                                <h5 class="wrapper-heading">Direct Bank Transfer</h5>
-                                                <p class="paragraph">Make your payment directly into our bank account. Please use
-                                                    <span class="inner-text">
-                                                        your Order ID as the payment reference.
-                                                    </span>
-                                                </p>
-                                            </div>
+                        <div class="col-lg-6">
+                            <div class="checkout-wrapper">
+                                <a href="#" class="shop-btn">Enter Coupon Code</a>
+                                <div class="account-section billing-section">
+                                    <h5 class="wrapper-heading">Order Summary</h5>
+                                    <div class="order-summery">
+                                        <div class="subtotal product-total">
+                                            <h5 class="wrapper-heading">PRODUCT</h5>
+                                            <h5 class="wrapper-heading">TOTAL</h5>
                                         </div>
-                                        <div class="checkbox-item">
-                                            <input type="radio" id="payfast" name="payment_option" value="payfast" class="form-check-input">
-                                            <div class="cash">
-                                                <h5 class="wrapper-heading">Payfast</h5>
-                                            </div>
+                                        {% for order_item in cart_items %}
+                                        <div class="subtotal product-total">
+                                            <ul class="product-list">
+                                                <li>
+                                                    <div class="product-info">
+                                                        <h5 class="wrapper-heading">{{ order_item.product.name }}</h5>
+                                                        <p class="paragraph">{{ order_item.product.description }}</p>
+                                                    </div>
+                                                    <div class="price">
+                                                        <h5 class="wrapper-heading">R{{ order_item.product.price }}</h5>
+                                                    </div>
+                                                </li>
+                                            </ul>
                                         </div>
-                                        <div class="checkbox-item">
-                                            <input type="radio" id="credit" name="bank">
-                                            <div class="credit">
-                                                <h5 class="wrapper-heading">Credit/Debit Cards or Paypal</h5>
+                                        <hr>
+
+                                        <div class="subtotal product-total">
+                                            <h5 class="wrapper-heading">SUBTOTAL</h5>
+                                            <h5 class="wrapper-heading">R{{ order_item.get_total_price }}</h5>
+                                        </div>
+                                        <div class="subtotal product-total">
+                                            <ul class="product-list">
+                                                <li>
+                                                    <div class="product-info">
+                                                        <p class="paragraph">SHIPPING</p>
+                                                        <h5 class="wrapper-heading">Free Shipping</h5>
+                                                    </div>
+                                                    <div class="price">
+                                                        <h5 class="wrapper-heading">+R0</h5>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <hr>
+                                        <div class="subtotal total">
+                                            <h5 class="wrapper-heading">TOTAL</h5>
+                                            <h5 class="wrapper-heading price">R{{ order_item.get_total_price }}</h5>
+                                        </div>
+                                        <p><strong>Reference:</strong> {{ order_id }}</p>
+                                        {% endfor %}
+
+                                        <div class="subtotal payment-type">
+                                            <div class="checkbox-item">
+                                                <input type="radio" id="bank" name="payment_option" class="form-check-input">
+                                                <div class="bank">
+                                                    <h5 class="wrapper-heading">Direct Bank Transfer</h5>
+                                                    <p class="paragraph">Make your payment directly into our bank account. Please use
+                                                        <span class="inner-text">
+                        your Order ID as the payment reference.
+                    </span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="checkbox-item">
+                                                <input type="radio" id="payfast" name="payment_option" value="payfast" class="form-check-input">
+                                                <div class="cash">
+                                                    <h5 class="wrapper-heading">Payfast</h5>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-primary btn-block mt-3" id="process-payment">Process Payment</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-3" id="process-payment">Process Payment</button>
+
+                </form>
+
             </div>
         </div>
     </section>
+
 
     <!--------------- checkout-section-end---------------->
 
@@ -403,30 +422,46 @@
 </body>
 
 <script>
-    const merchantId = '23353254';
-    const merchantKey = 'r7cx2yvt9i7gf';
-    const totalAmount = '{{ total_price | escapejs }}';
-    const itemName = '{{ item_name | escapejs }}';
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const bankRadio = document.getElementById('bank');
+        const payfastRadio = document.getElementById('payfast');
 
-    document.getElementById('process-payment').addEventListener('click', function() {
-        const selectedPaymentOption = document.querySelector('input[name="payment_option"]:checked');
+        // Function to handle form submission
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
 
-        if (selectedPaymentOption) {
-            const paymentOption = selectedPaymentOption.value;
+            // Perform form validation if needed
 
-            // Handle payment processing based on the selected payment option
-            if (paymentOption === 'credit_card') {
-                // Implement credit card payment logic
-            } else if (paymentOption === 'paypal') {
-                // Implement PayPal payment logic
-            } else if (paymentOption === 'payfast') {
-                // Redirect the user to PayFast's payment page
-                window.location.href = `https://www.payfast.co.za/eng/process?merchant_id=${merchantId}&merchant_key=${merchantKey}&amount=${totalAmount}&item_name=${itemName}`;
+            // Check which radio option is selected
+            if (bankRadio.checked) {
+                // Handle bank transfer submission (if necessary)
+                showModal(); // Show modal or handle bank transfer logic
+            } else if (payfastRadio.checked) {
+                // Redirect to PayFast payment page
+                const totalAmount = '{{ total_price }}'; // Replace with actual total amount from Django context
+                const itemName = '{{ item_names|join:", " }}'; // Replace with item names from Django context
+
+                const redirectUrl = `https://www.payfast.co.za/eng/process?merchant_id=23353254&merchant_key=r7cx2yvt9i7gf&amount=${totalAmount}&item_name=${itemName}`;
+
+                window.location.href = redirectUrl;
+            } else {
+                // Handle other payment options or show error message
+                alert('Please select a payment option.');
             }
-        } else {
-            alert('Please select a payment option.');
+        });
+
+        function showModal() {
+            // Implement your modal logic here
+            // Example: Bootstrap modal
+            $('#bankTransferModal').modal('show'); // Replace with your modal ID and show function
         }
     });
 </script>
+
+
+
+
+
 
 {% endblock %}

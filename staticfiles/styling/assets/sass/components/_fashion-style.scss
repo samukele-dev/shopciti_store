@@ -31,7 +31,7 @@
 }
 
 .wrapper-one {
-    background: url("/static/styling/assets/images/homepage-one/syle-bg-one.webp") no-repeat center / cover;
+    background: url("/static/styling/assets/images/homepage-one/1f.jpg") no-repeat center / cover;
     .shop-btn {
         @include shopBtn($btn-bg: $secondary-theme, $bf-color: $heading);
         svg {
@@ -41,7 +41,7 @@
 }
 
 .wrapper-two {
-    background: url("/static/styling/assets/images/homepage-one/style-bg-two.webp") no-repeat center / cover;
+    background: url("/static/styling/assets/images/homepage-one/1i.jpg") no-repeat center / cover;
     .shop-btn {
         @include shopBtn();
     }
