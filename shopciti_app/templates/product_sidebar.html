@@ -26,19 +26,7 @@
                                 </div>
                             </div>
                             <hr>
-                            <div class="sidebar-wrapper sidebar-range">
-                                <h5 class="wrapper-heading">Price Range</h5>
-                                <div class="price-slide range-slider">
-                                    <div class="price">
-                                        <div class="range-slider style-1">
-                                            <div id="slider-tooltips" class="slider-range mb-3"></div>
-                                            <span class="example-val" id="slider-margin-value-min"></span>
-                                            <span>-</span>
-                                            <span class="example-val" id="slider-margin-value-max"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
 
                             <hr>
                         </div>
@@ -87,7 +75,7 @@
                                                         {% url 'product_info_with_user' product.id user.id %}
                                                       {% else %}
                                                         {% url 'product_info_without_user' product.id %}
-                                                      {% endif %}" class="favourite cart-item"> <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                                      {% endif %}" class="favourite cart-item"> <img src="{{ product.image.url }}" alt="{{ product.name }}" style="object-fit: cover;">
                                                             <div class="product-cart-items">
                                                                 <span>
                                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
@@ -148,7 +136,7 @@
                                                         <div class="product-description">
                                                             <a href="product-info.html" class="product-details">{{ product.name }}</a>
                                                             <div class="price">
-                                                                <span class="price-cut">${{ product.price }}</span>
+                                                                <span class="prices">R{{ product.price }}</span>
                                                             </div>
                                                         </div>
                                                     </div>

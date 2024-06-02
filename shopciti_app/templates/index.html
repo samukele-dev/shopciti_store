@@ -44,7 +44,7 @@
     <!--------------- hero-section-end --------------->
 
     <!--------------- style-section --------------->
-    <section class="product fashion-style ">
+    <section class="product pb-2 pt-5 fashion-style ">
         <div class="container ">
             <div class="style-section ">
                 <div class="row gy-4 gx-5 gy-lg-0 ">
@@ -52,8 +52,8 @@
                         <div class="product-wrapper wrapper-one product-img " data-aos="fade-right ">
                             <div class="wrapper-info ">
                                 <span class="wrapper-subtitle ">NEW STYLE</span>
-                                <h4 class="wrapper-details ">Get 65% Offer
-                                    <span class="wrapper-inner-title ">& Make New</span> Fusion.
+                                <h4 class="wrapper-details ">Get R50 Off
+                                    <span class="wrapper-inner-title ">From orders above</span> R500
                                 </h4>
                                 <a href="{% url 'product_sidebar' %} " class="shop-btn ">Shop Now
                                     <span>
@@ -97,36 +97,34 @@
 
 
 
-    <section class="product fashion-style ">
+    <section class="product pt-5 fashion-style ">
         <div class="container ">
 
             <div class="arrival-section ">
                 <div class="row g-5 ">
                     <div class="col-lg-3 col-md-6 ">
-                        <div class="product-wrapper " data-aos="fade-up ">
+                        <div class="product-wrapper-ad " data-aos="fade-up ">
                             <div class="product-img ">
-
-
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 ">
-                        <div class="product-wrapper " data-aos="fade-up ">
+                        <div class="product-wrapper-ad-2 " data-aos="fade-up ">
 
-                            <div class="product-img ">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 ">
-                        <div class="product-wrapper " data-aos="fade-up ">
                             <div class="product-img ">
 
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 ">
-                        <div class="product-wrapper " data-aos="fade-up ">
+                        <div class="product-wrapper-ad-3 " data-aos="fade-up ">
+                            <div class="product-img ">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 ">
+                        <div class="product-wrapper-ad-4 " data-aos="fade-up ">
                             <div class="product-img ">
 
                             </div>
@@ -140,11 +138,11 @@
 
 
     <!--------------- category-section--------------->
-    <section class="product-category ">
-        <div class="container pb-5 ">
+    <section class="product-category pt-6 ">
+        <div class="container pb-3 ">
             <div class="section-title ">
                 <h5>Recently Added Shops</h5>
-                <a href="{% url 'product_sidebar' %} " class="view ">View All</a>
+                <a href="{% url 'shops' %} " class="view ">View All</a>
             </div>
             <div class="category-section ">
                 {% for user in users|slice:":6 " %}
@@ -164,7 +162,7 @@
     </section>
     <!--------------- category-section-end--------------->
 
-
+    <hr>
 
     <!--------------- arrival-section --------------->
     <section class="product ">
@@ -183,7 +181,7 @@
                                 {% url 'product_info_with_user' product.id request.user.id %}
                               {% else %}
                                 {% url 'product_info_without_user' product.id %}
-                              {% endif %}" class="favourite cart-item"> <img src="{{ product.image.url }} " alt="{{ product.name }} ">
+                              {% endif %}" class="favourite cart-item"> <img src="{{ product.image.url }} " alt="{{ product.name }} " style="object-fit: cover;">
                                     <div class="product-cart-items ">
                                         <span>
                                             <svg width="40 " height="40 " viewBox="0 0 40 40 " fill="none "
@@ -248,7 +246,7 @@
                                 <div class="product-description ">
                                     <a href="product-info.html " class="product-details ">{{ product.name }}</a>
                                     <div class="price ">
-                                        <span class="price-cut ">${{ product.price }}</span>
+                                        <span class="prices ">R{{ product.price }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -265,7 +263,7 @@
     <div class="col-lg-12 ">
         <div class="product-deal-section " data-aos="fade-up ">
             <h5 class="wrapper-heading ">Get the best deal for Headphones</h5>
-            <a href="seller-sidebar.html " class="shop-btn ">Shop Now</a>
+            <a href="{% url 'product_sidebar' %}" class="shop-btn ">Shop Now</a>
         </div>
     </div>
     <!--------------- Product deal end ------------------>
@@ -275,19 +273,19 @@
         <div class="container ">
             <div class="section-title ">
                 <h5>Featured Style</h5>
-                <a href="flash-sale.html " class="view ">View All</a>
+                <a href="{% url 'product_sidebar' %} " class="view ">View All</a>
             </div>
             <div class="best-product-section ">
                 <div class="row g-4 ">
                     {% for product in products|slice:":12 " %}
                     <div class="col-xl-2 col-md-4 ">
-                        <div class="product-wrapper " data-aos="fade-up ">
-                            <div class="product-img ">
+                        <div class="product-wrapper " data-aos="fade-up " style="height: 30rem;">
+                            <div class="product-img" style="height: 20rem;">
                                 <a href="{% if request.user.is_authenticated %}
                                 {% url 'product_info_with_user' product.id request.user.id %}
-                              {% else %}
+                                {% else %}
                                 {% url 'product_info_without_user' product.id %}
-                              {% endif %}" class="favourite cart-item"> <img src="{{ product.image.url }} " alt="{{ product.name }} ">
+                                {% endif %}" class="favourite cart-item"> <img src="{{ product.image.url }} " alt="{{ product.name }} " style="height: 20rem; object-fit: cover;">
                                     <div class="product-cart-items ">
                                         <span>
                                             <svg width="40 " height="40 " viewBox="0 0 40 40 " fill="none "
@@ -326,7 +324,7 @@
                                     </div>
                                 </a>
                             </div>
-                            <div class="product-info ">
+                            <div class="product-info " style="    margin: 1.5rem 1rem 1rem;">
                                 <div class="ratings ">
                                     <span>
                                             <svg width="75 " height="15 " viewBox="0 0 75 15 " fill="none "
@@ -352,7 +350,7 @@
                                 <div class="product-description ">
                                     <a href="product-info.html " class="product-details ">{{ product.name }}</a>
                                     <div class="price ">
-                                        <span class="price-cut ">${{ product.price }}</span>
+                                        <span class="prices ">R{{ product.price }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -366,6 +364,8 @@
     <!--------------- flash-section-end--------------->
 
     <!--------------- flash-section--------------->
+
+    <!---------------
     <section class="product flash-sale ">
         <div class="container ">
             <div class="section-title ">
@@ -399,14 +399,25 @@
 
                                 <div class="product-img ">
                                     <img src="{{ product.image.url }} " alt="product-img ">
-                                    <!-- Add other product details here -->
+
+                                    ------>
+
+    <!-- Add other product details here -->
+
+    <!------
+
                                 </div>
                                 <div class="product-info ">
                                     <div class="product-description ">
                                         <a href="# " class="product-details ">{{ product.name }}</a>
                                         <div class="price ">
-                                            <span class="price-cut ">${{ product.price }}</span>
-                                            <!-- Add sale price if needed -->
+                                            <span class="prices ">R{{ product.price }}</span>
+
+                                            --------->
+
+    <!-- Add sale price if needed -->
+
+    <!------
                                         </div>
                                     </div>
                                 </div>
@@ -421,6 +432,7 @@
             </div>
         </div>
     </section>
+    --------------->
     <!--------------- flash-section-end--------------->
 
 
@@ -597,8 +609,8 @@
                         <div class="product-wrapper wrapper-one " data-aos="fade-right ">
                             <div class="wrapper-info ">
                                 <span class="wrapper-subtitle ">NEW STYLE</span>
-                                <h4 class="wrapper-details ">Get 65% Offer
-                                    <span class="wrapper-inner-title ">& Make New</span> Fusion.
+                                <h4 class="wrapper-details ">Get R50 Off
+                                    <span class="wrapper-inner-title ">From orders above</span> R500
                                 </h4>
                                 <a href="{% url 'product_sidebar' %} " class="shop-btn ">Shop Now
                                     <span>

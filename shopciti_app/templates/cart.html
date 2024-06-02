@@ -1,49 +1,53 @@
 {% extends 'base.html' %} {% block content %}
-<h1>Your Cart</h1>
+<section class="checkout product footer-padding">
+    <div class="container">
+        <h1>Your Cart</h1>
 
-{% if cart_items %}
-<form method="post" action="{% url 'clear_cart' %}">
-    {% csrf_token %}
-    <input type="hidden" name="clear_cart" value="clear">
-    <input type="hidden" name="next" value="{{ request.path }}">
-    <button type="submit" class="btn btn-danger">Clear Cart</button>
-</form>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-            <th>Remove</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in cart_items %}
-        <tr>
-            <td>{{ item.product.name }}</td>
-            <!-- Accessing product name through the associated product -->
-            <td>R{{ item.product.price }}</td>
-            <!-- Accessing product price through the associated product -->
-            <td>{{ item.quantity }}</td>
-            <td>R{{ item.get_total_price }}</td>
-            <!-- Assuming get_total_price is a method -->
-            <td>
-                <form method="post" action="{% url 'remove_from_cart' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="remove_item" value="remove">
-                    <input type="hidden" name="product_id" value="{{ item.product.id }}">
-                    <input type="hidden" name="next" value="{{ request.path }}">
-                    <button type="submit" class="btn btn-danger">Remove</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
+        {% if cart_items %}
+        <form method="post" action="{% url 'clear_cart' %}">
+            {% csrf_token %}
+            <input type="hidden" name="clear_cart" value="clear">
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="btn btn-danger">Clear Cart</button>
+        </form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <!-- Accessing product name through the associated product -->
+                    <td>R{{ item.product.price }}</td>
+                    <!-- Accessing product price through the associated product -->
+                    <td>{{ item.quantity }}</td>
+                    <td>R{{ item.get_total_price }}</td>
+                    <!-- Assuming get_total_price is a method -->
+                    <td>
+                        <form method="post" action="{% url 'remove_from_cart' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="remove_item" value="remove">
+                            <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
 
-    </tbody>
-</table>
-<p>Total: R{{ total_price }}</p>
-<!-- Ensure order_id is displayed -->
-<a href="{% url 'checkout' %}?order_id={{ order_id }}" class="btn btn-primary">Checkout</a> {% else %}
-<p>Your cart is empty.</p>
-{% endif %} {% endblock %}
+            </tbody>
+        </table>
+        <p>Total: R{{ total_price }}</p>
+        <!-- Ensure order_id is displayed -->
+        <a href="{% url 'checkout' %}?order_id={{ order_id }}" class="btn btn-primary">Checkout</a> {% else %}
+        <p>Your cart is empty.</p>
+        {% endif %} {% endblock %}
+    </div>
+</section>

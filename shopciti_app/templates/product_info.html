@@ -1,13 +1,59 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
 
+<style>
+    .product-info-content {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .wrapper-subtitle {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    .shop-info {
+        margin-top: 20px;
+    }
+    
+    .heading {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    
+    .info-list {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .info-title {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin-right: 20px;
+    }
+    
+    .info-details {
+        flex: 3;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .info-label {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+</style>
+
 <body>
     <!--------------- products-info-section--------------->
     <section class="product product-info">
         <div class="container">
             <div class="blog-bradcrum">
-                <span><a href="index.html">Home</a></span>
+                <span><a href="{% url 'index' %}">Home</a></span>
                 <span class="devider">/</span>
-                <span><a href="product-sidebar.html">Shop</a></span>
+                <span><a href="{% url 'product_sidebar' %}">Shop</a></span>
                 <span class="devider">/</span>
                 <span><a href="#">Product Details</a></span>
             </div>
@@ -16,15 +62,11 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="product-info-img" data-aos="fade-right">
-                            <div class="swiper product-top">
-                                <div class="product-discount-content">
-                                    <h4>-50%</h4>
-                                </div>
-                                <!-- Product images -->
-                                <div class="swiper-wrapper">
-                                    <div class="swiper-slide slider-top-img">
-                                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                                    </div>
+
+                            <!-- Product images -->
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide slider-top-img">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
                                 </div>
                             </div>
                             <!-- Additional product images -->
@@ -67,9 +109,8 @@
                                 <span class="text">6 Reviews</span>
                             </div>
                             <div class="price">
-                                <span class="price-cut">${{ product.price }}</span>
+                                <span class="prices">R{{ product.price }}</span>
                             </div>
-                            <p class="content-paragraph">{{ product.description }}</p>
                             <hr>
                             <div class="product-availability">
                                 <span>Availabillity : </span>
@@ -224,23 +265,51 @@
             <div class="product-detail-section">
                 <nav>
                     <div class="nav nav-tabs nav-item" id="nav-tab" role="tablist">
-                        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Description</button>
+                        <button class="nav-link active" id="nav-seller-tab" data-bs-toggle="tab" data-bs-target="#nav-seller" type="button" role="tab" aria-controls="nav-seller" aria-selected="false">Seller Info</button>
+                        <button class="nav-link" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Description</button>
                         <button class="nav-link" id="nav-review-tab" data-bs-toggle="tab" data-bs-target="#nav-review" type="button" role="tab" aria-controls="nav-review" aria-selected="false">Reviews</button>
-                        <button class="nav-link" id="nav-seller-tab" data-bs-toggle="tab" data-bs-target="#nav-seller" type="button" role="tab" aria-controls="nav-seller" aria-selected="false">Seller Info</button>
 
                     </div>
                 </nav>
                 <div class="tab-content tab-item" id="nav-tabContent">
 
-                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0" data-aos="fade-up">
+
+
+                    <div class="tab-pane fade show active" id="nav-seller" role="tabpanel" aria-labelledby="nav-seller-tab" tabindex="0">
+                        <div class="product-intro-section">
+                            <div class="col-md-6">
+                                <div class="shop-info">
+                                    <div class="info-list">
+                                        <div class="info-title">
+                                            <p>Name:</p>
+                                            <p>Email:</p>
+                                            <p>Phone:</p>
+                                            <p>City:</p>
+                                            <p>Zip:</p>
+                                        </div>
+                                        <div class="info-details">
+                                            <p>{{ user.username }}</p>
+                                            <p>{{ user.email }}</p>
+                                            <p>{{ user.phone_number }}</p>
+                                            <p>{{ user.city }}</p>
+                                            <p>{{ user.postal_code }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade " id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0" data-aos="fade-up">
                         <div class="product-intro-section">
                             <h5 class="intro-heading">Introduction</h5>
                             <p class="product-details">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has
-                                survived not only five centuries but also the on leap into electronic typesetting, remaining essentially unchanged. It wasn’t popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
-                                andei more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum to make a type specimen book.
+                                {{ product.description }}
                             </p>
                         </div>
+
+                        <!--------
+
                         <div class="product-feature">
                             <h5 class="intro-heading">Features :</h5>
                             <ul>
@@ -258,10 +327,16 @@
                                 </li>
                             </ul>
                         </div>
+
+                        ----->
+
                     </div>
+
                     <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab" tabindex="0">
                         <div class="product-review-section" data-aos="fade-up">
                             <h5 class="intro-heading">Reviews</h5>
+
+                            <!------------
 
                             <div class="review-wrapper">
                                 <div class="wrapper">
@@ -306,6 +381,9 @@
                                     </div>
                                 </div>
                             </div>
+
+                            -------------->
+
                         </div>
                     </div>
                 </div>
@@ -395,7 +473,7 @@
                                 <div class="product-description">
                                     <a href="product-info.html" class="product-details">{{ product.name }}</a>
                                     <div class="price">
-                                        <span class="price-cut">${{ product.price }}</span>
+                                        <span class="prices">R{{ product.price }}</span>
                                     </div>
                                 </div>
                             </div>

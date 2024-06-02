@@ -26,19 +26,7 @@
                                 </div>
                             </div>
                             <hr>
-                            <div class="sidebar-wrapper sidebar-range">
-                                <h5 class="wrapper-heading">Price Range</h5>
-                                <div class="price-slide range-slider">
-                                    <div class="price">
-                                        <div class="range-slider style-1">
-                                            <div id="slider-tooltips" class="slider-range mb-3"></div>
-                                            <span class="example-val" id="slider-margin-value-min"></span>
-                                            <span>-</span>
-                                            <span class="example-val" id="slider-margin-value-max"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                             <hr>
 
 
@@ -81,7 +69,7 @@
                                             <div class="product-img">
                                                 <a href="{% url 'shop_info' user.id %}" class="favourite cart-item">
                                                 {% if user.logo %}
-                                                    <img src="{{ user.logo.url }}" alt="{{ user.username }}'s Logo">
+                                                    <img src="{{ user.logo.url }}" alt="{{ user.username }}'s Logo" style="object-fit: cover;">
                                                 {% else %}
                                                     <p>No logo available</p>
                                                 {% endif %}                                                    <div class="product-cart-items">
@@ -147,7 +135,7 @@
                                                     <!-- Additional product details can be added here -->
                                                     <a href="{% url 'shop_info' user.id %}" class="product-details"></a>
                                                     <div class="price">
-                                                        <span class="price-cut"></span>
+                                                        <span class="prices"></span>
                                                         <span class="new-price"></span>
                                                     </div>
                                                 </div>

@@ -349,10 +349,6 @@ button {
     gap: 1rem;
 }
 
-.price .price-cut {
-    text-decoration: line-through;
-}
-
 .price .new-price {
     color: #09B4E7;
 }

@@ -787,7 +787,7 @@
                                 </div>
                                 <div class="service-content">
                                     <h5 class="service-info service-title">Free Shipping</h5>
-                                    <p class="service-info service-details">When ordering over $100</p>
+                                    <p class="service-info service-details">When ordering over R500</p>
                                 </div>
                             </div>
                         </div>
@@ -973,8 +973,16 @@
 
             // Add event listener to Add To Cart buttons
             const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            const selectedSizeInput = document.getElementById('selected-size-input');
+
             addToCartButtons.forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function(event) {
+                    if (!selectedSizeInput.value) {
+                        event.preventDefault(); // Prevent the default button action
+                        alert('Please select a size before adding to cart.');
+                        return;
+                    }
+
                     const productId = button.dataset.productId;
                     addToCart(productId);
                 });
@@ -1080,6 +1088,8 @@
                 });
             }
         });
+    </script>
+
     </script>
 
 

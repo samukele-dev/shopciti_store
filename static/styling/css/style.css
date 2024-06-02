@@ -228,6 +228,70 @@ button {
     overflow: hidden;
 }
 
+.product-wrapper-ad .product-img {
+    background: url(/static/styling/assets/images/homepage-one/1g.jpg) no-repeat center / cover;
+    width: 100%;
+    height: 44.5rem;
+    padding: 0 0 2rem 0;
+    border-radius: 1.2rem;
+    background-color: #FFFFFF;
+    font-family: "Jost", sans-serif;
+    cursor: pointer;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: relative;
+    transition: all 0.2s;
+    border: 1px solid #FFFFFF;
+    overflow: hidden;
+}
+
+.product-wrapper-ad-2 .product-img {
+    background: url(/static/styling/assets/images/homepage-one/1c.jpg) no-repeat center / cover;
+    width: 100%;
+    height: 44.5rem;
+    padding: 0 0 2rem 0;
+    border-radius: 1.2rem;
+    background-color: #FFFFFF;
+    font-family: "Jost", sans-serif;
+    cursor: pointer;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: relative;
+    transition: all 0.2s;
+    border: 1px solid #FFFFFF;
+    overflow: hidden;
+}
+
+.product-wrapper-ad-3 .product-img {
+    background: url(/static/styling/assets/images/homepage-one/1e.jpg) no-repeat center / cover;
+    width: 100%;
+    height: 44.5rem;
+    padding: 0 0 2rem 0;
+    border-radius: 1.2rem;
+    background-color: #FFFFFF;
+    font-family: "Jost", sans-serif;
+    cursor: pointer;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: relative;
+    transition: all 0.2s;
+    border: 1px solid #FFFFFF;
+    overflow: hidden;
+}
+
+.product-wrapper-ad-4 .product-img {
+    background: url(/static/styling/assets/images/homepage-one/1a.jpg) no-repeat center / cover;
+    width: 100%;
+    height: 44.5rem;
+    padding: 0 0 2rem 0;
+    border-radius: 1.2rem;
+    background-color: #FFFFFF;
+    font-family: "Jost", sans-serif;
+    cursor: pointer;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: relative;
+    transition: all 0.2s;
+    border: 1px solid #FFFFFF;
+    overflow: hidden;
+}
+
 .product-wrapper .product-img {
     height: 31.3rem;
     position: relative;
@@ -347,10 +411,6 @@ button {
     align-items: center;
     justify-content: flex-start;
     gap: 1rem;
-}
-
-.price .price-cut {
-    text-decoration: line-through;
 }
 
 .price .new-price {

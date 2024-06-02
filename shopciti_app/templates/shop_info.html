@@ -51,9 +51,9 @@
     <section class="product product-info">
         <div class="container">
             <div class="blog-bradcrum">
-                <span><a href="index.html">Home</a></span>
+                <span><a href="{% url 'index' %}">Home</a></span>
                 <span class="devider">/</span>
-                <span><a href="product-sidebar.html">Shop</a></span>
+                <span><a href="{% url 'shops' %}">Shop</a></span>
                 <span class="devider">/</span>
                 <span><a href="#">Product Details</a></span>
             </div>
@@ -61,19 +61,16 @@
                 <div class="row ">
                     <div class="col-md-6">
                         <div class="product-info-img" data-aos="fade-right">
-                            <div class="swiper product-top">
-                                <div class="swiper-wrapper">
-                                    <div class="swiper-slide slider-top-img">
-                                        <img src="{{ user.logo.url }}" alt="{{ user.username }}'s Logo">
-                                    </div>
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide slider-top-img">
+                                    <img src="{{ user.logo.url }}" alt="{{ user.username }}'s Logo">
                                 </div>
                             </div>
-
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="product-info-content" data-aos="fade-left">
-                            <span class="wrapper-subtitle">BOY'S FASHION</span>
+                            <span class="wrapper-subtitle">{{ user.username }}</span>
                             <div class="shop-info">
                                 <!--------------- products-details-section--------------->
                                 <div class="product product-description">
@@ -81,17 +78,16 @@
                                         <div class="product-detail-section">
                                             <nav>
                                                 <div class="nav nav-tabs nav-item" id="nav-tab" role="tablist">
-                                                    <button class="nav-link" id="nav-seller-tab" data-bs-toggle="tab" data-bs-target="#nav-seller" type="button" role="tab" aria-controls="nav-seller" aria-selected="true">Seller Info</button>
-                                                    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="false">Description</button>
+                                                    <button class="nav-link active" id="nav-seller-tab" data-bs-toggle="tab" data-bs-target="#nav-seller" type="button" role="tab" aria-controls="nav-seller" aria-selected="true">Seller Info</button>
+                                                    <button class="nav-link" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="false">Description</button>
                                                     <button class="nav-link" id="nav-review-tab" data-bs-toggle="tab" data-bs-target="#nav-review" type="button" role="tab" aria-controls="nav-review" aria-selected="false">Reviews</button>
                                                 </div>
                                             </nav>
 
                                             <div class="tab-content tab-item" id="nav-tabContent">
-                                                <div class="tab-pane fade" id="nav-seller" role="tabpanel" aria-labelledby="nav-seller-tab" tabindex="2">
+                                                <div class="tab-pane fade show active" id="nav-seller" role="tabpanel" aria-labelledby="nav-seller-tab" tabindex="0">
                                                     <div class="product-intro-section">
                                                         <div class="col-md-6">
-                                                            <span class="wrapper-subtitle">BOY'S FASHION</span>
                                                             <div class="shop-info">
                                                                 <div class="info-list">
                                                                     <div class="info-title">
@@ -104,7 +100,7 @@
                                                                     <div class="info-details">
                                                                         <p>{{ user.username }}</p>
                                                                         <p>{{ user.email }}</p>
-                                                                        <p>{{ user.shop.phone_number }}</p>
+                                                                        <p>{{ user.phone_number }}</p>
                                                                         <p>{{ user.city }}</p>
                                                                         <p>{{ user.postal_code }}</p>
                                                                     </div>
@@ -116,26 +112,21 @@
                                             </div>
 
                                             <div class="tab-content tab-item" id="nav-tabContent">
-                                                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0" data-aos="fade-up">
+                                                <div class="tab-pane fade" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="1" data-aos="fade-up">
                                                     <div class="product-intro-section">
                                                         <h5 class="intro-heading">Introduction</h5>
                                                         <p class="product-details">
-                                                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has
-                                                            survived not only five centuries but also the on leap into electronic typesetting, remaining essentially unchanged. It wasn’t popularised in the 1960s with the release of Letraset sheets containing
-                                                            Lorem Ipsum passages, andei more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum to make a type specimen book.
                                                         </p>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="tab-content tab-item" id="nav-tabContent">
-                                                <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab" tabindex="1" data-aos="fade-up">
+                                                <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab" tabindex="2" data-aos="fade-up">
                                                     <div class="product-intro-section">
                                                         <h5 class="intro-heading">Introduction</h5>
                                                         <p class="product-details">
-                                                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has
-                                                            survived not only five centuries but also the on leap into electronic typesetting, remaining essentially unchanged. It wasn’t popularised in the 1960s with the release of Letraset sheets containing
-                                                            Lorem Ipsum passages, andei more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum to make a type specimen book.
+
                                                         </p>
                                                     </div>
                                                 </div>
@@ -171,11 +162,11 @@
                         <div class="product-wrapper" data-aos="fade-up">
                             <a href="{% if user.is_authenticated %}
                             {% url 'product_info_with_user' product.id user.id %}
-                          {% else %}
+                            {% else %}
                             {% url 'product_info_without_user' product.id %}
-                          {% endif %}" class="favourite cart-item">
+                            {% endif %}" class="favourite cart-item">
                                 <div class="product-img">
-                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="object-fit: cover;">
                                     <div class="product-cart-items">
                                         <span>
                                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
@@ -238,12 +229,12 @@
                                 <div class="product-description">
                                     <a href="product-info.html" class="product-details">{{ product.name }}</a>
                                     <div class="price">
-                                        <span class="price-cut">${{ product.price }}</span>
+                                        <span class="prices">R{{ product.price }}</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="product-cart-btn">
-                                <a href="cart.html" class="product-btn" data-product-id="{{ product.id }}">Add To Cart</a>
+                                <button class="product-btn add-to-cart-btn" data-product-id="{{ product.id }}">Add To Cart</button>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 /* google-font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -19,7 +19,6 @@ body {
     font-family: $poppins;
     background: #F8F8F8;
     overflow-x: hidden;
-
 }
 
 h1,
@@ -62,12 +61,10 @@ a {
     color: $heading;
     text-decoration: none;
     font-family: $inter;
-
     .list-text {
         color: $primary-color;
         font-size: 1.6rem;
     }
-
     span {
         font-size: 14px;
         font-weight: 500;
@@ -104,14 +101,13 @@ iframe {
     @media #{$sm} {
         padding: 0 2rem;
     }
-    
 }
 
-input{
+input {
     font-size: 1.3rem;
 }
 
-input[type="checkbox"]{
+input[type="checkbox"] {
     accent-color: $theme-color;
 }
 
@@ -122,17 +118,14 @@ button {
 .shop-btn {
     @include shopBtn();
     z-index: 1;
-
 }
 
 .product {
     padding: 6rem 0;
-
     @media #{$md} {
         padding: 3rem 0;
     }
 }
-
 
 // wrapper------
 .product-wrapper {
@@ -141,17 +134,14 @@ button {
     transition: all .2s;
     border: 1px solid $primary-color;
     overflow: hidden;
-
     .product-img {
         height: 31.3rem;
         position: relative;
-
         img {
             height: 100%;
             width: 100%;
             object-fit: contain;
         }
-
         .product-cart-items {
             @include flexItem($gap: 1rem);
             position: absolute;
@@ -161,111 +151,89 @@ button {
             opacity: 0;
             visibility: hidden;
             transition: all .4s;
-
-            .cart-item{
-                svg{
-                    
-                    rect{
+            .cart-item {
+                svg {
+                    rect {
                         fill: currentColor;
                         fill: $primary-color;
                         transition: all .2s linear;
-                        
                     }
-                    path{
+                    path {
                         fill: currentColor;
                         fill: $heading;
-                        
                     }
                 }
-                &:hover{
-                    svg{
-                        rect{
+                &:hover {
+                    svg {
+                        rect {
                             fill: currentColor;
                             fill: $theme-color;
                         }
-                        path{
+                        path {
                             fill: currentColor;
                             fill: $primary-color;
                         }
-                    } 
+                    }
                 }
             }
-
         }
-
     }
-
     .product-info {
         margin: 1.5rem 3rem 3rem;
-
         .ratings {
             margin: .6rem 0;
         }
     }
-
     .product-details {
         font-family: $jost;
         @media #{$sm} {
             font-size: 2.2rem;
         }
-
     }
     .product-cart-btn {
         position: absolute;
         bottom: 1rem;
         right: 0;
         transition: all .4s
-
     }
-
     &:hover {
         border: 1px solid $theme-color;
-
         .product-cart-items {
             bottom: 15%;
             opacity: 1;
             visibility: visible;
-
             .product-cart-btn {
                 border-bottom-right-radius: 1.2rem;
-
             }
         }
-
     }
-
-
     @media #{$sm} {
-        .product-img{
+        .product-img {
             height: 30rem;
         }
         .product-info {
-            @include flexItem($direction:column);
+            @include flexItem($direction: column);
             margin: 0rem;
         }
         .price {
             @include flexItem($gap: 1rem);
             @media #{$sm} {
-               span{
-                font-size: 2rem;
-               }
+                span {
+                    font-size: 2rem;
+                }
             }
         }
     }
-
 }
 
 .price {
     @include flexItem($justify: flex-start, $gap: 1rem);
-
-    .price-cut {
+    .prices {
         text-decoration: line-through;
     }
-
     .new-price {
         color: $theme-color;
     }
-
     span {
         font-size: 1.6rem;
         color: $paragraph;
@@ -273,51 +241,42 @@ button {
     }
 }
 
-
 .product-btn {
     @include productBtn();
     transition: all .4s;
-
 }
 
 .section-title {
     margin-bottom: 2rem;
     @include flexBetween();
-
     .view {
         @include view();
     }
-
     @media #{$sm} {
-        h5{
+        h5 {
             font-size: 2.5rem;
         }
-        a{
+        a {
             font-size: 1.4rem;
         }
     }
 }
 
 // blog---
-
 .blog-item,
 .cart-content {
     @include flexItem($direction: column, $gap: 2.5rem);
-
     p {
         font-size: 2rem;
         color: $heading;
         font-weight: 600;
     }
-
     .shop-btn {
         margin: 0;
     }
 }
 
-
 // modal------
-
 .modal-wrapper {
     width: 100%;
     height: 100%;
@@ -328,7 +287,6 @@ button {
     justify-content: center;
     align-items: center;
     z-index: 2;
-
 }
 
 .modal-wrapper .anywhere-away {
@@ -344,26 +302,24 @@ button {
     position: relative;
     background: $primary-color;
     @include flexItem();
-    
-   .wrapper-close-btn{
-    position: absolute;
-    right: 3rem;
-    top: 3rem;
-    width: 3rem;
-    height: 3rem;
-    cursor: pointer;
-    svg{
-        fill: currentColor;
-        fill: red;
-        stroke: red;
-    }
-   }
-   .wrapper-main{
-    .divider{
+    .wrapper-close-btn {
+        position: absolute;
+        right: 3rem;
+        top: 3rem;
+        width: 3rem;
         height: 3rem;
-        width: 1px;
-        background: #e8e8e8;
-        
-       }
-   }
+        cursor: pointer;
+        svg {
+            fill: currentColor;
+            fill: red;
+            stroke: red;
+        }
+    }
+    .wrapper-main {
+        .divider {
+            height: 3rem;
+            width: 1px;
+            background: #e8e8e8;
+        }
+    }
 }
