@@ -1,19 +1,19 @@
 // colors-------------
-$theme-color: #09B4E7
-;
+$theme-color: #09B4E7;
 $primary-color: #FFFFFF;
 $secondary-theme: #FFBB38;
 $heading: #232532;
 $paragraph: #797979;
 $theme-bg: rgba(174, 28, 154, .08);
-
 // font---------------
-$poppins: 'Poppins', sans-serif;
-$jost: 'Jost', sans-serif;
-$inter: 'Inter', sans-serif;
-$spartan: 'League Spartan', sans-serif;
-
-
+$poppins: 'Poppins',
+sans-serif;
+$jost: 'Jost',
+sans-serif;
+$inter: 'Inter',
+sans-serif;
+$spartan: 'League Spartan',
+sans-serif;
 // flex-------------
 @mixin flexItem($direction: row, $align: center, $justify: center, $gap: 0px) {
     display: flex;
@@ -35,10 +35,8 @@ $spartan: 'League Spartan', sans-serif;
 }
 
 // mixins--------------------
-
 // (shop-buttons)
-@mixin shopBtn ($padding: 1.2rem 3.4rem, $margin: 4rem 0, $align: center, $border: 3rem, $display: inline-block, $btn-bg: $theme-color, $text: 1.4rem, $font: 500,
-    $position: relative, $bf-color: $primary-color) {
+@mixin shopBtn ($padding: 1.2rem 3.4rem, $margin: 4rem 0, $align: center, $border: 3rem, $display: inline-block, $btn-bg: $theme-color, $text: 1.4rem, $font: 500, $position: relative, $bf-color: $primary-color) {
     padding: $padding;
     margin: $margin;
     text-align: $align;
@@ -52,7 +50,6 @@ $spartan: 'League Spartan', sans-serif;
     font-family: $inter;
     transition: all .3s;
     overflow: hidden;
-
     &::after {
         content: " ";
         width: 0%;
@@ -64,7 +61,6 @@ $spartan: 'League Spartan', sans-serif;
         top: 0;
         z-index: -3;
     }
-
     svg {
         fill: $primary-color;
         transition: all .5s;
@@ -75,34 +71,25 @@ $spartan: 'League Spartan', sans-serif;
         width: 100%;
         z-index: 1;
         transition: all 0.4s ease-in-out;
-       
     }
-
     // hover-effect
     &:hover {
         color: $primary-color;
         background-color: $btn-bg;
-
         &::after {
             right: auto;
             left: 0;
             width: 100%;
-            
         }
-
         svg {
             fill: currentColor;
             fill: $primary-color;
             transform: translate(5px);
         }
-        span{
+        span {
             color: $primary-color;
-            
-           
         }
     }
-
-    
 }
 
 // (regular-buttons)
@@ -113,14 +100,12 @@ $spartan: 'League Spartan', sans-serif;
 }
 
 // (product-buttons)
-@mixin productBtn($pd: 1.2rem 1.6rem 1.2rem 2.5rem, $bg: #09B4E7
-30, $color: $theme-color) {
+@mixin productBtn($pd: 1.2rem 1.6rem 1.2rem 2.5rem, $bg: #09B4E7 30, $color: $theme-color) {
     padding: $pd;
     border-top-left-radius: 3rem;
     background: $bg;
     color: $color;
     font-size: 1.6rem;
-
     &:hover {
         background-color: $theme-color;
         color: $primary-color;
@@ -137,14 +122,12 @@ $spartan: 'League Spartan', sans-serif;
     font-family: $jost;
     cursor: pointer;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-
 }
 
 // (section-title)
 @mixin view() {
     font-family: $jost;
     position: relative;
-
     &::before {
         content: '';
         position: absolute;
@@ -157,7 +140,6 @@ $spartan: 'League Spartan', sans-serif;
         opacity: 0;
         visibility: hidden;
     }
-
     &:hover {
         &::before {
             opacity: 1;
@@ -167,17 +149,14 @@ $spartan: 'League Spartan', sans-serif;
     }
 }
 
-
 @keyframes btnAnimation {
     0% {
         transform: scale(0.8);
     }
-
     50% {
         opacity: 1;
         transform: scale(1.1);
     }
-
     100% {
         transform: scale(1.5);
         opacity: 0;
@@ -185,7 +164,6 @@ $spartan: 'League Spartan', sans-serif;
 }
 
 // resposive-design
-
 $lg: 'only screen and (min-width: 1200px) and (max-width: 1600px)';
 $mdx: 'only screen and (min-width: 767px) and (max-width: 1200px)';
 $md: '(max-width:1023px)';

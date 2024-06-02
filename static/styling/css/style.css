@@ -146,7 +146,7 @@ button {
     text-align: center;
     border-radius: 3rem;
     display: inline-block;
-    background: #09B4E7;
+    background: #FFBB38;
     font-size: 1.4rem;
     font-weight: 500;
     position: relative;
@@ -1547,7 +1547,7 @@ button {
     align-items: center;
     justify-content: center;
     gap: 2rem;
-    background: rgba(174, 28, 154, 0.08);
+    background: #ffff !important;
     height: 18rem;
     border-radius: 1.2rem;
     border: 1px solid rgba(174, 28, 154, 0.08);

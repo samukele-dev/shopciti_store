@@ -5,7 +5,7 @@ from django.contrib.auth.views import LogoutView
 from django.http import HttpResponseServerError, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SellerApplicationForm, ProductForm, BuyerRegistrationForm, SupportTicketForm, PaymentMethodForm
-from .models import CustomUser, Product, Product, RelatedProduct, ProductVariant, Category, CartItem, Cart, SupportTicket, PaymentMethod, Order, OrderItem
+from .models import CustomUser, Product, Product, RelatedProduct, ProductVariant, Category, CartItem, Cart, SupportTicket, PaymentMethod, Order, OrderItem, Size
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -21,13 +21,9 @@ from django.urls import reverse
 import uuid
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
-
-
-
-
-
-
-
+from django.views.decorators.csrf import csrf_exempt
+from hashlib import md5
+from django.conf import settings
 
 
 # View for the index page
@@ -95,16 +91,12 @@ def shops(request):
     return render(request, 'shops.html', context)
 
 
-
-
 # View for displaying shop information
 def shop_info(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     products = Product.objects.filter(added_by=user)
     context = {'user': user, 'products': products}
     return render(request, 'shop_info.html', context)
-
-
 
 class CustomLoginView(auth_views.LoginView):
     template_name = 'login.html'
@@ -151,7 +143,6 @@ def blogs_details(request):
 def blogs(request):
     return render(request, 'blogs.html')
 
-
 # View for displaying comparison
 def compaire(request):
     return render(request, 'compaire.html')
@@ -159,8 +150,6 @@ def compaire(request):
 # View for displaying contact us page
 def contact_us(request):
     return render(request, 'contact_us.html')
-
-
 
 def create_account(request):
     if request.method == 'POST':
@@ -196,8 +185,6 @@ def create_account(request):
     password_change_form = None
 
     return render(request, 'create_account.html', {'form': form, 'password_change_form': password_change_form})
-
-
 
 def random_create_account(request):
     # Check if there's a stored next URL in the session
@@ -250,8 +237,6 @@ def random_create_account(request):
 
     return render(request, 'random_create_account.html', {'form': form, 'password_change_form': password_change_form})
 
-
-
 def generate_unique_username(first_name, last_name):
     # Combine first name and last name and slugify to create a username
     username = slugify(first_name + last_name)
@@ -265,15 +250,10 @@ def generate_unique_username(first_name, last_name):
 
     return username
 
-
-
 @login_required
 def cart_total_quantity(request):
     total_quantity = CartItem.objects.filter(user=request.user).aggregate(total=Sum('quantity'))['total'] or 0
     return JsonResponse({'total_quantity': total_quantity})
-
-
-
 
 @require_POST
 def remove_from_cart(request):
@@ -301,15 +281,12 @@ def remove_from_cart(request):
 def clear_cart(request):
     # Check if the user is authenticated
     if request.user.is_authenticated:
-        # Clear the cart items associated with the current user
-        CartItem.objects.filter(user=request.user).delete()
+        clear_user_cart(request.user)
     else:
-        # Clear the cart items stored in the session for anonymous users
-        request.session.pop('cart', None)
+        clear_session_cart(request.session)
 
     # Redirect to the cart page (or any other page you want)
     return redirect('cart')  # Replace 'cart_page' with your cart page URL name
-
 
 # View for frequently asked questions page
 def faq(request):
@@ -323,16 +300,13 @@ def flash_sale(request):
 def privacy(request):
     return render(request, 'privacy.html')
 
-# View for displaying product information
-def product_info(request, product_id):
-    product = Product.objects.get(pk=product_id)
-    available_products_count = product.available_quantity
-    context = {'product': product, 'available_products_count': available_products_count}
-    return render(request, 'product_info.html', context)
+
 
 # View for displaying product sidebar
 def product_sidebar(request):
-    sidebar_users = CustomUser.objects.all()
+    User = get_user_model()
+
+    sidebar_users = User.objects.exclude(is_buyer=True)
 
     products = Product.objects.all()
 
@@ -355,7 +329,6 @@ def product_sidebar(request):
     context = {'products': products, 'sidebar_users': sidebar_users, 'users': users}
 
     return render(request, 'product_sidebar.html', context)
-
 
 # Function to generate order ID
 def generate_order_id():
@@ -390,8 +363,6 @@ def cart(request):
 
     print(f"Order ID before rendering in cart view: {cart.order_id}")  # Debug statement
     return render(request, 'cart.html', context)
-
-
 
 # View for displaying checkout
 @login_required
@@ -442,9 +413,6 @@ def checkout(request, order_id=None):
     return render(request, 'checkout.html', context)
 
 
-
-
-
 def login_required_to_random_create_account(view_func):
     @user_passes_test(lambda u: u.is_authenticated, login_url='/random_create_account/')
     def wrapper(request, *args, **kwargs):
@@ -478,6 +446,100 @@ def add_to_cart(request, product_id):
     return JsonResponse({'total_quantity': total_quantity, 'total_price': total_price})
 
 
+def clear_user_cart(user):
+    CartItem.objects.filter(user=user).delete()
+
+def clear_session_cart(session):
+    session.pop('cart', None)
+
+def validate_payfast_data(data):
+    # Extract relevant data from the PayFast notification
+    merchant_id = data.get('merchant_id')
+    order_id = data.get('m_payment_id')
+    payment_status = data.get('payment_status')
+    pf_payment_id = data.get('pf_payment_id')
+    signature = data.get('signature')
+
+    # Generate the signature for verification
+    generated_signature = generate_signature(data)
+
+    # Verify the signature
+    if signature == generated_signature:
+        # Signature is valid, now verify other details
+        if merchant_id == settings.PAYFAST_MERCHANT_ID:  # Replace with your actual PayFast merchant ID
+            # Check payment status for successful transaction
+            if payment_status.lower() == 'completed':
+                return True
+    return False
+
+def generate_signature(data):
+    # Construct the signature string based on PayFast documentation
+    # Use the secret key provided by PayFast (stored securely in your settings)
+    signature_string = '&'.join([
+        f"{key}={value}" for key, value in sorted(data.items()) if key != 'signature'
+    ])
+    signature_string += f"&passphrase={settings.PAYFAST_PASSPHRASE}"  # Add passphrase
+
+    # Generate MD5 hash of the signature string
+    generated_signature = md5(signature_string.encode()).hexdigest()
+
+    return generated_signature
+
+@csrf_exempt
+def payfast_notify(request):
+    if request.method == 'POST':
+        data = request.POST
+
+        # Validate the data with PayFast (example assumes a function validate_payfast_data exists)
+        if validate_payfast_data(data):
+            order_id = data.get('m_payment_id')
+            payment_status = data.get('payment_status')
+
+            try:
+                order = Order.objects.get(order_id=order_id)
+                order.payment_status = payment_status
+                order.save()
+
+                # Clear the user's cart
+                clear_user_cart(order.user)
+
+                # Redirect to the appropriate dashboard
+                if order.user.is_buyer:  # Assuming is_buyer is a field on your user model
+                    return redirect('random_user_dashboard')  # Redirect to buyer's dashboard
+                else:
+                    return redirect('dashboard')  # Redirect to vendor's or another type's dashboard
+
+            except Order.DoesNotExist:
+                # Create a new order if it does not exist
+                order = Order.objects.create(
+                    user=request.user,
+                    order_id=order_id,
+                    payment_status=payment_status
+                )
+
+                # Get the cart items
+                cart_items = CartItem.objects.filter(user=request.user)
+
+                # Save order items
+                for item in cart_items:
+                    OrderItem.objects.create(
+                        order=order,
+                        product=item.product,  # Assuming CartItem has a foreign key to Product
+                        quantity=item.quantity,
+                        price=item.product.price
+                    )
+
+                # Clear the user's cart
+                clear_user_cart(order.user)
+
+                # Redirect to the appropriate dashboard
+                if order.user.is_buyer:
+                    return redirect('random_user_dashboard')
+                else:
+                    return redirect('dashboard')
+
+    return HttpResponse("Invalid request", status=400)
+
 
 # View for displaying seller sidebar
 def seller_sidebar(request):
@@ -506,7 +568,8 @@ def dashboard(request):
         payment_method_form = PaymentMethodForm()
 
         if request.method == 'POST':
-            if 'first_name' in request.POST and 'last_name' in request.POST:  # Handle profile update form
+            if 'first_name' in request.POST and 'last_name' in request.POST:
+                # Handle profile update form
                 user.first_name = request.POST.get('first_name', '')
                 user.last_name = request.POST.get('last_name', '')
                 user.email = request.POST.get('email', '')
@@ -525,19 +588,21 @@ def dashboard(request):
 
                 user.save()
                 messages.success(request, 'Profile updated successfully!')
-                return redirect('dashboard')  # Redirect to prevent form resubmission
+                return redirect('dashboard')
 
-            elif 'old_password' in request.POST and 'new_password1' in request.POST and 'new_password2' in request.POST:  # Handle password change form
+            elif 'old_password' in request.POST and 'new_password1' in request.POST and 'new_password2' in request.POST:
+                # Handle password change form
                 password_change_form = PasswordChangeForm(user, request.POST)
                 if password_change_form.is_valid():
                     password_change_form.save()
-                    update_session_auth_hash(request, user)  # Update the user's session to prevent them from being logged out
+                    update_session_auth_hash(request, user)
                     messages.success(request, 'Password updated successfully!')
                 else:
                     messages.error(request, 'Please correct the error below.')
                 return redirect('dashboard')
 
-            elif 'description' in request.POST:  # Handle support ticket form
+            elif 'description' in request.POST:
+                # Handle support ticket form
                 ticket_form = SupportTicketForm(request.POST)
                 if ticket_form.is_valid():
                     support_ticket = ticket_form.save(commit=False)
@@ -549,6 +614,7 @@ def dashboard(request):
                 return redirect('dashboard')
             
             elif 'card_number' in request.POST and 'card_holder_name' in request.POST and 'expiry_date' in request.POST and 'cvv' in request.POST:
+                # Handle payment method form
                 payment_method_form = PaymentMethodForm(request.POST)
                 if payment_method_form.is_valid():
                     payment_method = payment_method_form.save(commit=False)
@@ -557,23 +623,36 @@ def dashboard(request):
                     messages.success(request, 'Payment method added successfully!')
                 else:
                     messages.error(request, 'Please correct the errors in the payment method form.')
-        payment_method_form = PaymentMethodForm()
-
 
         return render(request, 'dashboard.html', {
             'products': products,
             'password_change_form': password_change_form,
             'ticket_form': ticket_form,
             'support_tickets': support_tickets,
-            'payment_methods': payment_methods,  # Pass payment methods to the template
-            'payment_method_form': payment_method_form  # Pass payment method form to the template
+            'payment_methods': payment_methods,
+            'payment_method_form': payment_method_form
         })
     except Exception as e:
         print("An error occurred:", e)
         return HttpResponseServerError("An error occurred. Please try again later.")
 
+@login_required
+def remove_product(request):
+    product_id = request.POST.get('product_id')
+    if product_id:
+        # Check if the user is authenticated
+        if request.user.is_authenticated:
+            # Remove the specified product from the dashboard for the current user
+            Product.objects.filter(added_by=request.user, id=product_id).delete()
+        else:
+            # Remove the specified product from the dashboard stored in the session for anonymous users
+            dashboard_products = request.session.get('dashboard', {})
+            if product_id in dashboard_products:
+                del dashboard_products[product_id]
+                request.session['dashboard'] = dashboard_products
 
-
+    # Redirect to the dashboard page
+    return redirect('dashboard')
 
 
 # View for dashboard (requires login)
@@ -583,6 +662,7 @@ def random_user_dashboard(request):
         user = request.user
         user = get_object_or_404(CustomUser, username=request.user.username)
         support_tickets = SupportTicket.objects.filter(user=request.user).order_by('-created_at')
+        orders = Order.objects.filter(user=request.user).prefetch_related('items').order_by('-created_at')
 
         password_change_form = PasswordChangeForm(request.user)
         ticket_form = SupportTicketForm()
@@ -629,21 +709,16 @@ def random_user_dashboard(request):
                 else:
                     messages.error(request, 'Please correct the errors in the support ticket form.')
                 return redirect('random_user_dashboard')
-            
 
         return render(request, 'random_user_dashboard.html', {
             'password_change_form': password_change_form,
             'ticket_form': ticket_form,
             'support_tickets': support_tickets,
-            
+            'orders': orders,
         })
     except Exception as e:
         print("An error occurred:", e)
         return HttpResponseServerError("An error occurred. Please try again later.")
-
-
-
-
 
 
 # View for displaying wishlist page
@@ -658,20 +733,31 @@ def add_product(request):
         if form.is_valid():
             product = form.save(commit=False)
             product.added_by = request.user
-            available_quantity = request.POST.get('available_quantity')  # Get the available quantity from the form
-            if available_quantity is not None and int(available_quantity) >= 1:
-                product.available = int(available_quantity)
+            
+            # Handle available quantity
+            available = request.POST.get('available_quantity')
+            if available is not None and int(available) >= 1:
+                product.available = int(available)
             else:
-                product.available = True  # Set availability to True if available quantity is provided and greater than 0
+                product.available = 0
+            
             product.save()
             form.save_m2m()  # Save many-to-many relationships (categories)
-            return redirect('dashboard')  # Redirect to dashboard after adding a product
+
+            # Process sizes
+            selected_sizes = request.POST.getlist('sizes')
+            product.sizes.clear()  # Clear existing sizes
+            for size_id in selected_sizes:
+                size = Size.objects.get(id=size_id)
+                product.sizes.add(size)
+
+            return redirect('dashboard')
     else:
         form = ProductForm()
-    
-    categories = Category.objects.all()  # Retrieve all categories from the database
-    context = {'form': form, 'categories': categories}  # Pass form and categories to the template
 
+    categories = Category.objects.all()
+    sizes = Size.objects.all()
+    context = {'form': form, 'categories': categories, 'sizes': sizes}
     return render(request, 'add_product.html', context)
 
 
@@ -701,20 +787,30 @@ def get_related_product_details(product_id):
     return related_products_with_details
 
 # View for displaying product information
-def product_info(request, product_id):
+def product_info(request, product_id, user_id=None):
+    user = get_object_or_404(CustomUser, id=user_id) if user_id else None
     product = Product.objects.get(pk=product_id)
+    products = Product.objects.filter(added_by=user)
+    sizes = product.sizes.all()  # Retrieve all sizes associated with the product
     related_products = get_related_products(product_id)
     variants = get_product_variants(product_id)
     available_products_count = product.available if product.available is not None else 0
-    categories = Category.objects.all()  # Retrieve all categories from the database    
+    categories = Category.objects.all()  # Retrieve all categories from the database
+    
     context = {
+        'user': user,
         'product': product,
+        'products': products,
+        'sizes': sizes,  # Pass sizes to the context
         'available_products_count': available_products_count,
         'related_products': related_products,
         'variants': variants,
-        'categories': categories
+        'categories': categories,
+        'available_quantity': product.available  # Add available_quantity to context
     }
     return render(request, 'product_info.html', context)
+
+
 
 def payfast_success(request):
     # Clear the user's cart
@@ -739,20 +835,15 @@ def payfast_success(request):
     # Provide feedback to the user
     messages.success(request, 'Payment successful! Your order has been placed.')
 
-    # Redirect to the home page or any designated page
-    return redirect(reverse('index'))
+    # Redirect to the random_user_dashboard
+    return redirect('random_user_dashboard')
+
 
 def payfast_return(request):
     # Handle order confirmation and processing here
     # You can access PayFast parameters in the request.GET dictionary
-
     # Example:
     payfast_data = request.GET
     # Extract and process PayFast response data
 
     return render(request, 'shopciti_app/order_confirmation.html')
-
-def payfast_notify(request):
-    # Your view logic here
-    return HttpResponse("PayFast notification received.")
-

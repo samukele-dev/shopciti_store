@@ -42,6 +42,21 @@ Category.objects.create(name='Shirt')
 Category.objects.create(name='Hat, cap')
 
 
+
+class Size(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+    
+Size.objects.create(name='Small')
+Size.objects.create(name='Medium')
+Size.objects.create(name='Large')
+Size.objects.create(name='Xlarge')
+Size.objects.create(name='2XL')
+
+
+
 class Product(models.Model):
     name = models.CharField(max_length=100)
     short_description = models.TextField(default='')  # Provide a default empty string
@@ -50,14 +65,13 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     added_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=None, blank=True, null=True)
     on_sale = models.BooleanField(default=False)
+    sizes = models.ManyToManyField(Size)
     categories = models.ManyToManyField(Category)
 
     available = models.PositiveIntegerField(default=True)  # assuming it can't be negative
 
-
     def __str__(self):
         return self.name
-
 
 
 class RelatedProduct(models.Model):
@@ -149,13 +163,16 @@ class Cart(models.Model):
         return sum(item.get_total_price() for item in self.cartitem_set.all())
         
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, default=None)
+    cart = models.ForeignKey('Cart', on_delete=models.CASCADE, default=None)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
     def get_total_price(self):
         return self.product.price * self.quantity
+
+    def __str__(self):
+        return f"{self.quantity} of {self.product.name} in cart"
 
 
 class Order(models.Model):
@@ -163,10 +180,10 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
+    payment_status = models.CharField(max_length=20, default='Pending')
 
     def __str__(self):
         return f"Order ID: {self.order_id}, User: {self.user.username}, Total Price: {self.total_price}"
-    
 
 
 
@@ -174,10 +191,12 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in Order ID: {self.order.order_id}"
-    
+
 
 class BillingAddress(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)

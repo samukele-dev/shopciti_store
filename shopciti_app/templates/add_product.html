@@ -60,6 +60,22 @@
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
+        
+        .checkbox-options {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .checkbox-row {
+            display: flex;
+            margin-bottom: 10px;
+            /* Adjust spacing between rows */
+        }
+        
+        .checkbox-option {
+            margin-right: 20px;
+            /* Adjust spacing between checkboxes */
+        }
     </style>
 </head>
 
@@ -70,32 +86,31 @@
         {% csrf_token %} {{ form.as_p }}
 
         <label for="id_categories">Categories:</label>
-        <select name="categories" id="id_categories">
+        <select name="categories" id="id_categories" multiple>
             {% for category in categories|slice:":6" %}
             <option value="{{ category.id }}">{{ category.name }}</option>
             {% endfor %}
         </select>
 
-        <label for="id_size">Size:</label>
-        <select name="size" id="id_size">
-            <option value="small">Small</option>
-            <option value="medium">Medium</option>
-            <option value="large">Large</option>
-        </select>
-
-        <label for="id_color">Color:</label>
-        <select name="color" id="id_color">
-            <option value="red">Red</option>
-            <option value="blue">Blue</option>
-            <option value="green">Green</option>
-        </select>
+        <div class="row">
+            <div class="checkbox-options">
+                {% for size in sizes|slice:5 %}
+                <div class="checkbox-row">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="size_{{ size.id }}" name="sizes" value="{{ size.id }}">
+                        <label for="size_{{ size.id }}">{{ size.name }}</label>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
 
         <label for="id_available_quantity">Available Quantity:</label>
-        <input type="number" id="id_available_quantity" name="available_quantity" min="1">
-
+        <input type="number" id="id_available_quantity" name="available_quantity" min="1" value="{{ available }}">
 
         <button type="submit">Submit</button>
     </form>
+
 </body>
 
 </html>

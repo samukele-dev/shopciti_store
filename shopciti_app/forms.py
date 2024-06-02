@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from .models import CustomUser, Product, AdditionalImage, SupportTicket, PaymentMethod, BillingAddress
+from .models import CustomUser, Product, AdditionalImage, SupportTicket, PaymentMethod, BillingAddress, Size, Category
 from django import forms
 from django.forms import inlineformset_factory
 
@@ -31,7 +31,7 @@ class VendorRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'country', 'address', 'city', 'postal_code', 'logo', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone_number', 'country', 'address', 'city', 'postal_code', 'logo', 'password1', 'password2')
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -43,7 +43,7 @@ class VendorRegistrationForm(forms.ModelForm):
 class BuyerRegistrationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('first_name', 'last_name', 'phone' , 'email', 'password1', 'password2')
+        fields = ('first_name', 'last_name', 'phone_number' , 'email', 'password1', 'password2')
 
 
 
@@ -56,7 +56,8 @@ class CustomPasswordChangeForm(PasswordChangeForm):
 
 
 class ProductForm(forms.ModelForm):
-    class Meta:
+
+       class Meta:
         model = Product
         fields = ['name', 'description', 'image', 'price', 'on_sale']
 
