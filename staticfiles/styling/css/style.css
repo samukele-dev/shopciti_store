@@ -1514,6 +1514,146 @@ button {
     color: #FFFFFF;
 }
 
+.wrapper-three {
+    background: url("/static/styling/assets/images/homepage-one/1d.jpg") no-repeat center/cover;
+}
+
+.wrapper-three .shop-btn {
+    padding: 1.2rem 3.4rem;
+    margin: 4rem 0;
+    text-align: center;
+    border-radius: 3rem;
+    display: inline-block;
+    background: #FFBB38;
+    font-size: 1.4rem;
+    font-weight: 500;
+    position: relative;
+    color: #232532;
+    font-family: "Inter", sans-serif;
+    transition: all 0.3s;
+    overflow: hidden;
+}
+
+.wrapper-three .shop-btn::after {
+    content: " ";
+    width: 0%;
+    height: 100%;
+    background: #232532;
+    position: absolute;
+    transition: all 0.4s ease-in-out;
+    right: 0;
+    top: 0;
+    z-index: -3;
+}
+
+.wrapper-three .shop-btn svg {
+    fill: #FFFFFF;
+    transition: all 0.5s;
+}
+
+.wrapper-three .shop-btn span {
+    margin-left: 8px;
+    font-size: 1.5rem;
+    width: 100%;
+    z-index: 1;
+    transition: all 0.4s ease-in-out;
+}
+
+.wrapper-three .shop-btn:hover {
+    color: #FFFFFF;
+    background-color: #FFBB38;
+}
+
+.wrapper-three .shop-btn:hover::after {
+    right: auto;
+    left: 0;
+    width: 100%;
+}
+
+.wrapper-three .shop-btn:hover svg {
+    fill: currentColor;
+    fill: #FFFFFF;
+    transform: translate(5px);
+}
+
+.wrapper-three .shop-btn:hover span {
+    color: #FFFFFF;
+}
+
+.wrapper-three .shop-btn svg {
+    fill: #232532;
+}
+
+.wrapper-four {
+    background: url("/static/styling/assets/images/homepage-one/1b.jpg") no-repeat center/cover;
+}
+
+.wrapper-four .shop-btn {
+    padding: 1.2rem 3.4rem;
+    margin: 4rem 0;
+    text-align: center;
+    border-radius: 3rem;
+    display: inline-block;
+    background: #FFBB38;
+    font-size: 1.4rem;
+    font-weight: 500;
+    position: relative;
+    color: #232532;
+    font-family: "Inter", sans-serif;
+    transition: all 0.3s;
+    overflow: hidden;
+}
+
+.wrapper-four .shop-btn::after {
+    content: " ";
+    width: 0%;
+    height: 100%;
+    background: #232532;
+    position: absolute;
+    transition: all 0.4s ease-in-out;
+    right: 0;
+    top: 0;
+    z-index: -3;
+}
+
+.wrapper-four .shop-btn svg {
+    fill: #FFFFFF;
+    transition: all 0.5s;
+}
+
+.wrapper-four .shop-btn span {
+    margin-left: 8px;
+    font-size: 1.5rem;
+    width: 100%;
+    z-index: 1;
+    transition: all 0.4s ease-in-out;
+}
+
+.wrapper-four .shop-btn:hover {
+    color: #FFFFFF;
+    background-color: #FFBB38;
+}
+
+.wrapper-four .shop-btn:hover::after {
+    right: auto;
+    left: 0;
+    width: 100%;
+}
+
+.wrapper-four .shop-btn:hover svg {
+    fill: currentColor;
+    fill: #FFFFFF;
+    transform: translate(5px);
+}
+
+.wrapper-four .shop-btn:hover span {
+    color: #FFFFFF;
+}
+
+.wrapper-four .shop-btn svg {
+    fill: #232532;
+}
+
 .category-section {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
