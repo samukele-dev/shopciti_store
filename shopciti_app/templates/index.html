@@ -13,6 +13,18 @@
     .wrapper-inner-title {
         color: #ffd900;
     }
+    
+    @media (max-width:767px) {
+        .product-wrapper .product-details {
+            font-size: 10px !important;
+        }
+    }
+    
+    @media (max-width: 767px) and (max-width: 767px) {
+        .product-wrapper {
+            max-height: 15rem !important;
+        }
+    }
 </style>
 
 <body>
@@ -43,48 +55,47 @@
     </section>
     <!--------------- hero-section-end --------------->
 
+
+
     <!--------------- style-section --------------->
-    <section class="product pb-2 pt-5 fashion-style ">
-        <div class="container ">
-            <div class="style-section ">
-                <div class="row gy-4 gx-5 gy-lg-0 ">
-                    <div class="col-lg-6 ">
-                        <div class="product-wrapper wrapper-one product-img " data-aos="fade-right ">
-                            <div class="wrapper-info ">
-                                <span class="wrapper-subtitle ">NEW STYLE</span>
-                                <h4 class="wrapper-details ">Get R50 Off
-                                    <span class="wrapper-inner-title ">From orders above</span> R500
+    <section class="product pb-2 fashion-style">
+        <div class="container">
+            <div class="style-section">
+                <div class="row gy-4 gx-5 gy-lg-0">
+                    <div class="col-6 col-md-6">
+                        <div class="product-wrapper wrapper-one product-img" data-aos="fade-right" style="height: 30rem;">
+                            <div class="wrapper-info">
+                                <span class="wrapper-subtitle">NEW STYLE</span>
+                                <h4 class="wrapper-details">Get R50 Off
+                                    <span class="wrapper-inner-title">From orders above</span> R500
                                 </h4>
-                                <a href="{% url 'product_sidebar' %} " class="shop-btn ">Shop Now
-                                    <span>
-                                        <svg width="8 " height="14 " viewBox="0 0 8 14 " fill="none "
-                                            xmlns="http://www.w3.org/2000/svg ">
-                                            <rect x="1.45312 " y="0.914062 " width="9.25346 " height="2.05632 "
-                                                transform="rotate(45 1.45312 0.914062) " />
-                                            <rect x="8 " y="7.45703 " width="9.25346 " height="2.05632 "
-                                                transform="rotate(135 8 7.45703) " />
-                                        </svg>
-                                    </span>
-                                </a>
+                                <a href="{% url 'product_sidebar' %}" class="shop-btn">Shop Now
+                                <span>
+                                    <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="1.45312" y="0.914062" width="9.25346" height="2.05632" transform="rotate(45 1.45312 0.914062)" />
+                                        <rect x="8" y="7.45703" width="9.25346" height="2.05632" transform="rotate(135 8 7.45703)" />
+                                    </svg>
+                                </span>
+                            </a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 ">
-                        <div class="product-wrapper wrapper-two product-img " data-aos="fade-up ">
-                            <div class="wrapper-info ">
-                                <span class="wrapper-subtitle ">Mega OFFER</span>
-                                <h4 class="wrapper-details ">
+                    <div class="col-6 col-md-6">
+                        <div class="product-wrapper wrapper-two product-img" data-aos="fade-up" style="height: 30rem;">
+                            <div class="wrapper-info">
+                                <span class="wrapper-subtitle">Mega OFFER</span>
+                                <h4 class="wrapper-details">
                                     Make your New
-                                    <span class="wrapper-inner-title ">Styles with Our</span> Products
+                                    <span class="wrapper-inner-title">Styles with Our</span> Products
                                 </h4>
-                                <a href="{% url 'product_sidebar' %} " class="shop-btn ">Shop Now
-                                    <span>
-                                        <svg width="8 " height="14 " viewBox="0 0 8 14 " fill="none " xmlns="http://www.w3.org/2000/svg ">
-                                            <rect x="1.45312 " y="0.914062 " width="9.25346 " height="2.05632 " transform="rotate(45 1.45312 0.914062) " />
-                                            <rect x="8 " y="7.45703 " width="9.25346 " height="2.05632 " transform="rotate(135 8 7.45703) " />
-                                        </svg>
-                                    </span>
-                                </a>
+                                <a href="{% url 'product_sidebar' %}" class="shop-btn">Shop Now
+                                <span>
+                                    <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="1.45312" y="0.914062" width="9.25346" height="2.05632" transform="rotate(45 1.45312 0.914062)" />
+                                        <rect x="8" y="7.45703" width="9.25346" height="2.05632" transform="rotate(135 8 7.45703)" />
+                                    </svg>
+                                </span>
+                            </a>
                             </div>
                         </div>
                     </div>
@@ -95,46 +106,47 @@
     <!--------------- style-section-end --------------->
 
 
-
-
-    <section class="product pt-5 fashion-style ">
-        <div class="container ">
-
-            <div class="arrival-section ">
-                <div class="row g-5 ">
-                    <div class="col-lg-3 col-md-6 ">
-                        <div class="product-wrapper-ad " data-aos="fade-up ">
-                            <div class="product-img ">
+    <section class="product fashion-style">
+        <div class="container">
+            <div class="arrival-section">
+                <div class="row g-0">
+                    <div class="col-3" style="padding: 10px; height: 13rem;">
+                        <!-- col-3 for 25% width on all screen sizes -->
+                        <div class="product-wrapper-ad" data-aos="fade-up" style="border-radius: 0;">
+                            <div class="product-img" style="height: 13rem;">
+                                <!-- Image or content here -->
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 ">
-                        <div class="product-wrapper-ad-2 " data-aos="fade-up ">
-
-                            <div class="product-img ">
-
+                    <div class="col-3" style="padding: 10px; height: 13rem;">
+                        <!-- col-3 for 25% width on all screen sizes -->
+                        <div class="product-wrapper-ad-2" data-aos="fade-up" style="border-radius: 0;">
+                            <div class="product-img" style="height: 13rem;">
+                                <!-- Image or content here -->
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 ">
-                        <div class="product-wrapper-ad-3 " data-aos="fade-up ">
-                            <div class="product-img ">
-
+                    <div class="col-3" style="padding: 10px; height: 13rem;">
+                        <!-- col-3 for 25% width on all screen sizes -->
+                        <div class="product-wrapper-ad-3" data-aos="fade-up" style="border-radius: 0;">
+                            <div class="product-img" style="height: 13rem;">
+                                <!-- Image or content here -->
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 ">
-                        <div class="product-wrapper-ad-4 " data-aos="fade-up ">
-                            <div class="product-img ">
-
+                    <div class="col-3" style="padding: 10px; height: 13rem;">
+                        <!-- col-3 for 25% width on all screen sizes -->
+                        <div class="product-wrapper-ad-4" data-aos="fade-up" style="border-radius: 0;">
+                            <div class="product-img" style="height: 13rem;">
+                                <!-- Image or content here -->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
+
 
 
     <!--------------- category-section--------------->
@@ -165,88 +177,43 @@
     <hr>
 
     <!--------------- arrival-section --------------->
-    <section class="product ">
-        <div class="container ">
-            <div class="section-title ">
+    <section class="product">
+        <div class="container">
+            <div class="section-title">
                 <h5>NEW ARRIVALS</h5>
-                <a href="{% url 'product_sidebar' %} " class="view ">View All</a>
+                <a href="{% url 'product_sidebar' %}" class="view">View All</a>
             </div>
-            <div class="arrival-section ">
-                <div class="row g-5 ">
-                    {% for product in products|slice:":12 " %}
-                    <div class="col-lg-3 col-md-6 ">
-                        <div class="product-wrapper " data-aos="fade-up ">
-                            <div class="product-img ">
-                                <a href="{% if request.user.is_authenticated %}
-                                {% url 'product_info_with_user' product.id request.user.id %}
-                              {% else %}
-                                {% url 'product_info_without_user' product.id %}
-                              {% endif %}" class="favourite cart-item"> <img src="{{ product.image.url }} " alt="{{ product.name }} " style="object-fit: cover;">
-                                    <div class="product-cart-items ">
+            <div class="arrival-section">
+                <div class="row g-0">
+                    {% for product in products|slice:":12" %}
+                    <div class="col-lg-2 col-3" style="padding: 10px;">
+                        <!-- Changed from col-lg-3 col-md-4 col-sm-6 to col-3 -->
+                        <div class="product-wrapper" data-aos="fade-up" style="height: 35rem; border-radius: 0;">
+                            <div class="product-img" style="height: 70%; overflow: hidden;">
+                                <a href="{% if request.user.is_authenticated %}{% url 'product_info_with_user' product.id request.user.id %}{% else %}{% url 'product_info_without_user' product.id %}{% endif %}" class="favourite cart-item">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="object-fit: cover; width: 100%; height: 100%;">
+                                    <div class="product-cart-items">
                                         <span>
-                                            <svg width="40 " height="40 " viewBox="0 0 40 40 " fill="none "
-                                                xmlns="http://www.w3.org/2000/svg ">
-                                                <rect width="40 " height="40 " rx="20 " fill="white " />
-                                                <path
-                                                    d="M12 14.4482V16.5664H12.5466H13.0933V15.3957V14.2204L15.6214 16.7486L18.1496 19.2767L18.5459 18.8759L18.9468 18.4796L16.4186 15.9514L13.8904 13.4232H15.0657H16.2364V12.8766V12.33H14.1182H12V14.4482Z "
-                                                    fill="#181818 " />
-                                                <path
-                                                    d="M12 14.4482V16.5664H12.5466H13.0933V15.3957V14.2204L15.6214 16.7486L18.1496 19.2767L18.5459 18.8759L18.9468 18.4796L16.4186 15.9514L13.8904 13.4232H15.0657H16.2364V12.8766V12.33H14.1182H12V14.4482Z "
-                                                    fill="black " fill-opacity="0.2 " />
-                                                <path
-                                                    d="M23.4345 12.8766V13.4232H24.6052H25.7805L23.2523 15.9514L20.7241 18.4796L21.125 18.8759L21.5213 19.2767L24.0495 16.7486L26.5776 14.2204V15.3957V16.5664H27.1243H27.6709V14.4482V12.33H25.5527H23.4345V12.8766Z "
-                                                    fill="#181818 " />
-                                                <path
-                                                    d="M23.4345 12.8766V13.4232H24.6052H25.7805L23.2523 15.9514L20.7241 18.4796L21.125 18.8759L21.5213 19.2767L24.0495 16.7486L26.5776 14.2204V15.3957V16.5664H27.1243H27.6709V14.4482V12.33H25.5527H23.4345V12.8766Z "
-                                                    fill="black " fill-opacity="0.2 " />
-                                                <path
-                                                    d="M15.6078 23.5905L13.0933 26.1096V24.9343V23.7636H12.5466H12V25.8818V28H14.1182H16.2364V27.4534V26.9067H15.0657H13.8904L16.4186 24.3786L18.9468 21.8504L18.5596 21.4632C18.35 21.2491 18.1633 21.076
-                                            18.1496 21.076C18.1359 21.076 16.9926 22.2103 15.6078 23.5905Z "
-                                                    fill="#181818 " />
-                                                <path
-                                                    d="M15.6078 23.5905L13.0933 26.1096V24.9343V23.7636H12.5466H12V25.8818V28H14.1182H16.2364V27.4534V26.9067H15.0657H13.8904L16.4186 24.3786L18.9468 21.8504L18.5596 21.4632C18.35 21.2491 18.1633 21.076
-                                            18.1496 21.076C18.1359 21.076 16.9926 22.2103 15.6078 23.5905Z "
-                                                    fill="black " fill-opacity="0.2 " />
-                                                <path
-                                                    d="M21.1113 21.4632L20.7241 21.8504L23.2523 24.3786L25.7805 26.9067H24.6052H23.4345V27.4534V28H25.5527H27.6709V25.8818V23.7636H27.1243H26.5776V24.9343V26.1096L24.0586 23.5905C22.6783 22.2103 21.535
-                                            21.076 21.5213 21.076C21.5076 21.076 21.3209 21.2491 21.1113 21.4632Z "
-                                                    fill="#181818 " />
-                                                <path
-                                                    d="M21.1113 21.4632L20.7241 21.8504L23.2523 24.3786L25.7805 26.9067H24.6052H23.4345V27.4534V28H25.5527H27.6709V25.8818V23.7636H27.1243H26.5776V24.9343V26.1096L24.0586 23.5905C22.6783 22.2103 21.535
-                                            21.076 21.5213 21.076C21.5076 21.076 21.3209 21.2491 21.1113 21.4632Z "
-                                                    fill="black " fill-opacity="0.2 " />
-                                            </svg>
-                                        </span>
+                                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="40" height="40" rx="20" fill="white" />
+                                            <path d="M12 14.4482V16.5664H12.5466H13.0933V15.3957V14.2204L15.6214 16.7486L18.1496 19.2767L18.5459 18.8759L18.9468 18.4796L16.4186 15.9514L13.8904 13.4232H15.0657H16.2364V12.8766V12.33H14.1182H12V14.4482Z" fill="#181818" />
+                                            <path d="M12 14.4482V16.5664H12.5466H13.0933V15.3957V14.2204L15.6214 16.7486L18.1496 19.2767L18.5459 18.8759L18.9468 18.4796L16.4186 15.9514L13.8904 13.4232H15.0657H16.2364V12.8766V12.33H14.1182H12V14.4482Z" fill="black" fill-opacity="0.2" />
+                                            <path d="M23.4345 12.8766V13.4232H24.6052H25.7805L23.2523 15.9514L20.7241 18.4796L21.125 18.8759L21.5213 19.2767L24.0495 16.7486L26.5776 14.2204V15.3957V16.5664H27.1243H27.6709V14.4482V12.33H25.5527H23.4345V12.8766Z" fill="#181818" />
+                                            <path d="M23.4345 12.8766V13.4232H24.6052H25.7805L23.2523 15.9514L20.7241 18.4796L21.125 18.8759L21.5213 19.2767L24.0495 16.7486L26.5776 14.2204V15.3957V16.5664H27.1243H27.6709V14.4482V12.33H25.5527H23.4345V12.8766Z" fill="black" fill-opacity="0.2" />
+                                            <path d="M15.6078 23.5905L13.0933 26.1096V24.9343V23.7636H12.5466H12V25.8818V28H14.1182H16.2364V27.4534V26.9067H15.0657H13.8904L16.4186 24.3786L18.9468 21.8504L18.5596 21.4632C18.35 21.2491 18.1633 21.076 18.1496 21.076C18.1359 21.076 16.9926 22.2103 15.6078 23.5905Z" fill="#181818" />
+                                            <path d="M15.6078 23.5905L13.0933 26.1096V24.9343V23.7636H12.5466H12V25.8818V28H14.1182H16.2364V27.4534V26.9067H15.0657H13.8904L16.4186 24.3786L18.9468 21.8504L18.5596 21.4632C18.35 21.2491 18.1633 21.076 18.1496 21.076C18.1359 21.076 16.9926 22.2103 15.6078 23.5905Z" fill="black" fill-opacity="0.2" />
+                                            <path d="M21.1113 21.4632L20.7241 21.8504L23.2523 24.3786L25.7805 26.9067H24.6052H23.4345V27.4534V28H25.5527H27.6709V25.8818V23.7636H27.1243H26.5776V24.9343V26.1096L24.0586 23.5905C22.6783 22.2103 21.535 21.076 21.5213 21.076C21.5076 21.076 21.3209 21.2491 21.1113 21.4632Z" fill="#181818" />
+                                            <path d="M21.1113 21.4632L20.7241 21.8504L23.2523 24.3786L25.7805 26.9067H24.6052H23.4345V27.4534V28H25.5527H27.6709V25.8818V23.7636H27.1243H26.5776V24.9343V26.1096L24.0586 23.5905C22.6783 22.2103 21.535 21.076 21.5213 21.076C21.5076 21.076 21.3209 21.2491 21.1113 21.4632Z" fill="black" fill-opacity="0.2" />
+                                        </svg>
+                                    </span>
                                     </div>
                                 </a>
                             </div>
-                            <div class="product-info ">
-                                <div class="ratings ">
-                                    <span>
-                                        <svg width="75 " height="15 " viewBox="0 0 75 15 " fill="none "
-                                            xmlns="http://www.w3.org/2000/svg ">
-                                            <path
-                                                d="M7.5 0L9.18386 5.18237H14.6329L10.2245 8.38525L11.9084 13.5676L7.5 10.3647L3.09161 13.5676L4.77547 8.38525L0.367076 5.18237H5.81614L7.5 0Z "
-                                                fill="#FFA800 " />
-                                            <path
-                                                d="M22.5 0L24.1839 5.18237H29.6329L25.2245 8.38525L26.9084 13.5676L22.5 10.3647L18.0916 13.5676L19.7755 8.38525L15.3671 5.18237H20.8161L22.5 0Z "
-                                                fill="#FFA800 " />
-                                            <path
-                                                d="M37.5 0L39.1839 5.18237H44.6329L40.2245 8.38525L41.9084 13.5676L37.5 10.3647L33.0916 13.5676L34.7755 8.38525L30.3671 5.18237H35.8161L37.5 0Z "
-                                                fill="#FFA800 " />
-                                            <path
-                                                d="M52.5 0L54.1839 5.18237H59.6329L55.2245 8.38525L56.9084 13.5676L52.5 10.3647L48.0916 13.5676L49.7755 8.38525L45.3671 5.18237H50.8161L52.5 0Z "
-                                                fill="#FFA800 " />
-                                            <path
-                                                d="M67.5 0L69.1839 5.18237H74.6329L70.2245 8.38525L71.9084 13.5676L67.5 10.3647L63.0916 13.5676L64.7755 8.38525L60.3671 5.18237H65.8161L67.5 0Z "
-                                                fill="#FFA800 " />
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="product-description ">
-                                    <a href="product-info.html " class="product-details ">{{ product.name }}</a>
-                                    <div class="price ">
-                                        <span class="prices ">R{{ product.price }}</span>
+                            <div class="product-info" style="height: 30%; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div class="product-description">
+                                    <a href="{% if request.user.is_authenticated %}{% url 'product_info_with_user' product.id request.user.id %}{% else %}{% url 'product_info_without_user' product.id %}{% endif %}" class="product-details">{{ product.name }}</a>
+                                    <div class="price">
+                                        <span class="prices">R{{ product.price }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -259,10 +226,13 @@
     </section>
     <!--------------- arrival-section-end --------------->
 
+
+
+
     <!--------------- Product deal ------------------>
     <div class="col-lg-12 ">
         <div class="product-deal-section " data-aos="fade-up ">
-            <h5 class="wrapper-heading ">Get the best deal for Headphones</h5>
+            <h5 class="wrapper-heading ">Get the best deals</h5>
             <a href="{% url 'product_sidebar' %}" class="shop-btn ">Shop Now</a>
         </div>
     </div>
@@ -275,82 +245,38 @@
                 <h5>Featured Style</h5>
                 <a href="{% url 'product_sidebar' %} " class="view ">View All</a>
             </div>
-            <div class="best-product-section ">
-                <div class="row g-4 ">
-                    {% for product in products|slice:":12 " %}
-                    <div class="col-xl-2 col-md-4 ">
-                        <div class="product-wrapper " data-aos="fade-up " style="height: 30rem;">
-                            <div class="product-img" style="height: 20rem;">
-                                <a href="{% if request.user.is_authenticated %}
-                                {% url 'product_info_with_user' product.id request.user.id %}
-                                {% else %}
-                                {% url 'product_info_without_user' product.id %}
-                                {% endif %}" class="favourite cart-item"> <img src="{{ product.image.url }} " alt="{{ product.name }} " style="height: 20rem; object-fit: cover;">
-                                    <div class="product-cart-items ">
+            <div class="arrival-section">
+                <div class="row g-0">
+                    {% for product in products|slice:":12" %}
+                    <div class="col-lg-2 col-3" style="padding: 10px;">
+                        <!-- Changed from col-lg-3 col-md-4 col-sm-6 to col-3 -->
+                        <div class="product-wrapper" data-aos="fade-up" style="height: 35rem; border-radius: 0;">
+                            <div class="product-img" style="height: 70%; overflow: hidden;">
+                                <a href="{% if request.user.is_authenticated %}{% url 'product_info_with_user' product.id request.user.id %}{% else %}{% url 'product_info_without_user' product.id %}{% endif %}" class="favourite cart-item">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="object-fit: cover; width: 100%; height: 100%;">
+                                    <div class="product-cart-items">
                                         <span>
-                                            <svg width="40 " height="40 " viewBox="0 0 40 40 " fill="none "
-                                                xmlns="http://www.w3.org/2000/svg ">
-                                                <rect width="40 " height="40 " rx="20 " fill="white " />
-                                                <path
-                                                        d="M12 14.4482V16.5664H12.5466H13.0933V15.3957V14.2204L15.6214 16.7486L18.1496 19.2767L18.5459 18.8759L18.9468 18.4796L16.4186 15.9514L13.8904 13.4232H15.0657H16.2364V12.8766V12.33H14.1182H12V14.4482Z "
-                                                    fill="#181818 " />
-                                                <path
-                                                        d="M12 14.4482V16.5664H12.5466H13.0933V15.3957V14.2204L15.6214 16.7486L18.1496 19.2767L18.5459 18.8759L18.9468 18.4796L16.4186 15.9514L13.8904 13.4232H15.0657H16.2364V12.8766V12.33H14.1182H12V14.4482Z "
-                                                    fill="black " fill-opacity="0.2 " />
-                                                <path
-                                                        d="M23.4345 12.8766V13.4232H24.6052H25.7805L23.2523 15.9514L20.7241 18.4796L21.125 18.8759L21.5213 19.2767L24.0495 16.7486L26.5776 14.2204V15.3957V16.5664H27.1243H27.6709V14.4482V12.33H25.5527H23.4345V12.8766Z "
-                                                    fill="#181818 " />
-                                                <path
-                                                        d="M23.4345 12.8766V13.4232H24.6052H25.7805L23.2523 15.9514L20.7241 18.4796L21.125 18.8759L21.5213 19.2767L24.0495 16.7486L26.5776 14.2204V15.3957V16.5664H27.1243H27.6709V14.4482V12.33H25.5527H23.4345V12.8766Z "
-                                                    fill="black " fill-opacity="0.2 " />
-                                                <path
-                                                        d="M15.6078 23.5905L13.0933 26.1096V24.9343V23.7636H12.5466H12V25.8818V28H14.1182H16.2364V27.4534V26.9067H15.0657H13.8904L16.4186 24.3786L18.9468 21.8504L18.5596 21.4632C18.35 21.2491 18.1633 21.076
-                                            18.1496 21.076C18.1359 21.076 16.9926 22.2103 15.6078 23.5905Z "
-                                                    fill="#181818 " />
-                                                <path
-                                                        d="M15.6078 23.5905L13.0933 26.1096V24.9343V23.7636H12.5466H12V25.8818V28H14.1182H16.2364V27.4534V26.9067H15.0657H13.8904L16.4186 24.3786L18.9468 21.8504L18.5596 21.4632C18.35 21.2491 18.1633 21.076
-                                            18.1496 21.076C18.1359 21.076 16.9926 22.2103 15.6078 23.5905Z "
-                                                    fill="black " fill-opacity="0.2 " />
-                                                <path
-                                                    d="M21.1113 21.4632L20.7241 21.8504L23.2523 24.3786L25.7805 26.9067H24.6052H23.4345V27.4534V28H25.5527H27.6709V25.8818V23.7636H27.1243H26.5776V24.9343V26.1096L24.0586 23.5905C22.6783 22.2103 21.535
-                                            21.076 21.5213 21.076C21.5076 21.076 21.3209 21.2491 21.1113 21.4632Z "
-                                                    fill="#181818 " />
-                                                <path
-                                                    d="M21.1113 21.4632L20.7241 21.8504L23.2523 24.3786L25.7805 26.9067H24.6052H23.4345V27.4534V28H25.5527H27.6709V25.8818V23.7636H27.1243H26.5776V24.9343V26.1096L24.0586 23.5905C22.6783 22.2103 21.535
-                                            21.076 21.5213 21.076C21.5076 21.076 21.3209 21.2491 21.1113 21.4632Z "
-                                                    fill="black " fill-opacity="0.2 " />
-                                            </svg>
-                                        </span>
+                                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="40" height="40" rx="20" fill="white" />
+                                            <path d="M12 14.4482V16.5664H12.5466H13.0933V15.3957V14.2204L15.6214 16.7486L18.1496 19.2767L18.5459 18.8759L18.9468 18.4796L16.4186 15.9514L13.8904 13.4232H15.0657H16.2364V12.8766V12.33H14.1182H12V14.4482Z" fill="#181818" />
+                                            <path d="M12 14.4482V16.5664H12.5466H13.0933V15.3957V14.2204L15.6214 16.7486L18.1496 19.2767L18.5459 18.8759L18.9468 18.4796L16.4186 15.9514L13.8904 13.4232H15.0657H16.2364V12.8766V12.33H14.1182H12V14.4482Z" fill="black" fill-opacity="0.2" />
+                                            <path d="M23.4345 12.8766V13.4232H24.6052H25.7805L23.2523 15.9514L20.7241 18.4796L21.125 18.8759L21.5213 19.2767L24.0495 16.7486L26.5776 14.2204V15.3957V16.5664H27.1243H27.6709V14.4482V12.33H25.5527H23.4345V12.8766Z" fill="#181818" />
+                                            <path d="M23.4345 12.8766V13.4232H24.6052H25.7805L23.2523 15.9514L20.7241 18.4796L21.125 18.8759L21.5213 19.2767L24.0495 16.7486L26.5776 14.2204V15.3957V16.5664H27.1243H27.6709V14.4482V12.33H25.5527H23.4345V12.8766Z" fill="black" fill-opacity="0.2" />
+                                            <path d="M15.6078 23.5905L13.0933 26.1096V24.9343V23.7636H12.5466H12V25.8818V28H14.1182H16.2364V27.4534V26.9067H15.0657H13.8904L16.4186 24.3786L18.9468 21.8504L18.5596 21.4632C18.35 21.2491 18.1633 21.076 18.1496 21.076C18.1359 21.076 16.9926 22.2103 15.6078 23.5905Z" fill="#181818" />
+                                            <path d="M15.6078 23.5905L13.0933 26.1096V24.9343V23.7636H12.5466H12V25.8818V28H14.1182H16.2364V27.4534V26.9067H15.0657H13.8904L16.4186 24.3786L18.9468 21.8504L18.5596 21.4632C18.35 21.2491 18.1633 21.076 18.1496 21.076C18.1359 21.076 16.9926 22.2103 15.6078 23.5905Z" fill="black" fill-opacity="0.2" />
+                                            <path d="M21.1113 21.4632L20.7241 21.8504L23.2523 24.3786L25.7805 26.9067H24.6052H23.4345V27.4534V28H25.5527H27.6709V25.8818V23.7636H27.1243H26.5776V24.9343V26.1096L24.0586 23.5905C22.6783 22.2103 21.535 21.076 21.5213 21.076C21.5076 21.076 21.3209 21.2491 21.1113 21.4632Z" fill="#181818" />
+                                            <path d="M21.1113 21.4632L20.7241 21.8504L23.2523 24.3786L25.7805 26.9067H24.6052H23.4345V27.4534V28H25.5527H27.6709V25.8818V23.7636H27.1243H26.5776V24.9343V26.1096L24.0586 23.5905C22.6783 22.2103 21.535 21.076 21.5213 21.076C21.5076 21.076 21.3209 21.2491 21.1113 21.4632Z" fill="black" fill-opacity="0.2" />
+                                        </svg>
+                                    </span>
                                     </div>
                                 </a>
                             </div>
-                            <div class="product-info " style="    margin: 1.5rem 1rem 1rem;">
-                                <div class="ratings ">
-                                    <span>
-                                            <svg width="75 " height="15 " viewBox="0 0 75 15 " fill="none "
-                                                xmlns="http://www.w3.org/2000/svg ">
-                                                <path
-                                                    d="M7.5 0L9.18386 5.18237H14.6329L10.2245 8.38525L11.9084 13.5676L7.5 10.3647L3.09161 13.5676L4.77547 8.38525L0.367076 5.18237H5.81614L7.5 0Z "
-                                                    fill="#FFA800 " />
-                                                <path
-                                                    d="M22.5 0L24.1839 5.18237H29.6329L25.2245 8.38525L26.9084 13.5676L22.5 10.3647L18.0916 13.5676L19.7755 8.38525L15.3671 5.18237H20.8161L22.5 0Z "
-                                                    fill="#FFA800 " />
-                                                <path
-                                                    d="M37.5 0L39.1839 5.18237H44.6329L40.2245 8.38525L41.9084 13.5676L37.5 10.3647L33.0916 13.5676L34.7755 8.38525L30.3671 5.18237H35.8161L37.5 0Z "
-                                                    fill="#FFA800 " />
-                                                <path
-                                                    d="M52.5 0L54.1839 5.18237H59.6329L55.2245 8.38525L56.9084 13.5676L52.5 10.3647L48.0916 13.5676L49.7755 8.38525L45.3671 5.18237H50.8161L52.5 0Z "
-                                                    fill="#FFA800 " />
-                                                <path
-                                                    d="M67.5 0L69.1839 5.18237H74.6329L70.2245 8.38525L71.9084 13.5676L67.5 10.3647L63.0916 13.5676L64.7755 8.38525L60.3671 5.18237H65.8161L67.5 0Z "
-                                                    fill="#FFA800 " />
-                                            </svg>
-                                        </span>
-                                </div>
-                                <div class="product-description ">
-                                    <a href="product-info.html " class="product-details ">{{ product.name }}</a>
-                                    <div class="price ">
-                                        <span class="prices ">R{{ product.price }}</span>
+                            <div class="product-info" style="height: 30%; display: flex; flex-direction: column; justify-content: space-between;">
+
+                                <div class="product-description">
+                                    <a href="{% if request.user.is_authenticated %}{% url 'product_info_with_user' product.id request.user.id %}{% else %}{% url 'product_info_without_user' product.id %}{% endif %}" class="product-details">{{ product.name }}</a>
+                                    <div class="price">
+                                        <span class="prices">R{{ product.price }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -361,6 +287,9 @@
             </div>
         </div>
     </section>
+    <!--------------- arrival-section-end --------------->
+
+
     <!--------------- flash-section-end--------------->
 
     <!--------------- flash-section--------------->
@@ -604,9 +533,9 @@
 
 
             <div class="style-section ">
-                <div class="row gy-4 gx-5 gy-lg-0 ">
-                    <div class="col-lg-6 ">
-                        <div class="product-wrapper wrapper-three " data-aos="fade-right ">
+                <div class="row gy-4 gx-5 gy-lg-0">
+                    <div class="col-6 col-md-6">
+                        <div class="product-wrapper wrapper-three " data-aos="fade-right " style="height: 30rem;">
                             <div class="wrapper-info ">
                                 <span class="wrapper-subtitle ">NEW STYLE</span>
                                 <h4 class="wrapper-details ">Get R50 Off
@@ -626,8 +555,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 ">
-                        <div class="product-wrapper wrapper-four " data-aos="fade-up ">
+                    <div class="col-6 col-md-6">
+                        <div class="product-wrapper wrapper-four " data-aos="fade-up " style="height: 30rem;">
                             <div class="wrapper-info ">
                                 <span class="wrapper-subtitle ">Mega OFFER</span>
                                 <h4 class="wrapper-details ">
@@ -655,54 +584,6 @@
     <!--------------- weekly-section-end--------------->
 
 
-
-
-    <script>
-        function typewriterEffect(element, speed) {
-            const text = element.innerHTML.trim(); // Use innerHTML to preserve HTML tags
-            element.innerHTML = ''; // Clear existing content
-
-            return new Promise((resolve, reject) => {
-                let i = 0;
-                const typing = setInterval(function() {
-                    // Check if current character is part of HTML tag or plain text
-                    if (text[i] === '<') {
-                        // Find the closing angle bracket of the tag
-                        const tagEnd = text.indexOf('>', i);
-                        if (tagEnd !== -1) {
-                            element.innerHTML += text.substring(i, tagEnd + 1);
-                            i = tagEnd + 1;
-                        } else {
-                            element.innerHTML += text[i];
-                            i++;
-                        }
-                    } else {
-                        element.innerHTML += text[i];
-                        i++;
-                    }
-
-                    if (i >= text.length) {
-                        clearInterval(typing);
-                        resolve(); // Resolve the promise when typing is complete
-                    }
-                }, speed); // Typing speed
-            });
-        }
-
-
-
-        async function startTypewriters() {
-            const subtitle = document.querySelector('.wrapper-subtitle');
-            const details = document.querySelector('.wrapper-details');
-
-            await typewriterEffect(subtitle, 100); // Start typewriter for subtitle
-            await typewriterEffect(details, 100); // Start typewriter for details after subtitle
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            startTypewriters();
-        });
-    </script>
 
 
 </body>

@@ -289,7 +289,7 @@ button {
 
 @media (max-width:767px) {
     .product-wrapper .product-details {
-        font-size: 2.2rem;
+        font-size: 10px !important;
     }
 }
 
